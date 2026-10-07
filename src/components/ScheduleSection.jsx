@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, MapPin, User, ChevronDown } from 'lucide-react';
-import { scheduleData } from '../data/eventData';
+import { scheduleData as defaultScheduleData } from '../data/eventData';
+import { eventService } from '../services/eventService';
 
 export default function ScheduleSection() {
   const [activeDay, setActiveDay] = useState('day1');
+  const [schedule, setSchedule] = useState(defaultScheduleData);
 
-  const currentSchedule = scheduleData[activeDay];
+  useEffect(() => {
+    let isMounted = true;
+    eventService.getSchedules().then((res) => {
+      if (isMounted && res) setSchedule(res);
+    });
+    return () => { isMounted = false; };
+  }, []);
+
+  const currentSchedule = schedule[activeDay] || defaultScheduleData[activeDay];
 
   return (
     <section id="schedule" className="section schedule-section">

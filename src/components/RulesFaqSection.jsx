@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, FileText, HelpCircle, ShieldAlert } from 'lucide-react';
-import { rulesData, faqsData } from '../data/eventData';
+import { rulesData, faqsData as defaultFaqs } from '../data/eventData';
+import { eventService } from '../services/eventService';
 
 export default function RulesFaqSection() {
+  const [faqs, setFaqs] = useState(defaultFaqs);
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    eventService.getFaqs().then((res) => {
+      if (isMounted && res?.length > 0) setFaqs(res);
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   const toggleFaq = (idx) => {
     setOpenFaqIndex(openFaqIndex === idx ? null : idx);
@@ -54,7 +64,7 @@ export default function RulesFaqSection() {
             </h3>
 
             <div className="accordion-group">
-              {faqsData.map((item, idx) => {
+              {faqs.map((item, idx) => {
                 const isOpen = openFaqIndex === idx;
                 const paddedNum = String(idx + 1).padStart(2, '0');
 

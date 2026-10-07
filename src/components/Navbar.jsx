@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight, User, LayoutDashboard } from 'lucide-react';
 import { eventMeta } from '../data/eventData';
+import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, profile, isConfigured } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -38,6 +40,7 @@ export default function Navbar() {
     { label: 'MISSIONS', id: 'problems', path: '/missions' },
     { label: 'SCHEDULE', id: 'schedule', path: '/schedule' },
     { label: 'PRIZES', id: 'prizes', path: '/prizes' },
+    { label: 'LEADERBOARD', id: 'leaderboard', path: '/leaderboard' },
     { label: 'FAQ', id: 'faq', path: '/faq' },
   ];
 
@@ -62,26 +65,51 @@ export default function Navbar() {
           <ul className="nav-links">
             {navItems.map((item) => (
               <li key={item.label} className="nav-item">
-                <button
-                  type="button"
-                  onClick={() => handleNavClick(item.id)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                >
-                  {item.label}
-                </button>
+                {item.path.startsWith('/#') || item.path === '/' ? (
+                  <button
+                    type="button"
+                    onClick={() => handleNavClick(item.id)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                  >
+                    {item.label}
+                  </button>
+                ) : (
+                  <Link to={item.path} style={{ textDecoration: 'none' }}>
+                    {item.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
 
           <div className="nav-actions">
-            <Link
-              to="/register"
-              className="btn btn-primary"
-              style={{ padding: '0.65rem 1.4rem', fontSize: '0.84rem' }}
-            >
-              REGISTER
-              <ArrowUpRight size={16} />
-            </Link>
+            {user ? (
+              <Link
+                to="/dashboard"
+                className="btn btn-primary"
+                style={{ padding: '0.65rem 1.4rem', fontSize: '0.84rem' }}
+              >
+                <LayoutDashboard size={15} />
+                DASHBOARD
+              </Link>
+            ) : (
+              <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                <Link
+                  to="/login"
+                  style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--color-warm-off-white)', textDecoration: 'none', padding: '0.5rem 0.8rem' }}
+                >
+                  SIGN IN
+                </Link>
+                <Link
+                  to="/register"
+                  className="btn btn-primary"
+                  style={{ padding: '0.65rem 1.4rem', fontSize: '0.84rem' }}
+                >
+                  REGISTER
+                  <ArrowUpRight size={16} />
+                </Link>
+              </div>
+            )}
 
             <button
               className="mobile-toggle"
@@ -115,14 +143,33 @@ export default function Navbar() {
                 </button>
               </li>
             ))}
-            <li style={{ marginTop: '1.5rem', width: '100%', maxWidth: '240px' }}>
-              <Link
-                to="/register"
-                className="btn btn-primary"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                REGISTER NOW
-              </Link>
+            <li style={{ marginTop: '1.5rem', width: '100%', maxWidth: '240px', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+              {user ? (
+                <Link
+                  to="/dashboard"
+                  className="btn btn-primary"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  GO TO DASHBOARD
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    to="/register"
+                    className="btn btn-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    REGISTER NOW
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="btn btn-secondary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    SIGN IN
+                  </Link>
+                </>
+              )}
             </li>
           </ul>
         </div>

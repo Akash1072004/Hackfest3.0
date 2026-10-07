@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight, ChevronRight, Layers, FileCode } from 'lucide-react';
-import { problemCategories } from '../data/eventData';
+import { problemCategories as defaultCategories } from '../data/eventData';
+import { eventService } from '../services/eventService';
 import ProblemDetailModal from './ProblemDetailModal';
 
 export default function ProblemStatementsSection() {
+  const [categories, setCategories] = useState(defaultCategories);
   const [activeProblem, setActiveProblem] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    eventService.getProblemCategories().then((res) => {
+      if (isMounted && res?.length > 0) {
+        setCategories(res);
+      }
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   return (
     <section id="problems" className="section problems-section">
@@ -23,7 +35,7 @@ export default function ProblemStatementsSection() {
         </div>
 
         <div className="problems-grid">
-          {problemCategories.map((prob) => (
+          {categories.map((prob) => (
             <div
               key={prob.id}
               className="problem-card"

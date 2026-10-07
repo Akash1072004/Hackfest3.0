@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserCheck, Shield, Award, CheckCircle, Scale } from 'lucide-react';
-import { mentorsAndJudges, competitions } from '../data/eventData';
+import { mentorsAndJudges as defaultData, competitions } from '../data/eventData';
+import { eventService } from '../services/eventService';
 
 export default function MentorsJudgesSection() {
   const [activeTab, setActiveTab] = useState('judges');
+  const [people, setPeople] = useState(defaultData);
+
+  useEffect(() => {
+    let isMounted = true;
+    eventService.getMentorsAndJudges().then((res) => {
+      if (isMounted && res) setPeople(res);
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   const hackathonComp = competitions.find((c) => c.id === 'hackathon');
   const ideathonComp = competitions.find((c) => c.id === 'ideathon');
@@ -47,7 +57,7 @@ export default function MentorsJudgesSection() {
 
         {activeTab === 'judges' && (
           <div className="mentors-grid">
-            {mentorsAndJudges.judges.map((judge) => (
+            {people.judges.map((judge) => (
               <div key={judge.id} className="mentor-card">
                 <div className="mentor-avatar-wrap">
                   <Shield size={28} />
@@ -63,7 +73,7 @@ export default function MentorsJudgesSection() {
 
         {activeTab === 'mentors' && (
           <div className="mentors-grid">
-            {mentorsAndJudges.mentors.map((mentor) => (
+            {people.mentors.map((mentor) => (
               <div key={mentor.id} className="mentor-card">
                 <div className="mentor-avatar-wrap">
                   <UserCheck size={28} />
