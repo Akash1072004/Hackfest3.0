@@ -1,0 +1,1179 @@
+/* ==========================================================================
+   HACKFEST 3.0 — SECTION SPECIFIC STYLES
+   Cinematic Editorial Layouts, Gradients, and Thematic Cards
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   01. HERO SECTION
+   -------------------------------------------------------------------------- */
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: calc(var(--nav-height) + 2rem);
+  padding-bottom: 5rem;
+  overflow: hidden;
+  background-color: var(--color-deep-navy);
+}
+
+.hero-bg-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hero-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;
+  filter: brightness(0.62) contrast(1.18) saturate(0.92);
+  transform: scale(1.03);
+  animation: slowHeroDrift 28s ease-in-out infinite alternate;
+}
+
+@keyframes slowHeroDrift {
+  0% { transform: scale(1.02) translate(0, 0); }
+  100% { transform: scale(1.07) translate(-1%, -1%); }
+}
+
+/* Layered Cinematic Atmosphere Gradients */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(180deg, rgba(17, 24, 39, 0.8) 0%, rgba(17, 24, 39, 0.35) 45%, rgba(17, 24, 39, 0.95) 100%),
+    radial-gradient(ellipse at 50% 60%, rgba(143, 48, 53, 0.18) 0%, transparent 65%),
+    linear-gradient(90deg, rgba(17, 24, 39, 0.85) 0%, transparent 35%, transparent 65%, rgba(17, 24, 39, 0.85) 100%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  max-width: 920px;
+}
+
+.hero-meta-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-tag {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-warm-amber);
+  background: rgba(185, 133, 69, 0.12);
+  border: 1px solid rgba(185, 133, 69, 0.35);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-inst {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--color-soft-gray);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-size: clamp(3.2rem, 7.5vw, 6.2rem);
+  line-height: 0.96;
+  margin-bottom: 1.25rem;
+  text-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.02em;
+}
+
+.hero-title-accent {
+  background: linear-gradient(135deg, #ECE8DF 30%, #B98545 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-tagline {
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 2.2vw, 1.65rem);
+  letter-spacing: 0.06em;
+  color: #ECE8DF;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  border-left: 3px solid var(--color-muted-crimson);
+  padding-left: 1rem;
+}
+
+.hero-desc {
+  font-size: clamp(1.02rem, 1.25vw, 1.18rem);
+  color: var(--color-soft-gray);
+  max-width: 680px;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-bottom: 3.5rem;
+}
+
+.hero-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: clamp(1.5rem, 3.5vw, 3.5rem);
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-subtle);
+  width: fit-content;
+}
+
+.hero-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.hero-stat-value {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-warm-off-white);
+  margin-top: 0.2rem;
+}
+
+/* --------------------------------------------------------------------------
+   02. ABOUT SECTION
+   -------------------------------------------------------------------------- */
+.about-section {
+  background: linear-gradient(180deg, #111827 0%, #1C2026 50%, #252A31 100%);
+  position: relative;
+}
+
+.about-split {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: center;
+}
+
+.about-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-p {
+  font-size: 1.08rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 1.4rem;
+}
+
+.about-p strong {
+  color: var(--color-warm-off-white);
+  font-weight: 700;
+}
+
+.about-key-points {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.about-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(37, 42, 49, 0.45);
+  border: 1px solid var(--border-subtle);
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.about-point-icon {
+  color: var(--color-warm-amber);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.about-point-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-warm-off-white);
+  line-height: 1.35;
+}
+
+.about-visual-wrap {
+  position: relative;
+}
+
+.about-image-card {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-card);
+}
+
+.about-image {
+  width: 100%;
+  height: 440px;
+  object-fit: cover;
+  filter: contrast(1.1) saturate(0.9);
+  transition: transform 0.5s ease;
+}
+
+.about-image-card:hover .about-image {
+  transform: scale(1.03);
+}
+
+.about-image-badge {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 1.2rem;
+  right: 1.2rem;
+  background: rgba(17, 24, 39, 0.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-subtle);
+  padding: 0.85rem 1.2rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.about-badge-title {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-warm-off-white);
+  letter-spacing: 0.05em;
+}
+
+.about-badge-sub {
+  font-size: 0.75rem;
+  color: var(--color-warm-amber);
+}
+
+/* --------------------------------------------------------------------------
+   03. EVENT HIGHLIGHTS
+   -------------------------------------------------------------------------- */
+.highlights-section {
+  background: #1C2026;
+  position: relative;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.stat-card {
+  background: rgba(37, 42, 49, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 2.2rem 1.8rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-medium), border-color var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-card);
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  font-size: clamp(2.8rem, 4.2vw, 3.8rem);
+  line-height: 1;
+  color: var(--color-warm-off-white);
+  margin-bottom: 0.6rem;
+  background: linear-gradient(135deg, #ECE8DF 0%, #A7A9AD 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  color: var(--color-warm-amber);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  font-weight: 700;
+}
+
+.stat-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.feature-block {
+  background: rgba(28, 32, 38, 0.6);
+  border-left: 3px solid var(--color-steel-blue);
+  padding: 1.4rem 1.4rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.feature-block:hover {
+  border-left-color: var(--color-muted-crimson);
+  background: rgba(37, 42, 49, 0.8);
+}
+
+.feature-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  color: var(--color-warm-off-white);
+  margin-bottom: 0.4rem;
+}
+
+.feature-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   04. COMPETITIONS (THE THREE ARENAS)
+   -------------------------------------------------------------------------- */
+.competitions-section {
+  background: linear-gradient(180deg, #1C2026 0%, #111827 50%, #252A31 100%);
+  position: relative;
+}
+
+.competitions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.35fr;
+  gap: 1.75rem;
+  align-items: stretch;
+}
+
+.competition-panel {
+  position: relative;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-medium), border-color var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.competition-panel:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+.competition-panel.dominant {
+  border-color: var(--border-accent-crimson);
+  background: rgba(37, 42, 49, 0.88);
+}
+
+.competition-image-wrap {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+
+.competition-panel.dominant .competition-image-wrap {
+  height: 260px;
+}
+
+.competition-panel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.competition-panel:hover .competition-panel-img {
+  transform: scale(1.05);
+}
+
+.competition-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.1) 0%, rgba(17, 24, 39, 0.85) 100%);
+}
+
+.competition-badge-float {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-sm);
+  background: rgba(17, 24, 39, 0.88);
+  border: 1px solid var(--border-medium);
+  color: var(--color-warm-off-white);
+  text-transform: uppercase;
+}
+
+.competition-body {
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.competition-panel-title {
+  font-size: 1.85rem;
+  margin-bottom: 0.4rem;
+}
+
+.competition-panel.dominant .competition-panel-title {
+  font-size: 2.25rem;
+  color: var(--color-warm-off-white);
+}
+
+.competition-tagline {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-warm-amber);
+  margin-bottom: 1rem;
+}
+
+.competition-desc {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.competition-meta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.competition-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.84rem;
+  color: var(--color-soft-gray);
+}
+
+.competition-meta-item svg {
+  color: var(--color-warm-amber);
+  flex-shrink: 0;
+}
+
+.competition-btn-wrap {
+  margin-top: auto;
+}
+
+/* --------------------------------------------------------------------------
+   05. PROBLEM STATEMENTS
+   -------------------------------------------------------------------------- */
+.problems-section {
+  background: #1C2026;
+  position: relative;
+}
+
+.problems-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.6rem;
+}
+
+.problem-card {
+  background: rgba(37, 42, 49, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.85rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.problem-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-medium);
+  background: rgba(45, 52, 62, 0.85);
+  box-shadow: var(--shadow-card);
+}
+
+.problem-card-num {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  line-height: 1;
+  color: rgba(167, 169, 173, 0.35);
+  margin-bottom: 0.8rem;
+  transition: color var(--transition-fast);
+}
+
+.problem-card:hover .problem-card-num {
+  color: var(--color-warm-amber);
+}
+
+.problem-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  color: var(--color-warm-off-white);
+  margin-bottom: 0.4rem;
+}
+
+.problem-card-theme {
+  font-size: 0.86rem;
+  color: var(--color-warm-amber);
+  font-family: var(--font-mono);
+  margin-bottom: 0.85rem;
+}
+
+.problem-card-brief {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.problem-card-action {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-warm-off-white);
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   06. SCHEDULE SECTION
+   -------------------------------------------------------------------------- */
+.schedule-section {
+  background: linear-gradient(180deg, #1C2026 0%, #111827 100%);
+  position: relative;
+}
+
+.schedule-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.schedule-tab-btn {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  padding: 0.85rem 2.2rem;
+  border-radius: var(--radius-sm);
+  background: rgba(37, 42, 49, 0.7);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.schedule-tab-btn.active {
+  background: var(--color-muted-crimson);
+  border-color: rgba(236, 232, 223, 0.3);
+  color: var(--color-warm-off-white);
+  box-shadow: 0 4px 20px rgba(143, 48, 53, 0.35);
+}
+
+.timeline-stream {
+  position: relative;
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.timeline-card {
+  background: rgba(37, 42, 49, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1.8rem;
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 1.5rem;
+  align-items: center;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.timeline-card:hover {
+  border-color: var(--border-medium);
+  background: rgba(45, 52, 62, 0.85);
+}
+
+.timeline-card.highlight {
+  border-left: 4px solid var(--color-muted-crimson);
+  background: rgba(45, 52, 62, 0.8);
+}
+
+.timeline-step {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--color-warm-amber);
+}
+
+.timeline-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-title {
+  font-family: var(--font-heading);
+  font-size: 1.18rem;
+  letter-spacing: 0.04em;
+  color: var(--color-warm-off-white);
+  margin-bottom: 0.25rem;
+}
+
+.timeline-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.timeline-dignitaries {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.dignitary-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  background: rgba(60, 83, 107, 0.3);
+  border: 1px solid var(--border-subtle);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-warm-off-white);
+}
+
+.timeline-time-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  background: rgba(17, 24, 39, 0.8);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-soft-gray);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   07. HOW THE EVENT WORKS
+   -------------------------------------------------------------------------- */
+.how-it-works-section {
+  background: #111827;
+  position: relative;
+}
+
+.workflow-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.workflow-tab-btn {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  padding: 0.7rem 1.6rem;
+  border-radius: var(--radius-sm);
+  background: rgba(37, 42, 49, 0.7);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.workflow-tab-btn.active {
+  background: var(--color-steel-blue);
+  color: var(--color-warm-off-white);
+  border-color: rgba(236, 232, 223, 0.3);
+}
+
+.workflow-steps-track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.workflow-step-card {
+  background: rgba(28, 32, 38, 0.8);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.6rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.workflow-step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.workflow-step-num {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--color-warm-amber);
+  font-weight: 700;
+}
+
+.workflow-step-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  color: var(--color-warm-off-white);
+  margin-bottom: 0.5rem;
+}
+
+.workflow-step-desc {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* --------------------------------------------------------------------------
+   08. MENTORS & JUDGES
+   -------------------------------------------------------------------------- */
+.mentors-section {
+  background: #1C2026;
+  position: relative;
+}
+
+.mentors-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.mentor-card {
+  background: rgba(37, 42, 49, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.mentor-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-medium);
+}
+
+.mentor-avatar-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3C536B 0%, #111827 100%);
+  border: 1px solid var(--border-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  color: var(--color-warm-amber);
+}
+
+.mentor-name {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  letter-spacing: 0.03em;
+  color: var(--color-warm-off-white);
+  margin-bottom: 0.25rem;
+}
+
+.mentor-designation {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-warm-amber);
+  margin-bottom: 0.2rem;
+}
+
+.mentor-org {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-bottom: 0.8rem;
+}
+
+.mentor-bio {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: auto;
+}
+
+/* --------------------------------------------------------------------------
+   09. PRIZES SECTION (THE FINAL VERDICT)
+   -------------------------------------------------------------------------- */
+.prizes-section {
+  background: linear-gradient(180deg, #1C2026 0%, #111827 50%, #252A31 100%);
+  position: relative;
+}
+
+.prizes-featured-box {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
+  background: rgba(37, 42, 49, 0.7);
+  border: 1px solid var(--border-accent-amber);
+  border-radius: var(--radius-lg);
+  padding: clamp(2rem, 3.5vw, 3rem);
+  margin-bottom: 3.5rem;
+}
+
+.prizes-img-wrap {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-medium);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+}
+
+.prizes-img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  filter: contrast(1.15) brightness(0.95);
+}
+
+.prizes-arenas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.prize-arena-card {
+  background: rgba(28, 32, 38, 0.75);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.prize-arena-title {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  color: var(--color-warm-off-white);
+  margin-bottom: 0.3rem;
+}
+
+.prize-arena-tag {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--color-warm-amber);
+  letter-spacing: 0.12em;
+  margin-bottom: 1.5rem;
+}
+
+.prize-tier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.prize-tier-item {
+  background: rgba(37, 42, 49, 0.55);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+}
+
+.prize-tier-item.champion {
+  border-color: var(--border-accent-amber);
+  background: rgba(185, 133, 69, 0.08);
+}
+
+.prize-tier-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--color-warm-amber);
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.prize-tier-name {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--color-warm-off-white);
+  margin-bottom: 0.25rem;
+}
+
+.prize-tier-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------------------------------
+   10. RULES & FAQ
+   -------------------------------------------------------------------------- */
+.rules-faq-section {
+  background: #1C2026;
+  position: relative;
+}
+
+.rules-faq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.rules-col-title, .faq-col-title {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  color: var(--color-warm-off-white);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.rules-category-block {
+  background: rgba(37, 42, 49, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.rules-category-title {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  letter-spacing: 0.12em;
+  color: var(--color-warm-amber);
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+}
+
+.rules-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.rules-list li {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.rules-list li::before {
+  content: "—";
+  color: var(--color-muted-crimson);
+  font-weight: bold;
+}
+
+/* --------------------------------------------------------------------------
+   11. SPONSORS & PARTNERS
+   -------------------------------------------------------------------------- */
+.sponsors-section {
+  background: linear-gradient(180deg, #1C2026 0%, #111827 100%);
+  position: relative;
+}
+
+.sponsors-group {
+  margin-bottom: 3rem;
+}
+
+.sponsors-group-title {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-warm-amber);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.sponsors-cards-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.sponsor-surface-card {
+  background: rgba(37, 42, 49, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 2.2rem;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.sponsor-surface-card:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-2px);
+}
+
+.sponsor-card-name {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  color: var(--color-warm-off-white);
+  margin-bottom: 0.25rem;
+}
+
+.sponsor-card-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.sponsor-cta-banner {
+  background: rgba(60, 83, 107, 0.15);
+  border: 1px dashed var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 2.2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 3.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   12. REGISTER / ENTER THE BATTLE
+   -------------------------------------------------------------------------- */
+.register-cta-section {
+  background: radial-gradient(ellipse at 50% 50%, rgba(143, 48, 53, 0.15) 0%, #111827 75%);
+  position: relative;
+  text-align: center;
+}
+
+.register-cta-box {
+  background: rgba(28, 32, 38, 0.85);
+  border: 1px solid var(--border-accent-crimson);
+  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.8);
+  border-radius: var(--radius-lg);
+  padding: clamp(2.5rem, 5vw, 4.5rem);
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.register-meta-pills {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.register-meta-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--color-soft-gray);
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid var(--border-subtle);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVENESS FOR SECTION GRIDS
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .about-split {
+    grid-template-columns: 1fr;
+  }
+  .competitions-grid {
+    grid-template-columns: 1fr;
+  }
+  .competition-panel.dominant {
+    order: -1;
+  }
+  .stats-grid, .features-grid, .mentors-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .problems-grid, .prizes-arenas-grid, .workflow-steps-track {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .prizes-featured-box {
+    grid-template-columns: 1fr;
+  }
+  .rules-faq-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid, .features-grid, .mentors-grid, .problems-grid, .prizes-arenas-grid, .workflow-steps-track {
+    grid-template-columns: 1fr;
+  }
+  .timeline-card {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  .timeline-time-badge {
+    align-self: flex-start;
+  }
+  .hero-stats-bar {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+}
