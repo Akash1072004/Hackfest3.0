@@ -29,7 +29,7 @@ export default function JudgeEvaluatePage() {
   const navigate = useNavigate();
 
   const [submission, setSubmission] = useState(null);
-  const [criteria] = useState(DEFAULT_CRITERIA);
+  const [criteria, setCriteria] = useState(DEFAULT_CRITERIA);
   const [scores, setScores] = useState({});
   const [comments, setComments] = useState('');
   const [saving, setSaving] = useState(false);
@@ -41,6 +41,18 @@ export default function JudgeEvaluatePage() {
       const found = all.find((s) => s.id === submissionId);
       if (found) {
         setSubmission(found);
+        if (found.competition_id) {
+          judgingService.getJudgingCriteria(found.competition_id).then((critData) => {
+            if (critData && critData.length > 0) {
+              setCriteria(critData.map((c) => ({
+                id: c.code || c.id,
+                title: c.title,
+                description: c.description,
+                weight: Number(c.weight) || 10,
+              })));
+            }
+          });
+        }
         // Pre-populate if already scored
         const userScores = {};
         (found.scores || []).forEach((sc) => {

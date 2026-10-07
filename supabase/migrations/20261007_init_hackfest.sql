@@ -1,10 +1,11 @@
 -- ============================================================================
--- HACKFEST 3.0 — COMPLETE SUPABASE DATABASE ARCHITECTURE & MIGRATION
+-- HACKFEST 3.0 — COMPLETE SUPABASE DATABASE ARCHITECTURE & MIGRATION (AUDITED)
 -- Student Developer Club, REC Banda
 -- ============================================================================
 
--- Enable required extensions
+-- Enable required PostgreSQL extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- ----------------------------------------------------------------------------
 -- 1. PROFILES TABLE
@@ -23,7 +24,6 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Index for fast lookups
 CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
 CREATE INDEX IF NOT EXISTS idx_profiles_email ON public.profiles(email);
 
@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS public.teams (
 
 CREATE INDEX IF NOT EXISTS idx_teams_competition ON public.teams(competition_id);
 CREATE INDEX IF NOT EXISTS idx_teams_code ON public.teams(code);
+CREATE INDEX IF NOT EXISTS idx_teams_leader ON public.teams(leader_id);
 
 -- ----------------------------------------------------------------------------
 -- 5. TEAM MEMBERS TABLE
@@ -97,6 +98,7 @@ CREATE TABLE IF NOT EXISTS public.team_members (
 );
 
 CREATE INDEX IF NOT EXISTS idx_team_members_user ON public.team_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_team_members_team ON public.team_members(team_id);
 
 -- ----------------------------------------------------------------------------
 -- 6. REGISTRATIONS TABLE
@@ -117,6 +119,7 @@ CREATE TABLE IF NOT EXISTS public.registrations (
 
 CREATE INDEX IF NOT EXISTS idx_registrations_user ON public.registrations(user_id);
 CREATE INDEX IF NOT EXISTS idx_registrations_competition ON public.registrations(competition_id);
+CREATE INDEX IF NOT EXISTS idx_registrations_team ON public.registrations(team_id);
 
 -- ----------------------------------------------------------------------------
 -- 7. SCHEDULES TABLE
@@ -148,6 +151,7 @@ CREATE TABLE IF NOT EXISTS public.mentors (
   expertise TEXT,
   bio TEXT,
   photo_url TEXT,
+  is_live BOOLEAN NOT NULL DEFAULT false,
   sort_order INT NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -164,6 +168,7 @@ CREATE TABLE IF NOT EXISTS public.judges (
   expertise TEXT,
   bio TEXT,
   photo_url TEXT,
+  is_live BOOLEAN NOT NULL DEFAULT false,
   sort_order INT NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -173,7 +178,8 @@ CREATE TABLE IF NOT EXISTS public.judges (
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.judging_criteria (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  competition_id UUID NOT NULL REFERENCES public.competitions(id) ON DELETE CASCADE,
+  code TEXT,
+  competition_id UUID REFERENCES public.competitions(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   description TEXT,
   weight NUMERIC NOT NULL DEFAULT 10,
@@ -204,6 +210,8 @@ CREATE TABLE IF NOT EXISTS public.submissions (
 
 CREATE INDEX IF NOT EXISTS idx_submissions_competition ON public.submissions(competition_id);
 CREATE INDEX IF NOT EXISTS idx_submissions_team ON public.submissions(team_id);
+CREATE INDEX IF NOT EXISTS idx_submissions_user ON public.submissions(user_id);
+CREATE INDEX IF NOT EXISTS idx_submissions_status ON public.submissions(status);
 
 -- ----------------------------------------------------------------------------
 -- 12. SCORES TABLE
@@ -212,7 +220,7 @@ CREATE TABLE IF NOT EXISTS public.scores (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   submission_id UUID NOT NULL REFERENCES public.submissions(id) ON DELETE CASCADE,
   judge_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  criterion_id UUID NOT NULL REFERENCES public.judging_criteria(id) ON DELETE CASCADE,
+  criterion_id TEXT NOT NULL,
   score NUMERIC NOT NULL CHECK (score >= 0 AND score <= 100),
   comments TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -221,6 +229,7 @@ CREATE TABLE IF NOT EXISTS public.scores (
 );
 
 CREATE INDEX IF NOT EXISTS idx_scores_submission ON public.scores(submission_id);
+CREATE INDEX IF NOT EXISTS idx_scores_judge ON public.scores(judge_id);
 
 -- ----------------------------------------------------------------------------
 -- 13. SPONSORS TABLE
@@ -284,22 +293,33 @@ CREATE TABLE IF NOT EXISTS public.announcements (
 );
 
 -- ============================================================================
--- HELPER FUNCTIONS & ATOMIC TRANSACTIONS
+-- HELPER FUNCTIONS & RPC TRANSACTIONS
 -- ============================================================================
+
+-- Helper security function to get user role
+CREATE OR REPLACE FUNCTION public.get_current_role()
+RETURNS TEXT AS $$
+  SELECT role FROM public.profiles WHERE id = auth.uid();
+$$ LANGUAGE sql STABLE SECURITY DEFINER;
 
 -- Trigger to automatically create or update profile upon auth signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name, email, role)
+  INSERT INTO public.profiles (id, full_name, email, college, phone, role)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'full_name', split_part(NEW.email, '@', 1)),
     NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'college', 'Rajkiya Engineering College Banda'),
+    NEW.raw_user_meta_data->>'phone',
     COALESCE(NEW.raw_user_meta_data->>'role', 'participant')
   )
   ON CONFLICT (id) DO UPDATE SET
     email = EXCLUDED.email,
+    full_name = CASE WHEN profiles.full_name IS NULL OR profiles.full_name = '' THEN EXCLUDED.full_name ELSE profiles.full_name END,
+    college = CASE WHEN profiles.college IS NULL OR profiles.college = '' THEN EXCLUDED.college ELSE profiles.college END,
+    phone = COALESCE(profiles.phone, EXCLUDED.phone),
     updated_at = now();
   RETURN NEW;
 END;
@@ -312,9 +332,10 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- Atomic function to create team and assign creator as leader
+-- Accepts either a UUID or a slug ('hackathon', 'ideathon') for p_competition_id
 CREATE OR REPLACE FUNCTION public.create_team_with_leader(
   p_name TEXT,
-  p_competition_id UUID,
+  p_competition_id TEXT,
   p_user_id UUID
 )
 RETURNS JSONB AS $$
@@ -322,20 +343,27 @@ DECLARE
   v_team_code TEXT;
   v_team_id UUID;
   v_competition RECORD;
-  v_existing_team RECORD;
+  v_comp_uuid UUID;
 BEGIN
-  -- Check competition exists & is open
-  SELECT * INTO v_competition FROM public.competitions WHERE id = p_competition_id;
-  IF NOT FOUND THEN
-    RAISE EXCEPTION 'Competition not found';
+  -- Resolve competition ID whether passed as UUID or slug
+  IF p_competition_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+    SELECT * INTO v_competition FROM public.competitions WHERE id = p_competition_id::uuid;
+  ELSE
+    SELECT * INTO v_competition FROM public.competitions WHERE slug = lower(p_competition_id);
   END IF;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Competition not found for identifier: %', p_competition_id;
+  END IF;
+
+  v_comp_uuid := v_competition.id;
 
   -- Generate readable unique code: HF3-XXXXXX
   v_team_code := 'HF3-' || upper(substring(md5(random()::text || clock_timestamp()::text) from 1 for 6));
 
   -- Insert team
   INSERT INTO public.teams (name, code, leader_id, competition_id)
-  VALUES (p_name, v_team_code, p_user_id, p_competition_id)
+  VALUES (p_name, v_team_code, p_user_id, v_comp_uuid)
   RETURNING id INTO v_team_id;
 
   -- Insert team leader membership
@@ -345,7 +373,8 @@ BEGIN
   RETURN jsonb_build_object(
     'team_id', v_team_id,
     'code', v_team_code,
-    'name', p_name
+    'name', p_name,
+    'competition_id', v_comp_uuid
   );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -362,7 +391,7 @@ DECLARE
   v_member_count INT;
 BEGIN
   -- Find team
-  SELECT * INTO v_team FROM public.teams WHERE upper(code) = upper(p_code);
+  SELECT * INTO v_team FROM public.teams WHERE upper(code) = upper(trim(p_code));
   IF NOT FOUND THEN
     RAISE EXCEPTION 'Invalid team code: %', p_code;
   END IF;
@@ -382,7 +411,8 @@ BEGIN
     RETURN jsonb_build_object(
       'status', 'already_joined',
       'team_id', v_team.id,
-      'name', v_team.name
+      'name', v_team.name,
+      'competition_id', v_team.competition_id
     );
   END IF;
 
@@ -396,6 +426,63 @@ BEGIN
     'name', v_team.name,
     'competition_id', v_team.competition_id
   );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- RPC for Leaderboard rankings calculation
+CREATE OR REPLACE FUNCTION public.get_leaderboard()
+RETURNS TABLE (
+  submission_id UUID,
+  title TEXT,
+  description TEXT,
+  team_name TEXT,
+  competition_name TEXT,
+  average_score NUMERIC,
+  evaluations_count BIGINT
+) AS $$
+BEGIN
+  -- Return rankings if leaderboard is published or if caller is organizer/admin
+  IF (SELECT leaderboard_published FROM public.event_settings LIMIT 1) IS TRUE OR (public.get_current_role() IN ('admin', 'organizer')) THEN
+    RETURN QUERY
+    SELECT
+      s.id AS submission_id,
+      s.title,
+      s.description,
+      COALESCE(t.name, 'Individual') AS team_name,
+      c.name AS competition_name,
+      ROUND(COALESCE(AVG(sc.score), 0)::numeric, 1) AS average_score,
+      COUNT(sc.id) AS evaluations_count
+    FROM public.submissions s
+    LEFT JOIN public.teams t ON s.team_id = t.id
+    JOIN public.competitions c ON s.competition_id = c.id
+    LEFT JOIN public.scores sc ON s.id = sc.submission_id
+    WHERE s.status = 'evaluated'
+    GROUP BY s.id, s.title, s.description, t.name, c.name
+    ORDER BY average_score DESC;
+  ELSE
+    RETURN;
+  END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- RPC for live mentors & judges inspection
+CREATE OR REPLACE FUNCTION public.get_live_interviewers()
+RETURNS TABLE (
+  id UUID,
+  type TEXT,
+  name TEXT,
+  designation TEXT,
+  organization TEXT,
+  expertise TEXT,
+  is_live BOOLEAN
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT m.id, 'mentor'::TEXT AS type, m.name, m.designation, m.organization, m.expertise, m.is_live
+  FROM public.mentors m
+  UNION ALL
+  SELECT j.id, 'judge'::TEXT AS type, j.name, j.designation, j.organization, j.expertise, j.is_live
+  FROM public.judges j;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
@@ -420,90 +507,128 @@ ALTER TABLE public.faqs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.event_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.announcements ENABLE ROW LEVEL SECURITY;
 
--- Helper security function to get user role
-CREATE OR REPLACE FUNCTION public.get_current_role()
-RETURNS TEXT AS $$
-  SELECT role FROM public.profiles WHERE id = auth.uid();
-$$ LANGUAGE sql STABLE SECURITY DEFINER;
-
 -- 1. PROFILES POLICIES
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
 CREATE POLICY "Public profiles are viewable by everyone"
   ON public.profiles FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
 CREATE POLICY "Users can insert their own profile"
   ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
 CREATE POLICY "Users can update their own profile"
-  ON public.profiles FOR UPDATE USING (auth.uid() = id);
+  ON public.profiles FOR UPDATE USING (auth.uid() = id OR public.get_current_role() IN ('admin', 'organizer'));
 
--- 2. PUBLIC READ TABLES (Competitions, Problems, Schedule, Mentors, Judges, Sponsors, Faqs, Event Settings, Announcements)
+-- 2. PUBLIC READ TABLES
+DROP POLICY IF EXISTS "Public can view active competitions" ON public.competitions;
 CREATE POLICY "Public can view active competitions"
   ON public.competitions FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Organizers manage competitions" ON public.competitions;
 CREATE POLICY "Organizers manage competitions"
   ON public.competitions FOR ALL USING (public.get_current_role() IN ('admin', 'organizer'));
 
+DROP POLICY IF EXISTS "Public can view active problem categories" ON public.problem_categories;
 CREATE POLICY "Public can view active problem categories"
   ON public.problem_categories FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Organizers manage problem categories" ON public.problem_categories;
 CREATE POLICY "Organizers manage problem categories"
   ON public.problem_categories FOR ALL USING (public.get_current_role() IN ('admin', 'organizer'));
 
+DROP POLICY IF EXISTS "Public can view schedules" ON public.schedules;
 CREATE POLICY "Public can view schedules"
   ON public.schedules FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Organizers manage schedules" ON public.schedules;
 CREATE POLICY "Organizers manage schedules"
   ON public.schedules FOR ALL USING (public.get_current_role() IN ('admin', 'organizer'));
 
+DROP POLICY IF EXISTS "Public can view mentors" ON public.mentors;
 CREATE POLICY "Public can view mentors"
   ON public.mentors FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Organizers manage mentors" ON public.mentors;
+CREATE POLICY "Organizers manage mentors"
+  ON public.mentors FOR ALL USING (public.get_current_role() IN ('admin', 'organizer'));
+
+DROP POLICY IF EXISTS "Public can view judges" ON public.judges;
 CREATE POLICY "Public can view judges"
   ON public.judges FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Organizers manage judges" ON public.judges;
+CREATE POLICY "Organizers manage judges"
+  ON public.judges FOR ALL USING (public.get_current_role() IN ('admin', 'organizer'));
+
+DROP POLICY IF EXISTS "Public can view judging criteria" ON public.judging_criteria;
 CREATE POLICY "Public can view judging criteria"
   ON public.judging_criteria FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Organizers manage judging criteria" ON public.judging_criteria;
+CREATE POLICY "Organizers manage judging criteria"
+  ON public.judging_criteria FOR ALL USING (public.get_current_role() IN ('admin', 'organizer'));
+
+DROP POLICY IF EXISTS "Public can view sponsors" ON public.sponsors;
 CREATE POLICY "Public can view sponsors"
   ON public.sponsors FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Organizers manage sponsors" ON public.sponsors;
+CREATE POLICY "Organizers manage sponsors"
+  ON public.sponsors FOR ALL USING (public.get_current_role() IN ('admin', 'organizer'));
+
+DROP POLICY IF EXISTS "Public can view faqs" ON public.faqs;
 CREATE POLICY "Public can view faqs"
   ON public.faqs FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Organizers manage faqs" ON public.faqs;
+CREATE POLICY "Organizers manage faqs"
+  ON public.faqs FOR ALL USING (public.get_current_role() IN ('admin', 'organizer'));
+
+DROP POLICY IF EXISTS "Public can view event settings" ON public.event_settings;
 CREATE POLICY "Public can view event settings"
   ON public.event_settings FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Organizers manage event settings" ON public.event_settings;
 CREATE POLICY "Organizers manage event settings"
   ON public.event_settings FOR ALL USING (public.get_current_role() IN ('admin', 'organizer'));
 
+DROP POLICY IF EXISTS "Public can view announcements" ON public.announcements;
 CREATE POLICY "Public can view announcements"
-  ON public.announcements FOR SELECT USING (published = true);
+  ON public.announcements FOR SELECT USING (published = true OR public.get_current_role() IN ('admin', 'organizer'));
 
+DROP POLICY IF EXISTS "Organizers manage announcements" ON public.announcements;
 CREATE POLICY "Organizers manage announcements"
   ON public.announcements FOR ALL USING (public.get_current_role() IN ('admin', 'organizer'));
 
--- 3. TEAMS & TEAM MEMBERS
+-- 3. TEAMS & TEAM MEMBERS POLICIES
+DROP POLICY IF EXISTS "Anyone logged in can view teams" ON public.teams;
 CREATE POLICY "Anyone logged in can view teams"
-  ON public.teams FOR SELECT USING (auth.role() = 'authenticated');
+  ON public.teams FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Authenticated users can create teams" ON public.teams;
 CREATE POLICY "Authenticated users can create teams"
-  ON public.teams FOR INSERT WITH CHECK (auth.uid() = leader_id);
+  ON public.teams FOR INSERT WITH CHECK (auth.uid() = leader_id OR public.get_current_role() IN ('admin', 'organizer'));
 
+DROP POLICY IF EXISTS "Leaders or organizers can update teams" ON public.teams;
 CREATE POLICY "Leaders or organizers can update teams"
   ON public.teams FOR UPDATE USING (
     auth.uid() = leader_id OR public.get_current_role() IN ('admin', 'organizer')
   );
 
+DROP POLICY IF EXISTS "Anyone logged in can view team members" ON public.team_members;
 CREATE POLICY "Anyone logged in can view team members"
-  ON public.team_members FOR SELECT USING (auth.role() = 'authenticated');
+  ON public.team_members FOR SELECT USING (true);
 
-CREATE POLICY "Team leader or self can manage team members"
+DROP POLICY IF EXISTS "Team leader or self can insert team members" ON public.team_members;
+CREATE POLICY "Team leader or self can insert team members"
   ON public.team_members FOR INSERT WITH CHECK (
     auth.uid() = user_id OR
     EXISTS (SELECT 1 FROM public.teams WHERE id = team_id AND leader_id = auth.uid()) OR
     public.get_current_role() IN ('admin', 'organizer')
   );
 
+DROP POLICY IF EXISTS "Member or leader can delete membership" ON public.team_members;
 CREATE POLICY "Member or leader can delete membership"
   ON public.team_members FOR DELETE USING (
     auth.uid() = user_id OR
@@ -512,15 +637,21 @@ CREATE POLICY "Member or leader can delete membership"
   );
 
 -- 4. REGISTRATIONS POLICIES
+DROP POLICY IF EXISTS "Users can view their own registrations" ON public.registrations;
 CREATE POLICY "Users can view their own registrations"
   ON public.registrations FOR SELECT USING (
     auth.uid() = user_id OR
     public.get_current_role() IN ('admin', 'organizer')
   );
 
+DROP POLICY IF EXISTS "Users can insert their own registration" ON public.registrations;
 CREATE POLICY "Users can insert their own registration"
-  ON public.registrations FOR INSERT WITH CHECK (auth.uid() = user_id);
+  ON public.registrations FOR INSERT WITH CHECK (
+    auth.uid() = user_id OR
+    public.get_current_role() IN ('admin', 'organizer')
+  );
 
+DROP POLICY IF EXISTS "Users or organizers can update registration" ON public.registrations;
 CREATE POLICY "Users or organizers can update registration"
   ON public.registrations FOR UPDATE USING (
     auth.uid() = user_id OR
@@ -528,19 +659,24 @@ CREATE POLICY "Users or organizers can update registration"
   );
 
 -- 5. SUBMISSIONS POLICIES
-CREATE POLICY "Submissions viewable by team members, judges, and admins"
+DROP POLICY IF EXISTS "Submissions visibility" ON public.submissions;
+CREATE POLICY "Submissions visibility"
   ON public.submissions FOR SELECT USING (
     auth.uid() = user_id OR
     EXISTS (SELECT 1 FROM public.team_members WHERE team_id = submissions.team_id AND user_id = auth.uid()) OR
-    public.get_current_role() IN ('judge', 'admin', 'organizer')
+    public.get_current_role() IN ('judge', 'admin', 'organizer') OR
+    (status = 'evaluated' AND (SELECT leaderboard_published FROM public.event_settings LIMIT 1) IS TRUE)
   );
 
+DROP POLICY IF EXISTS "Team members can insert submissions" ON public.submissions;
 CREATE POLICY "Team members can insert submissions"
   ON public.submissions FOR INSERT WITH CHECK (
     auth.uid() = user_id OR
-    EXISTS (SELECT 1 FROM public.team_members WHERE team_id = submissions.team_id AND user_id = auth.uid())
+    EXISTS (SELECT 1 FROM public.team_members WHERE team_id = submissions.team_id AND user_id = auth.uid()) OR
+    public.get_current_role() IN ('admin', 'organizer')
   );
 
+DROP POLICY IF EXISTS "Team members can update their draft submissions" ON public.submissions;
 CREATE POLICY "Team members can update their draft submissions"
   ON public.submissions FOR UPDATE USING (
     (auth.uid() = user_id OR EXISTS (SELECT 1 FROM public.team_members WHERE team_id = submissions.team_id AND user_id = auth.uid())) AND
@@ -548,23 +684,49 @@ CREATE POLICY "Team members can update their draft submissions"
   );
 
 -- 6. SCORES POLICIES
-CREATE POLICY "Scores viewable by judges and admins"
+DROP POLICY IF EXISTS "Scores visibility" ON public.scores;
+CREATE POLICY "Scores visibility"
   ON public.scores FOR SELECT USING (
     auth.uid() = judge_id OR
-    public.get_current_role() IN ('admin', 'organizer')
+    public.get_current_role() IN ('admin', 'organizer') OR
+    (SELECT leaderboard_published FROM public.event_settings LIMIT 1) IS TRUE
   );
 
+DROP POLICY IF EXISTS "Judges can insert their own scores" ON public.scores;
 CREATE POLICY "Judges can insert their own scores"
   ON public.scores FOR INSERT WITH CHECK (
     auth.uid() = judge_id AND
     public.get_current_role() IN ('judge', 'admin', 'organizer')
   );
 
+DROP POLICY IF EXISTS "Judges can update their own scores" ON public.scores;
 CREATE POLICY "Judges can update their own scores"
   ON public.scores FOR UPDATE USING (
     auth.uid() = judge_id AND
     public.get_current_role() IN ('judge', 'admin', 'organizer')
   );
+
+-- ----------------------------------------------------------------------------
+-- 17. STORAGE BUCKET & STORAGE RLS POLICIES
+-- ----------------------------------------------------------------------------
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('submissions', 'submissions', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+DROP POLICY IF EXISTS "Submissions files are publicly readable" ON storage.objects;
+CREATE POLICY "Submissions files are publicly readable"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'submissions');
+
+DROP POLICY IF EXISTS "Authenticated users can upload submission artifacts" ON storage.objects;
+CREATE POLICY "Authenticated users can upload submission artifacts"
+  ON storage.objects FOR INSERT
+  WITH CHECK (bucket_id = 'submissions' AND auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Users can update their own submission files" ON storage.objects;
+CREATE POLICY "Users can update their own submission files"
+  ON storage.objects FOR UPDATE
+  USING (bucket_id = 'submissions' AND auth.uid() = owner);
 
 -- ============================================================================
 -- SEED DATA (Synced from eventData.js)
@@ -586,9 +748,27 @@ VALUES
   ('codeathon', 'CODEATHON', 'A high-stakes 90-minute algorithmic arena. Test data structures, algorithmic efficiency, and problem-solving velocity.', '1.5 HOURS', 'COMPETITIVE CODING', 1, 1),
   ('ideathon', 'IDEATHON', 'A focused defense of disruptive concepts. Present strategic technical solutions, viability frameworks, and market roadmaps to a critical jury.', 'SINGLE PITCHING ROUND', 'PITCH & DEFENSE', 1, 3),
   ('hackathon', 'HACKATHON', 'The premier centerpiece of HackFest 3.0. Form a team, choose one of six crisis problem categories, build an operational prototype, and demo it live.', '2-DAY IMMERSIVE BUILD', '6 PROBLEM CATEGORIES • TEAM DEVELOPMENT', 2, 4)
-ON CONFLICT (slug) DO NOTHING;
+ON CONFLICT (slug) DO UPDATE SET
+  name = EXCLUDED.name,
+  min_team_size = EXCLUDED.min_team_size,
+  max_team_size = EXCLUDED.max_team_size,
+  format = EXCLUDED.format;
 
--- Problem Categories (6 tracks from eventData.js)
+-- Judging Criteria (9 Official Dimensions)
+INSERT INTO public.judging_criteria (code, title, description, weight, sort_order)
+VALUES
+  ('c1', 'Problem Understanding', 'Grasp of the underlying crisis track and core constraints.', 10, 1),
+  ('c2', 'Quality of Solution', 'Architecture, algorithmic soundness, and elegance.', 10, 2),
+  ('c3', 'Innovation & Novelty', 'Originality of the conceptual approach and creative disruption.', 15, 3),
+  ('c4', 'Technical Implementation', 'Depth of code, data structures, APIs, and stack integration.', 15, 4),
+  ('c5', 'Functionality & Stability', 'Working prototype validation under live test stress.', 15, 5),
+  ('c6', 'Usability & Feasibility', 'User experience ergonomics and real-world deployability.', 10, 6),
+  ('c7', 'Impact & Relevance', 'Meaningful societal or industrial utility in a disrupted landscape.', 10, 7),
+  ('c8', 'Scalability Potential', 'Capacity to handle concurrency, data volume, and expansion.', 5, 8),
+  ('c9', 'Presentation & Live Demo', 'Clarity of the pitch, defense handling, and Q&A composure.', 10, 9)
+ON CONFLICT DO NOTHING;
+
+-- Problem Categories (6 Tracks from eventData.js)
 INSERT INTO public.problem_categories (number, title, slug, theme, placeholder_notice, background, challenge, requirements, expected_outcome, technical_directions, submission_info, sort_order)
 VALUES
   (
@@ -715,3 +895,6 @@ INSERT INTO public.announcements (title, message, priority)
 VALUES
   ('Welcome to HackFest 3.0', 'Registration is now officially open! Join Codeathon, Ideathon, or the Flagship Hackathon. Check out the problem tracks in the Missions section.', 'high')
 ON CONFLICT DO NOTHING;
+
+-- Reload PostgREST schema cache to ensure all newly created tables/RPCs are immediately visible
+NOTIFY pgrst, 'reload schema';

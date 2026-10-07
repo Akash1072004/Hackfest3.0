@@ -16,6 +16,24 @@ export default function LeaderboardPage() {
       setPublished(Boolean(cfg.leaderboardPublished));
 
       if (isSupabaseConfigured && cfg.leaderboardPublished) {
+        try {
+          const { data: rpcData, error: rpcErr } = await supabase.rpc('get_leaderboard');
+          if (!rpcErr && Array.isArray(rpcData) && rpcData.length > 0) {
+            const mapped = rpcData.map((sub) => ({
+              id: sub.submission_id,
+              title: sub.title,
+              team: { name: sub.team_name },
+              competition: { name: sub.competition_name },
+              avgScore: Number(sub.average_score) || 0,
+            }));
+            setStandings(mapped);
+            setLoading(false);
+            return;
+          }
+        } catch {
+          // Fallback to direct query
+        }
+
         const { data } = await supabase
           .from('submissions')
           .select('*, team:teams(name), competition:competitions(name), scores:scores(score)')

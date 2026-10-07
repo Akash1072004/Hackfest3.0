@@ -42,11 +42,41 @@ export const submissionService = {
   }) {
     if (!isSupabaseConfigured) throw new Error('Supabase not configured.');
 
+    // Resolve competition ID if passed as slug
+    let resolvedCompId = competitionId;
+    if (competitionId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(competitionId)) {
+      try {
+        const { data: comp } = await supabase
+          .from('competitions')
+          .select('id')
+          .eq('slug', competitionId.toLowerCase())
+          .maybeSingle();
+        if (comp?.id) resolvedCompId = comp.id;
+      } catch {
+        // Fallback
+      }
+    }
+
+    // Resolve problem category ID if passed as slug
+    let resolvedProbCatId = problemCategoryId;
+    if (problemCategoryId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(problemCategoryId)) {
+      try {
+        const { data: cat } = await supabase
+          .from('problem_categories')
+          .select('id')
+          .eq('slug', problemCategoryId.toLowerCase())
+          .maybeSingle();
+        if (cat?.id) resolvedProbCatId = cat.id;
+      } catch {
+        // Fallback
+      }
+    }
+
     const payload = {
       user_id: userId,
       team_id: teamId,
-      competition_id: competitionId,
-      problem_category_id: problemCategoryId,
+      competition_id: resolvedCompId,
+      problem_category_id: resolvedProbCatId,
       title,
       description,
       github_url: githubUrl,

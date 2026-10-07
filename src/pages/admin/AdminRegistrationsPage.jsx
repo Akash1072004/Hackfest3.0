@@ -15,7 +15,7 @@ export default function AdminRegistrationsPage() {
     }
     const { data } = await supabase
       .from('registrations')
-      .select('*, profile:profiles(full_name, email, college), competition:competitions(name), team:teams(name)')
+      .select('*, profile:profiles!registrations_user_id_fkey(full_name, email, college), competition:competitions(name), team:teams(name)')
       .order('created_at', { ascending: false });
     setRegistrations(data || []);
     setLoading(false);

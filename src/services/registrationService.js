@@ -14,12 +14,42 @@ export const registrationService = {
       throw new Error('Supabase is not configured.');
     }
 
+    // Resolve competition ID if passed as slug
+    let resolvedCompId = competitionId;
+    if (competitionId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(competitionId)) {
+      try {
+        const { data: comp } = await supabase
+          .from('competitions')
+          .select('id')
+          .eq('slug', competitionId.toLowerCase())
+          .maybeSingle();
+        if (comp?.id) resolvedCompId = comp.id;
+      } catch {
+        // Fallback
+      }
+    }
+
+    // Resolve problem category ID if passed as slug
+    let resolvedProbCatId = problemCategoryId;
+    if (problemCategoryId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(problemCategoryId)) {
+      try {
+        const { data: cat } = await supabase
+          .from('problem_categories')
+          .select('id')
+          .eq('slug', problemCategoryId.toLowerCase())
+          .maybeSingle();
+        if (cat?.id) resolvedProbCatId = cat.id;
+      } catch {
+        // Fallback
+      }
+    }
+
     // Check if already registered
     const { data: existing } = await supabase
       .from('registrations')
       .select('id, registration_status')
       .eq('user_id', userId)
-      .eq('competition_id', competitionId)
+      .eq('competition_id', resolvedCompId)
       .maybeSingle();
 
     if (existing) {
@@ -30,9 +60,9 @@ export const registrationService = {
       .from('registrations')
       .insert({
         user_id: userId,
-        competition_id: competitionId,
+        competition_id: resolvedCompId,
         team_id: teamId,
-        problem_category_id: problemCategoryId,
+        problem_category_id: resolvedProbCatId,
         registration_status: 'confirmed',
         experience_level: experienceLevel,
         notes: notes,

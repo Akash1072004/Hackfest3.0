@@ -7,11 +7,28 @@ export const teamService = {
       throw new Error('Supabase is not configured.');
     }
 
+    // Resolve competition ID if passed as slug (e.g. 'hackathon')
+    let resolvedCompId = competitionId;
+    if (competitionId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(competitionId)) {
+      try {
+        const { data: comp } = await supabase
+          .from('competitions')
+          .select('id')
+          .eq('slug', competitionId.toLowerCase())
+          .maybeSingle();
+        if (comp?.id) {
+          resolvedCompId = comp.id;
+        }
+      } catch {
+        // Continue with original identifier
+      }
+    }
+
     // Try atomic RPC if available
     try {
       const { data: rpcData, error: rpcError } = await supabase.rpc('create_team_with_leader', {
         p_name: name,
-        p_competition_id: competitionId,
+        p_competition_id: resolvedCompId,
         p_user_id: userId,
       });
 
@@ -30,7 +47,7 @@ export const teamService = {
         name,
         code,
         leader_id: userId,
-        competition_id: competitionId,
+        competition_id: resolvedCompId,
       })
       .select()
       .single();
