@@ -73,9 +73,9 @@ export class UniverseTravelController {
   update(progress) {
     if (!this.warpStreaks) return;
 
-    // Active during acceleration phase: 0.56 -> 0.74
-    if (progress >= 0.56 && progress <= 0.76) {
-      const p = (progress - 0.56) / (0.76 - 0.56);
+    // Active during universe travel warp jump: 0.15 -> 0.28
+    if (progress >= 0.15 && progress <= 0.28) {
+      const p = (progress - 0.15) / (0.28 - 0.15);
       // Bell curve opacity that peaks at mid-warp
       const opacity = Math.sin(p * Math.PI) * 0.95;
       this.warpStreaks.material.opacity = opacity;

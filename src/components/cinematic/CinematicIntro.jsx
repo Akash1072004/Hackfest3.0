@@ -154,8 +154,8 @@ export default function CinematicIntro({ onIntroComplete = () => {} }) {
       aria-label="HackFest 3.0 Cinematic Intro"
       className="relative w-full bg-slate-950 text-white"
       style={{
-        // 380vh scroll track
-        height: isMobile ? '280vh' : '380vh',
+        // 520vh scroll track for 8-phase cinematic superhero movie experience
+        height: isMobile ? '380vh' : '520vh',
         position: 'relative',
       }}
     >

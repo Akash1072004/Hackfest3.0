@@ -93,8 +93,8 @@ export class DistantObjectsController {
   }
 
   update(progress, time) {
-    // Only visible during deep space navigation (scroll 0.65 to 0.94)
-    if (progress < 0.62 || progress > 0.95) {
+    // Visible during deep cosmic space travel (0.20 to 0.98)
+    if (progress < 0.20 || progress > 0.98) {
       this.root.visible = false;
       return;
     }

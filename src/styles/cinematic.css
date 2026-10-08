@@ -520,6 +520,12 @@
   text-shadow: 0 0 10px rgba(245, 182, 66, 0.5);
 }
 
+.active-stage-emerald {
+  color: #00ff88;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+}
+
 .active-stage-red {
   color: #e62429;
   font-weight: 700;

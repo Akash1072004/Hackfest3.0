@@ -2,14 +2,15 @@ import * as THREE from 'three';
 
 /**
  * CinematicCamera controller:
- * Master timeline camera choreography:
- * 0.00 - 0.18: Establishing shot in front of dormant armor in darkness
- * 0.18 - 0.42: Orbit dolly in close around glowing arc reactor core
- * 0.42 - 0.58: Low-angle heroic perspective preparing for launch
- * 0.58 - 0.72: Hypersonic launch tracking behind hero into deep space
- * 0.72 - 0.84: Slow-motion cosmic glide orbiting past massive Black Hole Gargantua
- * 0.84 - 0.93: Deep universe traversal toward rotating Spiral Galaxy & opening Multiverse Portal
- * 0.93 - 1.00: Passing through portal threshold into HackFest 3.0 reveal
+ * Master timeline camera choreography across all 8 cinematic superhero phases:
+ * 0.00 - 0.15: Establishing hero awakening shot in deep darkness
+ * 0.15 - 0.32: Interstellar universe travel, warp jump, orbiting Black Hole & Galaxy
+ * 0.32 - 0.46: Iron-Man-inspired flight tracking (hero accelerates, passes camera, camera turns & follows)
+ * 0.46 - 0.58: Doom-inspired villain entrance (menacing low-angle, emerald energy blast shockwave)
+ * 0.58 - 0.70: Cosmic confrontation (dynamic face-off angle framing Hero left vs Villain right)
+ * 0.70 - 0.82: Thor-inspired lightning entry (lightning strike shake, crane up to reveal warrior)
+ * 0.82 - 0.92: Superhero team assembly (wide cinematic poster triad with rotating galaxy backdrop)
+ * 0.92 - 1.00: Cosmic portal breach accelerating into HackFest 3.0 reveal
  */
 export function createCinematicCamera(camera, initialAspect = 16 / 9) {
   camera.fov = 50;
@@ -43,99 +44,173 @@ export function createCinematicCamera(camera, initialAspect = 16 / 9) {
       mouseX += (targetMouseX - mouseX) * 0.05;
       mouseY += (targetMouseY - mouseY) * 0.05;
 
-      const heroZ = heroGroup ? heroGroup.position.z : 0;
+      const heroPos = heroGroup ? heroGroup.position : new THREE.Vector3(0, 0, 0);
 
-      if (progress < 0.18) {
-        // Stage 1: Establishing cinematic shot (dormant, subtle star drift)
-        const t = progress / 0.18;
+      if (progress < 0.15) {
+        // -----------------------------------------------------------
+        // 1. HERO AWAKENING (0.00 - 0.15)
+        // -----------------------------------------------------------
+        const t = progress / 0.15;
         targetPos.set(
-          THREE.MathUtils.lerp(0, 0.4, t),
+          THREE.MathUtils.lerp(0, 0.35, t),
           THREE.MathUtils.lerp(0.4, 0.45, t),
-          THREE.MathUtils.lerp(8.5, 7.2, t)
+          THREE.MathUtils.lerp(8.5, 6.8, t)
         );
         targetLookAt.set(0, 0.35, 0);
         camera.fov = 50;
-      } else if (progress < 0.42) {
-        // Stage 2: Dolly in close orbit around arc reactor core
-        const t = (progress - 0.18) / (0.42 - 0.18);
+      } else if (progress < 0.32) {
+        // -----------------------------------------------------------
+        // 2. UNIVERSE TRAVEL & SINGULARITY (0.15 - 0.32)
+        // -----------------------------------------------------------
+        const t = (progress - 0.15) / (0.32 - 0.15);
         const smoothT = t * t * (3 - 2 * t);
         targetPos.set(
-          THREE.MathUtils.lerp(0.4, 1.3, smoothT),
-          THREE.MathUtils.lerp(0.45, 0.65, smoothT),
-          THREE.MathUtils.lerp(7.2, 3.6, smoothT)
+          THREE.MathUtils.lerp(0.35, 1.8, smoothT),
+          THREE.MathUtils.lerp(0.45, 0.7, smoothT),
+          THREE.MathUtils.lerp(6.8, -26.0, smoothT)
         );
-        targetLookAt.set(0, 0.4, 0);
-        camera.fov = 48;
+        // LookAt sweeps past Black Hole (7.5, 1.2, -28) and Galaxy (-13.5, 3.8, -38)
+        targetLookAt.set(
+          THREE.MathUtils.lerp(0.0, 5.0, smoothT),
+          THREE.MathUtils.lerp(0.35, 1.1, smoothT),
+          THREE.MathUtils.lerp(0.0, -28.0, smoothT)
+        );
+        camera.fov = THREE.MathUtils.lerp(50, 62, smoothT);
+      } else if (progress < 0.46) {
+        // -----------------------------------------------------------
+        // 3. IRON-MAN-INSPIRED FLIGHT SEQUENCE (0.32 - 0.46)
+        // -----------------------------------------------------------
+        const t = (progress - 0.32) / (0.46 - 0.32);
+
+        if (t < 0.45) {
+          // Camera placed in front of approaching hero
+          const subT = t / 0.45;
+          targetPos.set(
+            THREE.MathUtils.lerp(1.8, 0.5, subT),
+            THREE.MathUtils.lerp(0.7, 0.3, subT),
+            THREE.MathUtils.lerp(-26.0, 5.0, subT)
+          );
+          targetLookAt.set(heroPos.x, heroPos.y + 0.4, heroPos.z);
+          camera.fov = 54;
+        } else if (t < 0.75) {
+          // Hero swoops past camera! Camera spins to follow
+          const subT = (t - 0.45) / 0.30;
+          targetPos.set(
+            THREE.MathUtils.lerp(0.5, -0.6, subT),
+            THREE.MathUtils.lerp(0.3, 0.8, subT),
+            THREE.MathUtils.lerp(5.0, 7.5, subT)
+          );
+          // Look forward into deep distance tracking retreating hero
+          targetLookAt.set(heroPos.x, heroPos.y, heroPos.z);
+          camera.fov = THREE.MathUtils.lerp(54, 65, subT);
+        } else {
+          // Camera glides behind flying hero as hero streaks ahead
+          const subT = (t - 0.75) / 0.25;
+          targetPos.set(
+            THREE.MathUtils.lerp(-0.6, 0.0, subT),
+            THREE.MathUtils.lerp(0.8, 0.2, subT),
+            THREE.MathUtils.lerp(7.5, -4.0, subT)
+          );
+          targetLookAt.set(0, 0.2, -18.0);
+          camera.fov = THREE.MathUtils.lerp(65, 52, subT);
+        }
       } else if (progress < 0.58) {
-        // Stage 3: Low-angle heroic orbit preparing for launch
-        const t = (progress - 0.42) / (0.58 - 0.42);
+        // -----------------------------------------------------------
+        // 4. DOOM-INSPIRED VILLAIN ENTRANCE & ENERGY BLAST (0.46 - 0.58)
+        // -----------------------------------------------------------
+        const t = (progress - 0.46) / (0.58 - 0.46);
         const smoothT = t * t * (3 - 2 * t);
+
+        // Low-angle menacing shot looking up at stepping villain
         targetPos.set(
-          THREE.MathUtils.lerp(1.3, -0.7, smoothT),
-          THREE.MathUtils.lerp(0.65, -0.35, smoothT),
-          THREE.MathUtils.lerp(3.6, 4.2, smoothT)
+          THREE.MathUtils.lerp(0.0, 0.2, smoothT),
+          THREE.MathUtils.lerp(0.2, -0.3, smoothT),
+          THREE.MathUtils.lerp(-4.0, -5.5, smoothT)
         );
-        targetLookAt.set(0, 0.65, 0);
+        targetLookAt.set(0, 1.4, -11.0);
         camera.fov = 52;
-      } else if (progress < 0.72) {
-        // Stage 4: Launching forward & warp speed jump!
-        const t = (progress - 0.58) / (0.72 - 0.58);
-        const smoothT = Math.pow(t, 1.3);
-        targetPos.set(
-          THREE.MathUtils.lerp(-0.7, 0, smoothT),
-          THREE.MathUtils.lerp(-0.35, 0.2, smoothT),
-          heroZ + THREE.MathUtils.lerp(4.2, 5.5, smoothT)
-        );
-        targetLookAt.set(0, 0.1, heroZ - 4);
-        camera.fov = THREE.MathUtils.lerp(52, 65, smoothT);
-      } else if (progress < 0.84) {
-        // Stage 5: SLOW-MOTION COSMIC GLIDE PAST GARGANTUA BLACK HOLE
-        // Black hole is at (7.5, 1.2, -28.0)
-        const t = (progress - 0.72) / (0.84 - 0.72);
+
+        // Subtle camera shake when energy blast fires (t > 0.65)
+        if (t > 0.65) {
+          targetPos.x += (Math.random() - 0.5) * 0.08;
+          targetPos.y += (Math.random() - 0.5) * 0.08;
+        }
+      } else if (progress < 0.70) {
+        // -----------------------------------------------------------
+        // 5. COSMIC CONFRONTATION (HERO VS VILLAIN) (0.58 - 0.70)
+        // -----------------------------------------------------------
+        const t = (progress - 0.58) / (0.70 - 0.58);
         const smoothT = t * t * (3 - 2 * t);
+
+        // Sweeping arc camera showing both titans: Hero Left vs Villain Right
         targetPos.set(
-          THREE.MathUtils.lerp(-0.5, 1.8, smoothT),
-          THREE.MathUtils.lerp(0.2, 0.7, smoothT),
-          THREE.MathUtils.lerp(-16.0, -27.5, smoothT)
+          THREE.MathUtils.lerp(-1.4, 1.4, smoothT),
+          THREE.MathUtils.lerp(0.4, 0.5, smoothT),
+          THREE.MathUtils.lerp(-7.2, -7.0, smoothT)
         );
-        // LookAt sweeps right across the accretion disk and photon ring
-        targetLookAt.set(
-          THREE.MathUtils.lerp(3.0, 7.5, smoothT),
-          THREE.MathUtils.lerp(0.6, 1.2, smoothT),
-          THREE.MathUtils.lerp(-24.0, -28.0, smoothT)
-        );
-        camera.fov = THREE.MathUtils.lerp(65, 56, smoothT); // Focus narrows onto the Black Hole
-      } else if (progress < 0.93) {
-        // Stage 6: TRAVERSING TOWARD SPIRAL GALAXY & MULTIVERSE PORTAL
-        // Galaxy is at (-13.5, 3.8, -38.0), Portal is at (0, 0, -48.0)
-        const t = (progress - 0.84) / (0.93 - 0.84);
+        // Look directly at the central clash vortex at (0, 1.8, -13)
+        targetLookAt.set(0, 1.8, -13.0);
+        camera.fov = 56;
+      } else if (progress < 0.82) {
+        // -----------------------------------------------------------
+        // 6. THOR-INSPIRED LIGHTNING ENTRY (0.70 - 0.82)
+        // -----------------------------------------------------------
+        const t = (progress - 0.70) / (0.82 - 0.70);
+
+        if (t < 0.35) {
+          // Lightning strike impact & shake
+          targetPos.set(0, -0.2, -6.5);
+          targetLookAt.set(0, 1.2, -11.0);
+          // High voltage impact shake
+          targetPos.x += (Math.random() - 0.5) * 0.15;
+          targetPos.y += (Math.random() - 0.5) * 0.15;
+          camera.fov = 54;
+        } else {
+          // Crane up smoothly as Warrior raises thunder hammer
+          const subT = (t - 0.35) / 0.65;
+          const smoothSub = subT * subT * (3 - 2 * subT);
+          targetPos.set(
+            0,
+            THREE.MathUtils.lerp(-0.2, 0.7, smoothSub),
+            THREE.MathUtils.lerp(-6.5, -6.0, smoothSub)
+          );
+          targetLookAt.set(0, THREE.MathUtils.lerp(1.2, 2.2, smoothSub), -11.0);
+          camera.fov = 50;
+        }
+      } else if (progress < 0.92) {
+        // -----------------------------------------------------------
+        // 7. SUPERHERO TEAM ASSEMBLY POSTER SHOT (0.82 - 0.92)
+        // -----------------------------------------------------------
+        const t = (progress - 0.82) / (0.92 - 0.82);
         const smoothT = t * t * (3 - 2 * t);
+
+        // Pull back into grand wide cinematic poster angle
         targetPos.set(
-          THREE.MathUtils.lerp(1.8, 0.0, smoothT),
-          THREE.MathUtils.lerp(0.7, 0.1, smoothT),
-          THREE.MathUtils.lerp(-27.5, -42.0, smoothT)
+          0,
+          THREE.MathUtils.lerp(0.7, 1.2, smoothT),
+          THREE.MathUtils.lerp(-6.0, -8.6, smoothT)
         );
-        targetLookAt.set(
-          THREE.MathUtils.lerp(2.0, 0.0, smoothT),
-          0.0,
-          -48.0
-        );
-        camera.fov = THREE.MathUtils.lerp(56, 66, smoothT);
+        targetLookAt.set(0, 1.1, -15.0);
+        camera.fov = 50;
       } else {
-        // Stage 7: BREACHING MULTIVERSE PORTAL THRESHOLD
-        const t = (progress - 0.93) / (1.0 - 0.93);
-        const smoothT = Math.pow(t, 1.2);
+        // -----------------------------------------------------------
+        // 8. COSMIC PORTAL BREACH & HACKFEST REVEAL (0.92 - 1.00)
+        // -----------------------------------------------------------
+        const t = (progress - 0.92) / (1.0 - 0.92);
+        const smoothT = Math.pow(t, 1.4);
+
+        // Accelerated dive through portal core
         targetPos.set(
           0,
-          0,
-          THREE.MathUtils.lerp(-42.0, -52.0, smoothT)
+          THREE.MathUtils.lerp(1.2, 0.0, smoothT),
+          THREE.MathUtils.lerp(-8.6, -52.0, smoothT)
         );
-        targetLookAt.set(0, 0, -68);
-        camera.fov = THREE.MathUtils.lerp(66, 75, smoothT);
+        targetLookAt.set(0, 0, -68.0);
+        camera.fov = THREE.MathUtils.lerp(50, 75, smoothT);
       }
 
-      // Parallax
-      const parallaxFactor = progress > 0.6 ? 0.2 : 0.45;
+      // Parallax mouse responsiveness
+      const parallaxFactor = progress > 0.6 ? 0.22 : 0.45;
       targetPos.x += mouseX * parallaxFactor;
       targetPos.y += mouseY * (parallaxFactor * 0.7);
 

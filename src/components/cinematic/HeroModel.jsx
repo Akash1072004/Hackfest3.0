@@ -1,23 +1,34 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { getGlowParticleTexture } from './particleTexture';
 
 /**
  * HeroModel controller managing 3D superhero armored character loading,
  * procedural fallback, materials, and scroll-driven flight timeline.
+ * Supports:
+ * - 0% - 15%: Hero Awakening & Arc Reactor online
+ * - 15% - 22%: Launch into space
+ * - 32% - 46%: Iron-Man-Inspired Deep Space Cinematic Flight Sequence
+ * - 58% - 70%: Hero Returns for Cosmic Confrontation with Villain
+ * - 82% - 94%: Superhero Team Assembly poster formation
  */
 export class HeroModelController {
-  constructor() {
+  constructor(isMobile = false) {
     this.root = new THREE.Group();
     this.root.name = 'Hero_Character_Root';
+    this.isMobile = isMobile;
     this.model = null;
     this.materials = {
       crimson: null,
       gold: null,
       core: null,
       eyes: null,
-      thruster: null
+      thruster: null,
+      repulsor: null,
     };
     this.thrusterParticles = null;
+    this.thrusterGeo = null;
+    this.handRepulsors = [];
     this.isLoaded = false;
   }
 
@@ -91,7 +102,7 @@ export class HeroModelController {
       color: 0x9e1217,
       metalness: 0.9,
       roughness: 0.25,
-      name: 'Armor_Crimson'
+      name: 'Armor_Crimson',
     });
     this.materials.crimson = crimson;
 
@@ -99,7 +110,7 @@ export class HeroModelController {
       color: 0xd4a017,
       metalness: 0.92,
       roughness: 0.2,
-      name: 'Armor_Gold'
+      name: 'Armor_Gold',
     });
     this.materials.gold = gold;
 
@@ -107,7 +118,7 @@ export class HeroModelController {
       color: 0x141c2b,
       metalness: 0.85,
       roughness: 0.35,
-      name: 'Armor_DarkSteel'
+      name: 'Armor_DarkSteel',
     });
 
     const core = new THREE.MeshStandardMaterial({
@@ -116,7 +127,7 @@ export class HeroModelController {
       emissiveIntensity: 2.5,
       roughness: 0.1,
       metalness: 0.1,
-      name: 'Arc_Reactor_Core'
+      name: 'Arc_Reactor_Core',
     });
     this.materials.core = core;
 
@@ -124,7 +135,7 @@ export class HeroModelController {
       color: 0x00ffff,
       emissive: 0x00ffff,
       emissiveIntensity: 3.5,
-      name: 'Visor_Eyes_Glow'
+      name: 'Visor_Eyes_Glow',
     });
     this.materials.eyes = eyes;
 
@@ -132,7 +143,7 @@ export class HeroModelController {
       color: 0x00e5ff,
       emissive: 0x00e5ff,
       emissiveIntensity: 3.0,
-      name: 'Thruster_Glow'
+      name: 'Thruster_Glow',
     });
     this.materials.thruster = thruster;
 
@@ -193,6 +204,13 @@ export class HeroModelController {
       const gauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.8, 0.38), crimson);
       gauntlet.position.set(s * 1.1, 0.85, 0.05);
       group.add(gauntlet);
+
+      // Hand Repulsor Node on Palm
+      const repulsorDisc = new THREE.Mesh(new THREE.CircleGeometry(0.1, 16), thruster);
+      repulsorDisc.position.set(s * 1.1, 0.45, 0.2);
+      repulsorDisc.rotation.x = Math.PI / 4;
+      this.handRepulsors.push(repulsorDisc);
+      group.add(repulsorDisc);
     });
 
     // 4. Legs
@@ -216,33 +234,55 @@ export class HeroModelController {
   }
 
   createThrusterFx() {
-    const count = 120;
-    const geo = new THREE.BufferGeometry();
+    const count = this.isMobile ? 60 : 160;
+    this.thrusterGeo = new THREE.BufferGeometry();
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
+    this.thrusterVels = [];
 
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 0.4;
-      pos[i * 3 + 1] = -2.2 - Math.random() * 1.5;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 0.4;
+      const isFoot = i < count * 0.7;
+      if (isFoot) {
+        // Under boots
+        const legSide = Math.random() > 0.5 ? 0.42 : -0.42;
+        pos[i * 3] = legSide + (Math.random() - 0.5) * 0.25;
+        pos[i * 3 + 1] = -2.2 - Math.random() * 0.6;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 0.3;
+      } else {
+        // Behind hands
+        const handSide = Math.random() > 0.5 ? 1.1 : -1.1;
+        pos[i * 3] = handSide + (Math.random() - 0.5) * 0.2;
+        pos[i * 3 + 1] = 0.45 - Math.random() * 0.4;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 0.3;
+      }
 
-      col[i * 3] = 0.0;
-      col[i * 3 + 1] = 0.8 + Math.random() * 0.2;
+      col[i * 3] = 0.1;
+      col[i * 3 + 1] = 0.85 + Math.random() * 0.15;
       col[i * 3 + 2] = 1.0;
+
+      this.thrusterVels.push({
+        baseX: pos[i * 3],
+        baseY: pos[i * 3 + 1],
+        baseZ: pos[i * 3 + 2],
+        vy: -2.0 - Math.random() * 4.0,
+      });
     }
 
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    this.thrusterGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    this.thrusterGeo.setAttribute('color', new THREE.BufferAttribute(col, 3));
 
+    const glowTex = getGlowParticleTexture();
     const mat = new THREE.PointsMaterial({
-      size: 0.12,
+      size: 0.18,
+      map: glowTex,
       vertexColors: true,
       transparent: true,
-      opacity: 0.8,
-      blending: THREE.AdditiveBlending
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
     });
 
-    this.thrusterParticles = new THREE.Points(geo, mat);
+    this.thrusterParticles = new THREE.Points(this.thrusterGeo, mat);
     this.thrusterParticles.visible = false;
     this.root.add(this.thrusterParticles);
   }
@@ -250,76 +290,172 @@ export class HeroModelController {
   update(progress, time) {
     if (!this.root) return;
 
-    // 0% - 15%: Dormant / waking up
-    // 15% - 40%: Core ignition, slight hover
-    // 40% - 60%: Pre-launch posture, energy surge
-    // 60% - 85%: Launching forward into space
-    // 85% - 100%: Hyper-velocity through multiverse
+    let isVisible = false;
 
     if (progress < 0.15) {
-      // Idle breathing
+      // -----------------------------------------------------------
+      // 1. HERO AWAKENING (0% - 15%)
+      // -----------------------------------------------------------
+      isVisible = true;
       const wake = progress / 0.15;
-      this.root.position.y = Math.sin(time * 1.5) * 0.05;
-      this.root.position.z = 0;
-      this.root.rotation.x = 0;
-      this.root.rotation.y = Math.sin(time * 0.8) * 0.06;
+      this.root.scale.set(1.15, 1.15, 1.15);
+      this.root.position.set(0, Math.sin(time * 1.5) * 0.05, 0);
+      this.root.rotation.set(0, Math.sin(time * 0.8) * 0.06, 0);
 
-      if (this.materials.core) this.materials.core.emissiveIntensity = 0.8 + wake * 1.5;
-      if (this.materials.eyes) this.materials.eyes.emissiveIntensity = 0.5 + wake * 2.0;
+      if (this.materials.core) this.materials.core.emissiveIntensity = 0.8 + wake * 1.8;
+      if (this.materials.eyes) this.materials.eyes.emissiveIntensity = 0.5 + wake * 2.2;
       if (this.thrusterParticles) this.thrusterParticles.visible = false;
-    } else if (progress < 0.45) {
-      // Reactor fully awake, hero levitates
-      const p = (progress - 0.15) / 0.3;
-      this.root.position.y = 0.2 * p + Math.sin(time * 2.5) * 0.08;
-      this.root.position.z = -0.5 * p;
-      this.root.rotation.x = -0.12 * p;
-      this.root.rotation.y = Math.sin(time * 1.2) * 0.15;
+    } else if (progress < 0.22) {
+      // -----------------------------------------------------------
+      // 2. INITIAL LAUNCH INTO DEEP SPACE (15% - 22%)
+      // -----------------------------------------------------------
+      isVisible = true;
+      const p = (progress - 0.15) / 0.07;
+      this.root.scale.set(1.15, 1.15, 1.15);
+      this.root.rotation.set(-0.6 * p, 0, 0);
+      this.root.position.set(0, 0.2 + p * 1.8, -p * 35.0);
 
-      const pulse = 2.5 + Math.sin(time * 6.0) * 0.8;
-      if (this.materials.core) this.materials.core.emissiveIntensity = pulse;
-      if (this.materials.eyes) this.materials.eyes.emissiveIntensity = 3.5;
+      if (this.materials.core) this.materials.core.emissiveIntensity = 4.0;
+      if (this.materials.eyes) this.materials.eyes.emissiveIntensity = 4.0;
       if (this.thrusterParticles) {
         this.thrusterParticles.visible = true;
-        this.thrusterParticles.material.opacity = p * 0.6;
+        this.thrusterParticles.material.opacity = (1 - p * 0.5);
       }
-    } else if (progress < 0.68) {
-      this.root.visible = true;
-      // Takeoff & flight posture
-      const p = (progress - 0.45) / 0.23;
-      this.root.rotation.x = -0.6 * p - 0.12;
-      this.root.rotation.y = (Math.random() - 0.5) * 0.02;
-      this.root.position.y = 0.2 + p * 1.5;
-      this.root.position.z = -0.5 - p * 24.0;
+    } else if (progress >= 0.22 && progress < 0.32) {
+      // -----------------------------------------------------------
+      // Universe travel / Stars / Black hole / Galaxy (Hero in distance)
+      // -----------------------------------------------------------
+      isVisible = false;
+    } else if (progress >= 0.32 && progress < 0.46) {
+      // -----------------------------------------------------------
+      // 3. IRON-MAN-INSPIRED CINEMATIC FLIGHT SCENE (32% - 46%)
+      // -----------------------------------------------------------
+      isVisible = true;
+      const p = (progress - 0.32) / 0.14; // 0 to 1
 
-      if (this.materials.core) this.materials.core.emissiveIntensity = 4.5;
+      if (p < 0.2) {
+        // 0% - 20%: Appears in deep space, glowing reactor core shines through dark
+        const emergeP = p / 0.2;
+        this.root.scale.setScalar(0.7 + emergeP * 0.45);
+        this.root.position.set(0.5, 0.4, -32.0 + emergeP * 8.0);
+        this.root.rotation.set(-0.35, -0.2, 0.15);
+
+        if (this.materials.core) this.materials.core.emissiveIntensity = 4.5 + Math.sin(time * 8) * 1.5;
+        if (this.materials.eyes) this.materials.eyes.emissiveIntensity = 3.0;
+        if (this.thrusterParticles) {
+          this.thrusterParticles.visible = true;
+          this.thrusterParticles.material.opacity = emergeP * 0.7;
+        }
+      } else if (p < 0.65) {
+        // 20% - 65%: Thrusters fully activate, accelerates toward camera!
+        const flyP = (p - 0.2) / 0.45;
+        const smoothFly = Math.pow(flyP, 1.4);
+
+        // Sweeps from deep space z = -24 directly towards and past camera to z = 4.5
+        this.root.position.set(
+          THREE.MathUtils.lerp(0.5, -0.6, smoothFly) + Math.sin(time * 3) * 0.1,
+          THREE.MathUtils.lerp(0.4, 0.1, smoothFly),
+          THREE.MathUtils.lerp(-24.0, 4.5, smoothFly)
+        );
+        // Flight bank rotation
+        this.root.rotation.set(-0.6, -0.25 + smoothFly * 0.4, 0.35 - smoothFly * 0.2);
+        this.root.scale.setScalar(1.15);
+
+        if (this.materials.core) this.materials.core.emissiveIntensity = 5.0;
+        if (this.materials.eyes) this.materials.eyes.emissiveIntensity = 5.0;
+        if (this.thrusterParticles) {
+          this.thrusterParticles.visible = true;
+          this.thrusterParticles.material.opacity = 1.0;
+          this.thrusterParticles.scale.set(1.2 + flyP * 0.8, 1.5 + flyP * 1.5, 1.2 + flyP * 0.8);
+        }
+      } else {
+        // 65% - 100%: Passes camera, banks away into distant space, camera follows
+        const exitP = (p - 0.65) / 0.35;
+        const smoothExit = Math.pow(exitP, 1.2);
+
+        this.root.position.set(
+          THREE.MathUtils.lerp(-0.6, 2.2, smoothExit),
+          THREE.MathUtils.lerp(0.1, 1.5, smoothExit),
+          THREE.MathUtils.lerp(4.5, -35.0, smoothExit)
+        );
+        this.root.rotation.set(-0.7, 0.45, -0.3);
+        const fade = Math.max(0, 1.0 - smoothExit * 0.7);
+        this.root.scale.setScalar(1.15 * fade);
+
+        if (this.thrusterParticles) {
+          this.thrusterParticles.material.opacity = (1 - smoothExit);
+        }
+      }
+    } else if (progress >= 0.58 && progress < 0.70) {
+      // -----------------------------------------------------------
+      // 5. HERO VS VILLAIN CONFRONTATION (58% - 70%)
+      // -----------------------------------------------------------
+      isVisible = true;
+      const p = (progress - 0.58) / 0.12;
+
+      // Positioned on the left flank facing center-right toward villain
+      this.root.scale.setScalar(1.15);
+      this.root.position.set(-3.4, 0.2, -13.5);
+      this.root.rotation.set(0, 0.65, 0); // Faces toward center-right
+
+      if (this.materials.core) this.materials.core.emissiveIntensity = 4.5 + Math.sin(time * 10) * 1.0;
       if (this.materials.eyes) this.materials.eyes.emissiveIntensity = 4.5;
       if (this.thrusterParticles) {
         this.thrusterParticles.visible = true;
-        this.thrusterParticles.material.opacity = 1.0;
-        this.thrusterParticles.scale.set(1 + p * 1.5, 1 + p * 2.5, 1 + p * 1.5);
+        this.thrusterParticles.material.opacity = 0.75;
       }
-    } else if (progress < 0.75) {
-      this.root.visible = true;
-      // Hypersonic dash disappearing into deep cosmic distance
-      const p = (progress - 0.68) / 0.07;
-      this.root.rotation.x = -0.72;
-      this.root.position.y = 1.7 + p * 4.0;
-      this.root.position.z = -24.5 - p * 50.0;
-      const fade = Math.max(0, 1.0 - p);
-      this.root.scale.set(1.15 * fade, 1.15 * fade, 1.15 * fade);
+    } else if (progress >= 0.82 && progress < 0.94) {
+      // -----------------------------------------------------------
+      // 7. SUPERHERO TEAM ASSEMBLY POSTER TRIAD (82% - 94%)
+      // -----------------------------------------------------------
+      isVisible = true;
+      const p = (progress - 0.82) / 0.12;
+
+      // Positioned on the left flank of the team composition
+      this.root.scale.setScalar(1.15);
+      this.root.position.set(
+        THREE.MathUtils.lerp(-3.4, -2.6, p),
+        THREE.MathUtils.lerp(0.2, 0.1, p),
+        THREE.MathUtils.lerp(-13.5, -16.0, p)
+      );
+      this.root.rotation.set(0, 0.35, 0);
+
+      if (this.materials.core) this.materials.core.emissiveIntensity = 3.5;
+      if (this.materials.eyes) this.materials.eyes.emissiveIntensity = 3.5;
       if (this.thrusterParticles) {
-        this.thrusterParticles.material.opacity = fade;
+        this.thrusterParticles.visible = true;
+        this.thrusterParticles.material.opacity = 0.5;
       }
     } else {
-      // Disappears completely during deep space universe travel
-      this.root.visible = false;
+      isVisible = false;
+    }
+
+    this.root.visible = isVisible;
+    if (!isVisible) return;
+
+    // Animate thruster particles downward / backward
+    if (this.thrusterGeo && this.thrusterVels) {
+      const pos = this.thrusterGeo.attributes.position;
+      const count = this.thrusterVels.length;
+
+      for (let i = 0; i < count; i++) {
+        const vel = this.thrusterVels[i];
+        let y = pos.getY(i) + vel.vy * 0.035;
+        if (y < vel.baseY - 2.5) {
+          y = vel.baseY;
+          pos.setX(i, vel.baseX + (Math.random() - 0.5) * 0.1);
+          pos.setZ(i, vel.baseZ + (Math.random() - 0.5) * 0.1);
+        }
+        pos.setY(i, y);
+      }
+      pos.needsUpdate = true;
     }
   }
 
   dispose() {
     if (this.thrusterParticles) {
-      this.thrusterParticles.geometry.dispose();
-      this.thrusterParticles.material.dispose();
+      if (this.thrusterGeo) this.thrusterGeo.dispose();
+      if (this.thrusterParticles.material) this.thrusterParticles.material.dispose();
     }
     if (this.root) {
       this.root.traverse((child) => {

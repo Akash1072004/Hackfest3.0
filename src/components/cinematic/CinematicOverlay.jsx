@@ -12,25 +12,28 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
 
   // Determine current cinematic phase
   let phaseName = 'MARK VIII // STANDBY';
-  let phaseDetail = 'SENSORS ACTIVE • DORMANT ARMOR';
-  if (progress >= 0.18 && progress < 0.42) {
-    phaseName = 'ARC CORE IGNITION';
-    phaseDetail = 'VIBRANIUM CONDENSER ACTIVE • 100% OUTPUT';
-  } else if (progress >= 0.42 && progress < 0.58) {
-    phaseName = 'REPULSOR THRUST ENGAGED';
-    phaseDetail = 'TRAJECTORY VECTOR LOCKED • SUPERSONIC LIFT';
-  } else if (progress >= 0.58 && progress < 0.72) {
-    phaseName = 'HYPERSPACE WARP SPEED';
-    phaseDetail = 'QUANTUM CORRIDOR OPEN • VELOCITY MAX';
-  } else if (progress >= 0.72 && progress < 0.84) {
-    phaseName = 'SINGULARITY DETECTED';
-    phaseDetail = 'GARGANTUA CLASS BLACK HOLE • ACCRETION LOCK';
-  } else if (progress >= 0.84 && progress < 0.93) {
-    phaseName = 'DEEP MULTIVERSE GALAXY';
-    phaseDetail = 'SPIRAL NEBULA SECTOR REC-B30 • PORTAL OPENING';
-  } else if (progress >= 0.93) {
-    phaseName = 'CONVERGENCE COMPLETE';
-    phaseDetail = 'WELCOME TO HACKFEST 3.0 UNIVERSE';
+  let phaseDetail = 'SENSORS ACTIVE • DORMANT ARMOR ONLINE';
+  if (progress >= 0.15 && progress < 0.32) {
+    phaseName = 'INTERSTELLAR EXPEDITION';
+    phaseDetail = 'WARP CORRIDOR ACTIVE • SINGULARITY & SPIRAL GALAXY';
+  } else if (progress >= 0.32 && progress < 0.46) {
+    phaseName = 'FLIGHT PURSUIT VECTOR';
+    phaseDetail = 'REPULSOR BOOST ENGAGED • SUPERSONIC VELOCITY';
+  } else if (progress >= 0.46 && progress < 0.58) {
+    phaseName = 'MYSTIC ANOMALY DETECTED';
+    phaseDetail = 'DARK TECH SORCERER // EMERALD ENERGY SURGE';
+  } else if (progress >= 0.58 && progress < 0.70) {
+    phaseName = 'COSMIC CONFRONTATION';
+    phaseDetail = 'FACE-OFF ACTIVE • OPPOSING BEAMS CLASHING';
+  } else if (progress >= 0.70 && progress < 0.82) {
+    phaseName = 'THUNDER CONVERGENCE';
+    phaseDetail = 'LIGHTNING STRIKE CONFIRMED • WARRIOR ONLINE';
+  } else if (progress >= 0.82 && progress < 0.92) {
+    phaseName = 'SUPERHERO TEAM ASSEMBLE';
+    phaseDetail = 'MULTIVERSE TRINITY ASSEMBLED • COSMIC DEFENSE';
+  } else if (progress >= 0.92) {
+    phaseName = 'PORTAL CONVERGENCE COMPLETE';
+    phaseDetail = 'WELCOME TO HACKFEST 3.0 // STUDENT DEVELOPER CLUB';
   }
 
   // Web Audio Synth for ambient futuristic reactor hum & cosmic pulse
@@ -207,17 +210,19 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
             <span>{Math.round(progress * 100)}%</span>
           </div>
           <div className="timeline-stages-desktop">
-            <span className={progress >= 0.18 ? 'active-stage' : ''}>[01] IGNITION</span>
+            <span className={progress >= 0.15 ? 'active-stage' : ''}>[01] COSMOS</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.42 ? 'active-stage' : ''}>[02] LAUNCH</span>
+            <span className={progress >= 0.32 ? 'active-stage' : ''}>[02] FLIGHT</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.58 ? 'active-stage-amber' : ''}>[03] WARP</span>
+            <span className={progress >= 0.46 ? 'active-stage-emerald' : ''}>[03] VILLAIN</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.72 ? 'active-stage-red' : ''}>[04] BLACK HOLE</span>
+            <span className={progress >= 0.58 ? 'active-stage-amber' : ''}>[04] FACE-OFF</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.84 ? 'active-stage' : ''}>[05] GALAXY</span>
+            <span className={progress >= 0.70 ? 'active-stage' : ''}>[05] THUNDER</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.93 ? 'active-stage-white' : ''}>[06] HACKFEST 3.0</span>
+            <span className={progress >= 0.82 ? 'active-stage-red' : ''}>[06] ASSEMBLE</span>
+            <span className="stage-sep">→</span>
+            <span className={progress >= 0.92 ? 'active-stage-white' : ''}>[07] HACKFEST 3.0</span>
           </div>
           <div className="timeline-fps">
             <span>60 FPS</span>

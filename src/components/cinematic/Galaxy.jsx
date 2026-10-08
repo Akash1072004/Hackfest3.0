@@ -126,8 +126,11 @@ export class GalaxyController {
   }
 
   update(progress, time) {
-    // The Galaxy is visible throughout the deep universe travel (scroll 0.72 to 0.98)
-    if (progress < 0.72 || progress > 0.98) {
+    // The Galaxy is visible in universe travel (0.20 to 0.35) and team assembly / portal (0.75 to 0.98)
+    const inUniverse = progress >= 0.20 && progress <= 0.35;
+    const inAssembly = progress >= 0.75 && progress <= 0.98;
+
+    if (!inUniverse && !inAssembly) {
       this.root.visible = false;
       return;
     }
@@ -136,12 +139,14 @@ export class GalaxyController {
 
     // Appearance ramp
     let visibility = 0;
-    if (progress < 0.82) {
-      visibility = (progress - 0.72) / 0.10;
-    } else if (progress <= 0.92) {
-      visibility = 1.0;
+    if (inUniverse) {
+      if (progress < 0.25) visibility = (progress - 0.20) / 0.05;
+      else if (progress <= 0.30) visibility = 1.0;
+      else visibility = Math.max(0, 1.0 - (progress - 0.30) / 0.05);
     } else {
-      visibility = Math.max(0, 1.0 - (progress - 0.92) / 0.06);
+      if (progress < 0.82) visibility = (progress - 0.75) / 0.07;
+      else if (progress <= 0.94) visibility = 1.0;
+      else visibility = Math.max(0, 1.0 - (progress - 0.94) / 0.04);
     }
 
     const scale = THREE.MathUtils.lerp(0.3, 1.25, Math.pow(visibility, 1.3));

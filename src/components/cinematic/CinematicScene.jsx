@@ -8,17 +8,25 @@ import BlackHoleController from './BlackHole';
 import GalaxyController from './Galaxy';
 import DistantObjectsController from './DistantObjects';
 import MultiversePortalController from './MultiversePortal';
+import VillainModelController from './VillainModel';
+import LightningWarriorController from './LightningWarrior';
+import LightningEffectController from './LightningEffect';
+import CosmicConfrontationController from './CosmicConfrontation';
 import { createCinematicCamera } from './CinematicCamera';
 
 /**
  * CinematicScene:
- * Master Three.js WebGL canvas hosting the 3D cinematic superhero universe.
+ * Master Three.js WebGL canvas hosting the complete cinematic superhero universe.
  * Renders:
- * Phase 1: 3D Armored Superhero character, glowing reactor core, launch stance
- * Phase 2: Interstellar travel, 3-layer parallax starfield, warp speed streaks,
- *          Gargantua-class Black Hole with accretion disk & gravitational lensing,
- *          Majestic 4-arm rotating Spiral Galaxy & Cosmic Nebula,
- *          Deep space research artifacts, Multiverse Portal, and dynamic camera choreography.
+ * Phase 1: 3D Armored Superhero awakening & Arc Reactor ignition
+ * Phase 2: Interstellar universe travel, 3-layer parallax starfield, warp jump,
+ *          Gargantua Black Hole with accretion disk & rotating Spiral Galaxy
+ * Phase 3: Iron-Man-inspired deep space flight sequence with repulsor trails
+ * Phase 4: Doom-inspired dark technological sorcerer entrance & emerald energy blast
+ * Phase 5: Hero Returns for Cosmic Confrontation (Repulsor vs Sorcery face-off)
+ * Phase 6: Thor-inspired lightning entry (branching lightning strike & thunder warrior)
+ * Phase 7: Superhero Team Assembly triad poster composition
+ * Phase 8: Cosmic Multiverse Portal breach into HackFest 3.0 reveal
  */
 export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} }) {
   const containerRef = useRef(null);
@@ -81,21 +89,17 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
     container.appendChild(renderer.domElement);
 
     // 4. Cinematic Lighting
-    // Ambient light: deep cosmic navy
     const ambientLight = new THREE.AmbientLight(0x081226, 1.4);
     scene.add(ambientLight);
 
-    // Key Rim Light: Warm Gold/Red Marvel tone from top-right
     const keyLight = new THREE.DirectionalLight(0xff4422, 2.8);
     keyLight.position.set(6, 8, 4);
     scene.add(keyLight);
 
-    // Fill Light: High-tech Cyan Stark Tone from bottom-left
     const fillLight = new THREE.DirectionalLight(0x00d9ff, 2.0);
     fillLight.position.set(-6, -2, 3);
     scene.add(fillLight);
 
-    // Top Rim Backlight: sharp silhouette highlight
     const backRim = new THREE.DirectionalLight(0xffffff, 2.2);
     backRim.position.set(0, 7, -6);
     scene.add(backRim);
@@ -125,14 +129,31 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
     const multiversePortal = new MultiversePortalController();
     scene.add(multiversePortal.root);
 
-    // Energy core (holographic rings)
+    // Energy core (holographic rings around hero awakening)
     const energyCore = new EnergyCoreController();
     scene.add(energyCore.root);
 
-    // Superhero armored character
-    const hero = new HeroModelController();
+    // Armored Flying Hero
+    const hero = new HeroModelController(isMobile);
     scene.add(hero.root);
 
+    // Doom-inspired Dark Technological Sorcerer Villain
+    const villain = new VillainModelController(isMobile);
+    scene.add(villain.root);
+
+    // Thor-inspired Norse-futuristic Thunder Warrior
+    const lightningWarrior = new LightningWarriorController(isMobile);
+    scene.add(lightningWarrior.root);
+
+    // Branching Lightning Strike & Shockwave
+    const lightningEffect = new LightningEffectController(isMobile);
+    scene.add(lightningEffect.root);
+
+    // Cosmic Confrontation Energy Clash (Hero vs Villain)
+    const cosmicConfrontation = new CosmicConfrontationController(isMobile);
+    scene.add(cosmicConfrontation.root);
+
+    // Load Hero Model (GLB with procedural fallback)
     hero
       .load((percent) => {
         onAssetLoaded(percent);
@@ -154,7 +175,7 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
       const elapsedTime = clock.getElapsedTime();
       const currentProg = progressRef.current;
 
-      // Update controllers
+      // Update all scene controllers
       starField.update(currentProg, elapsedTime);
       universeTravel.update(currentProg, elapsedTime);
       blackHole.update(currentProg, elapsedTime);
@@ -162,14 +183,20 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
       distantObjects.update(currentProg, elapsedTime);
       multiversePortal.update(currentProg, elapsedTime);
       energyCore.update(currentProg, elapsedTime);
-      hero.update(currentProg, elapsedTime);
 
-      // Anchor energy core to hero position while preparing
-      if (currentProg < 0.65) {
+      // Superhero Action & Timeline Characters
+      hero.update(currentProg, elapsedTime);
+      villain.update(currentProg, elapsedTime);
+      lightningWarrior.update(currentProg, elapsedTime);
+      lightningEffect.update(currentProg, elapsedTime);
+      cosmicConfrontation.update(currentProg, elapsedTime);
+
+      // Anchor holographic energy rings to hero during awakening
+      if (currentProg < 0.22) {
         energyCore.root.position.copy(hero.root.position);
       }
 
-      // Update Camera controller
+      // Update Camera controller with hero reference
       cameraController.update(currentProg, hero.root);
 
       renderer.render(scene, camera);
@@ -206,6 +233,10 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
       multiversePortal.dispose();
       energyCore.dispose();
       hero.dispose();
+      villain.dispose();
+      lightningWarrior.dispose();
+      lightningEffect.dispose();
+      cosmicConfrontation.dispose();
 
       if (renderer.domElement && renderer.domElement.parentNode) {
         renderer.domElement.parentNode.removeChild(renderer.domElement);
