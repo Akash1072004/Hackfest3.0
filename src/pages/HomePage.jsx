@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import CinematicIntro from '../components/cinematic/CinematicIntro';
 import HeroSection from '../components/HeroSection';
 import AboutSection from '../components/AboutSection';
 import HighlightsSection from '../components/HighlightsSection';
@@ -32,6 +33,9 @@ export default function HomePage() {
 
   return (
     <main>
+      {/* 00. MARVEL CINEMATIC 3D INTRO SEQUENCE */}
+      <CinematicIntro />
+
       {/* 01. HERO / HOME */}
       <HeroSection />
 

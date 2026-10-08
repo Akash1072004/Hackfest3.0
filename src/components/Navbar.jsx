@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [pastIntro, setPastIntro] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user } = useAuth();
   const location = useLocation();
@@ -13,10 +14,17 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30);
+      const introEl = document.getElementById('cinematic-intro');
+      if (introEl && location.pathname === '/') {
+        setPastIntro(window.scrollY >= introEl.offsetHeight * 0.85);
+      } else {
+        setPastIntro(true);
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   const handleNavClick = (sectionId) => {
     setMobileMenuOpen(false);
@@ -45,7 +53,15 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className={`navbar stark-navbar ${scrolled ? 'scrolled stark-navbar-scrolled' : ''}`}>
+      <nav
+        className={`navbar stark-navbar ${
+          location.pathname === '/' && !pastIntro
+            ? 'navbar-in-intro'
+            : scrolled
+            ? 'scrolled stark-navbar-scrolled'
+            : ''
+        }`}
+      >
         <div className="navbar-inner">
           {/* Stark Tech Brand Crest */}
           <Link to="/" className="nav-brand" onClick={() => handleNavClick('hero')}>
