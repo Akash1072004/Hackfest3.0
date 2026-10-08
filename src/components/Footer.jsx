@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Mail, Globe, MapPin } from 'lucide-react';
+import { Mail, MapPin } from 'lucide-react';
 import { eventMeta } from '../data/eventData';
+
+const CURRENT_YEAR = new Date().getFullYear();
 
 export default function Footer() {
   const scrollTo = (id) => {
@@ -10,77 +12,89 @@ export default function Footer() {
   };
 
   return (
-    <footer className="footer">
-      <div className="container">
+    <footer className="footer" style={{ borderTop: '1px solid rgba(0, 191, 255, 0.25)', background: 'linear-gradient(180deg, rgba(8, 11, 18, 0.95) 0%, rgba(5, 7, 13, 1) 100%)', position: 'relative', overflow: 'hidden' }}>
+      {/* Top ambient glow line */}
+      <div style={{ position: 'absolute', top: 0, left: '15%', right: '15%', height: '1px', background: 'linear-gradient(90deg, transparent, #00BFFF, transparent)' }} />
+
+      <div className="container" style={{ position: 'relative', zIndex: 2, paddingTop: '4rem', paddingBottom: '3rem' }}>
         <div className="footer-grid">
           {/* Col 1: Brand & Organization */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.2rem' }}>
-              <svg viewBox="0 0 40 40" width="32" height="32">
-                <polygon points="20,2 38,12 33,34 20,39 7,34 2,12" fill="#8F3035" stroke="#B98545" strokeWidth="1.8" />
-                <path d="M14 14 L14 26 M14 20 L22 20 M22 14 L22 26" stroke="#ECE8DF" strokeWidth="2" strokeLinecap="square" />
-                <circle cx="28" cy="24" r="2" fill="#B98545" />
-              </svg>
-              <h3 className="heading-display" style={{ fontSize: '1.45rem', letterSpacing: '0.05em' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1.2rem' }}>
+              <div style={{ position: 'relative', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg viewBox="0 0 40 40" width="34" height="34">
+                  <polygon points="20,2 38,12 33,34 20,39 7,34 2,12" fill="rgba(230, 36, 41, 0.2)" stroke="#E62429" strokeWidth="2" />
+                  <circle cx="20" cy="20" r="8" fill="rgba(0, 191, 255, 0.25)" stroke="#00BFFF" strokeWidth="1.5" />
+                  <circle cx="20" cy="20" r="3" fill="#00BFFF" />
+                </svg>
+              </div>
+              <h3 className="heading-display" style={{ fontSize: '1.5rem', letterSpacing: '0.06em', color: '#F5F7FA' }}>
                 {eventMeta.name}
               </h3>
             </div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', marginBottom: '1.2rem', lineHeight: '1.6' }}>
-              Organized by <strong>{eventMeta.organizer}</strong> at {eventMeta.institution}.
-              A crucible for student developers, system builders, and technological problem solvers.
+            <p style={{ color: '#94A3B8', fontSize: '0.92rem', marginBottom: '1.2rem', lineHeight: '1.6' }}>
+              Orchestrated by the <strong>Student Developer Club (SDC)</strong> at {eventMeta.institution}.
+              A premier high-tech proving ground for the next generation of builders and problem solvers.
             </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.84rem' }}>
-              <MapPin size={15} color="var(--color-warm-amber)" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748B', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
+              <MapPin size={15} color="var(--color-stark-gold)" />
               <span>{eventMeta.venueShort}</span>
             </div>
           </div>
 
           {/* Col 2: Quick Links */}
           <div>
-            <h4 className="footer-col-title">NAVIGATION</h4>
+            <h4 className="footer-col-title" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-arc-blue)', letterSpacing: '0.1em' }}>
+              COMMAND NAV
+            </h4>
             <ul className="footer-links">
-              <li><Link to="/" onClick={() => scrollTo('hero')}>Home</Link></li>
-              <li><Link to="/about" onClick={() => scrollTo('about')}>About Event</Link></li>
-              <li><Link to="/competitions" onClick={() => scrollTo('competitions')}>Competitions</Link></li>
-              <li><Link to="/missions" onClick={() => scrollTo('problems')}>Problem Statements</Link></li>
-              <li><Link to="/schedule" onClick={() => scrollTo('schedule')}>Schedule</Link></li>
-              <li><Link to="/prizes" onClick={() => scrollTo('prizes')}>Prizes</Link></li>
-              <li><Link to="/faq" onClick={() => scrollTo('faq')}>FAQ & Rules</Link></li>
+              <li><Link to="/" onClick={() => scrollTo('hero')}>Home Base</Link></li>
+              <li><Link to="/about" onClick={() => scrollTo('about')}>Mission Briefing</Link></li>
+              <li><Link to="/competitions" onClick={() => scrollTo('competitions')}>Combat Arenas</Link></li>
+              <li><Link to="/missions" onClick={() => scrollTo('problems')}>Mission Database</Link></li>
+              <li><Link to="/schedule" onClick={() => scrollTo('schedule')}>Flight Plan</Link></li>
+              <li><Link to="/prizes" onClick={() => scrollTo('prizes')}>Reward Vault</Link></li>
+              <li><Link to="/faq" onClick={() => scrollTo('faq')}>Directives & FAQ</Link></li>
             </ul>
           </div>
 
           {/* Col 3: Arenas */}
           <div>
-            <h4 className="footer-col-title">THE THREE ARENAS</h4>
+            <h4 className="footer-col-title" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-stark-gold)', letterSpacing: '0.1em' }}>
+              THE THREE ARENAS
+            </h4>
             <ul className="footer-links">
-              <li><Link to="/codeathon">Codeathon (1.5h)</Link></li>
-              <li><Link to="/ideathon">Ideathon (Pitch)</Link></li>
-              <li><Link to="/hackathon">Flagship Hackathon</Link></li>
-              <li><Link to="/register">Registration Portal</Link></li>
-              <li><Link to="/sponsors">Sponsors & Partners</Link></li>
+              <li><Link to="/codeathon">Codeathon (Speed Arena)</Link></li>
+              <li><Link to="/ideathon">Ideathon (Innovation Lab)</Link></li>
+              <li><Link to="/hackathon">Flagship 48H Hackathon</Link></li>
+              <li><Link to="/register">Hero Enlistment Portal</Link></li>
+              <li><Link to="/sponsors">Alliances & Sponsors</Link></li>
             </ul>
           </div>
 
           {/* Col 4: Community & Connect */}
           <div>
-            <h4 className="footer-col-title">SDC COMMUNITY</h4>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: '1.5' }}>
-              Connect with the Student Developer Club for queries, updates, and collaboration.
+            <h4 className="footer-col-title" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-energy-red)', letterSpacing: '0.1em' }}>
+              COMMUNICATIONS DECK
+            </h4>
+            <p style={{ fontSize: '0.88rem', color: '#94A3B8', marginBottom: '1rem', lineHeight: '1.5' }}>
+              Connect with SDC operative channels for realtime announcements, technical briefings, and coordination.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem' }}>
-              {/* Instagram SVG */}
+              {/* Instagram */}
               <a
                 href={eventMeta.socials.instagram}
                 target="_blank"
                 rel="noreferrer"
                 style={{
                   padding: '0.55rem',
-                  background: 'rgba(37, 42, 49, 0.7)',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--border-subtle)',
-                  color: 'var(--color-soft-gray)',
+                  background: 'rgba(13, 17, 26, 0.8)',
+                  borderRadius: '4px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#94A3B8',
                   display: 'flex',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  transition: 'all 0.2s ease'
                 }}
                 aria-label="Instagram"
               >
@@ -91,19 +105,20 @@ export default function Footer() {
                 </svg>
               </a>
 
-              {/* LinkedIn SVG */}
+              {/* LinkedIn */}
               <a
                 href={eventMeta.socials.linkedin}
                 target="_blank"
                 rel="noreferrer"
                 style={{
                   padding: '0.55rem',
-                  background: 'rgba(37, 42, 49, 0.7)',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--border-subtle)',
-                  color: 'var(--color-soft-gray)',
+                  background: 'rgba(13, 17, 26, 0.8)',
+                  borderRadius: '4px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#94A3B8',
                   display: 'flex',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  transition: 'all 0.2s ease'
                 }}
                 aria-label="LinkedIn"
               >
@@ -114,19 +129,20 @@ export default function Footer() {
                 </svg>
               </a>
 
-              {/* X / Twitter SVG */}
+              {/* X / Twitter */}
               <a
                 href={eventMeta.socials.x}
                 target="_blank"
                 rel="noreferrer"
                 style={{
                   padding: '0.55rem',
-                  background: 'rgba(37, 42, 49, 0.7)',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--border-subtle)',
-                  color: 'var(--color-soft-gray)',
+                  background: 'rgba(13, 17, 26, 0.8)',
+                  borderRadius: '4px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#94A3B8',
                   display: 'flex',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  transition: 'all 0.2s ease'
                 }}
                 aria-label="X / Twitter"
               >
@@ -140,32 +156,33 @@ export default function Footer() {
                 href={`mailto:${eventMeta.contactEmail}`}
                 style={{
                   padding: '0.55rem',
-                  background: 'rgba(37, 42, 49, 0.7)',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--border-subtle)',
-                  color: 'var(--color-soft-gray)',
+                  background: 'rgba(13, 17, 26, 0.8)',
+                  borderRadius: '4px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#94A3B8',
                   display: 'flex',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  transition: 'all 0.2s ease'
                 }}
                 aria-label="Email"
               >
                 <Mail size={18} />
               </a>
             </div>
-            <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              Inquiries: <a href={`mailto:${eventMeta.contactEmail}`} style={{ color: 'var(--color-warm-amber)' }}>{eventMeta.contactEmail}</a>
+            <div style={{ fontSize: '0.82rem', color: '#64748B', fontFamily: 'var(--font-mono)' }}>
+              TRANSMISSION: <a href={`mailto:${eventMeta.contactEmail}`} style={{ color: 'var(--color-arc-blue)' }}>{eventMeta.contactEmail}</a>
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="footer-bottom">
-          <div>
-            © {new Date().getFullYear()} {eventMeta.name} • Student Developer Club, REC Banda. All rights reserved.
+        {/* Bottom Bar with Stark Status */}
+        <div className="footer-bottom" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1.5rem', marginTop: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#64748B' }}>
+            © {CURRENT_YEAR} {eventMeta.name} • STUDENT DEVELOPER CLUB (REC BANDA). ALL PROTOCOLS RESERVED.
           </div>
-          <div style={{ display: 'flex', gap: '1.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem' }}>
-            <span>RAJKIYA ENGINEERING COLLEGE BANDA</span>
-            <span style={{ color: 'var(--color-warm-amber)' }}>BUILD WHAT COMES NEXT</span>
+          <div style={{ display: 'flex', gap: '1.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.76rem' }}>
+            <span style={{ color: 'var(--color-arc-blue)' }}>GRID: ONLINE // VER 3.0</span>
+            <span style={{ color: 'var(--color-stark-gold)' }}>REBUILD THE FUTURE</span>
           </div>
         </div>
       </div>

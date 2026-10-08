@@ -1,60 +1,174 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Calendar, MapPin, Users, ShieldCheck } from 'lucide-react';
+import { ArrowUpRight, Calendar, MapPin, Users, Zap, Shield, Sparkles, Terminal } from 'lucide-react';
 import { eventMeta } from '../data/eventData';
+import SuperheroPanel from './ui/SuperheroPanel';
+import HoloBadge from './ui/HoloBadge';
 
 export default function RegisterSection() {
+  const [activeSlot, setActiveSlot] = useState(null);
+
+  const heroSlots = [
+    {
+      slot: 'HERO SLOT 01',
+      role: 'SYSTEM ARCHITECT',
+      heroType: 'ARMORED TACTICIAN',
+      color: 'var(--color-stark-gold)',
+      desc: 'Master of system scalability, distributed infrastructure, and defense architecture.',
+      icon: Shield,
+    },
+    {
+      slot: 'HERO SLOT 02',
+      role: 'CODE WARRIOR',
+      heroType: 'AGILE SPEED BUILDER',
+      color: 'var(--color-energy-red)',
+      desc: 'Rapid algorithm specialist capable of high-velocity debugging and algorithmic precision.',
+      icon: Terminal,
+    },
+    {
+      slot: 'HERO SLOT 03',
+      role: 'STRATEGY VANGUARD',
+      heroType: 'DEFENSIVE CAPTAIN',
+      color: 'var(--color-arc-blue)',
+      desc: 'Team coordinator, security analyst, and presentation leader defending before the jury.',
+      icon: Users,
+    },
+    {
+      slot: 'HERO SLOT 04',
+      role: 'INNOVATION SPECIALIST',
+      heroType: 'QUANTUM INNOVATOR',
+      color: '#00ff77',
+      desc: 'Multimodal AI integrator, UX visionary, and breakthrough product designer.',
+      icon: Sparkles,
+    },
+  ];
+
+  const deploymentSteps = [
+    { num: 'STEP 01', label: 'CHOOSE YOUR ARENA', desc: 'Codeathon, Ideathon, or Flagship Hackathon' },
+    { num: 'STEP 02', label: 'ASSEMBLE YOUR TEAM', desc: 'Form 2 to 4 hero operatives or join solo' },
+    { num: 'STEP 03', label: 'SELECT YOUR MISSION', desc: 'Lock in 1 of 6 crisis threat protocols' },
+    { num: 'STEP 04', label: 'ENTER THE BATTLE', desc: 'Deploy your prototype in the live arena' },
+  ];
+
   return (
-    <section id="register" className="section register-cta-section">
+    <section id="register" className="section register-cta-section avengers-assemble-section">
       <div className="section-transition-top" />
       <div className="container">
-        <div className="register-cta-box">
-          <span className="chapter-badge" style={{ marginBottom: '1.2rem' }}>
-            <span style={{ color: 'var(--color-warm-amber)', fontWeight: 700 }}>FINAL INVOCATION</span>
-            <span>SECTOR 12</span>
-          </span>
+        {/* Main Assemble Directive Card */}
+        <SuperheroPanel
+          variant="red"
+          tag="AVENGERS ASSEMBLE PROTOCOL // FINAL DIRECTIVE"
+          issueNumber="CHAPTER 12"
+          className="avengers-main-card"
+        >
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <HoloBadge variant="gold" icon={Zap} style={{ marginBottom: '1rem' }}>
+              RECRUITMENT // PAN-INDIA DEPLOYMENT
+            </HoloBadge>
 
-          <h2 className="heading-display" style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)', marginBottom: '1rem', lineHeight: '1.05' }}>
-            ENTER THE BATTLE
-          </h2>
+            <h2 className="heading-display avengers-title" style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', color: '#FFFFFF', lineHeight: '1.05', marginBottom: '0.8rem' }}>
+              ASSEMBLE YOUR TEAM
+            </h2>
 
-          <p style={{ color: 'var(--color-warm-off-white)', fontSize: 'clamp(1.05rem, 1.4vw, 1.25rem)', maxWidth: '680px', margin: '0 auto 1.5rem auto', lineHeight: '1.6' }}>
-            The disruption has begun. Legacy paradigms have yielded.
-            Claim your seat in the arena and build what comes next at <strong>HackFest 3.0</strong>.
-          </p>
+            <p style={{ color: 'var(--color-stark-gold)', fontFamily: 'var(--font-heading)', fontSize: '1.25rem', letterSpacing: '0.1em', marginBottom: '1rem' }}>
+              "EVERY HERO NEEDS A TEAM."
+            </p>
 
-          {/* Quick Meta Pills */}
-          <div className="register-meta-pills">
+            <p style={{ color: '#94A3B8', fontSize: '1.05rem', maxWidth: '640px', margin: '0 auto', lineHeight: '1.6' }}>
+              When the Multiverse calls, individual brilliance joins united strength.
+              Compose your squad across the 4 specialized operative archetypes to claim supremacy at <strong>HackFest 3.0</strong>.
+            </p>
+          </div>
+
+          {/* 4 Interactive Superhero Composition Slots */}
+          <div className="hero-slots-grid">
+            {heroSlots.map((hero, idx) => {
+              const Icon = hero.icon;
+              const isHovered = activeSlot === idx;
+
+              return (
+                <div
+                  key={idx}
+                  className={`hero-slot-card ${isHovered ? 'hero-slot-active' : ''}`}
+                  onMouseEnter={() => setActiveSlot(idx)}
+                  onMouseLeave={() => setActiveSlot(null)}
+                  style={{
+                    border: `2px solid ${isHovered ? hero.color : 'rgba(255, 255, 255, 0.1)'}`,
+                    boxShadow: isHovered ? `0 0 25px ${hero.color}40, 5px 5px 0px ${hero.color}` : '4px 4px 0px rgba(0, 0, 0, 0.8)',
+                  }}
+                >
+                  {/* Hero Silhouette Graphic Banner */}
+                  <div className="hero-slot-avatar-wrap">
+                    <div className="hero-slot-silhouette" style={{ color: hero.color }}>
+                      <Icon size={34} />
+                    </div>
+                    <span className="hero-slot-badge" style={{ color: hero.color }}>
+                      {hero.slot}
+                    </span>
+                  </div>
+
+                  <h3 className="hero-slot-role" style={{ color: '#FFFFFF' }}>
+                    {hero.role}
+                  </h3>
+
+                  <div className="hero-slot-archetype" style={{ color: hero.color }}>
+                    {hero.heroType}
+                  </div>
+
+                  <p className="hero-slot-desc">
+                    {hero.desc}
+                  </p>
+
+                  <div className="hero-slot-glow-bar" style={{ background: hero.color }} />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 4-Step Registration Flight Path */}
+          <div className="deployment-steps-row">
+            {deploymentSteps.map((st, i) => (
+              <div key={i} className="deployment-step-item">
+                <span className="deployment-step-num">{st.num}</span>
+                <span className="deployment-step-lbl">{st.label}</span>
+                <span className="deployment-step-desc">{st.desc}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Quick Event Pills */}
+          <div className="register-meta-pills" style={{ marginTop: '2rem', marginBottom: '2.5rem' }}>
             <div className="register-meta-pill">
-              <Calendar size={15} color="var(--color-warm-amber)" />
+              <Calendar size={15} color="var(--color-stark-gold)" />
               <span>{eventMeta.datesDisplay}</span>
             </div>
             <div className="register-meta-pill">
-              <MapPin size={15} color="var(--color-steel-blue)" />
+              <MapPin size={15} color="var(--color-arc-blue)" />
               <span>{eventMeta.venueShort}</span>
             </div>
             <div className="register-meta-pill">
-              <Users size={15} color="var(--color-muted-crimson)" />
-              <span>OPEN TO ALL COLLEGES</span>
+              <Users size={15} color="var(--color-energy-red)" />
+              <span>COLLEGES PAN-INDIA // FREE ENTRY</span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          {/* Main Enlist Button */}
+          <div style={{ textAlign: 'center' }}>
             <Link
               to="/register"
-              className="btn btn-primary"
-              style={{ padding: '1.1rem 2.8rem', fontSize: '1.05rem' }}
+              className="btn btn-avenger marvel-hero-cta"
               id="final-register-btn"
             >
-              REGISTER NOW FOR HACKFEST 3.0
-              <ArrowUpRight size={20} />
+              <Zap size={22} />
+              JOIN THE AVENGERS MISSION NOW
+              <ArrowUpRight size={22} />
             </Link>
           </div>
 
-          <div style={{ marginTop: '1.8rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-            STATUS: {eventMeta.registrationStatus} • ZERO REGISTRATION FEE • VERIFIED CERTIFICATES PROVIDED
+          <div style={{ marginTop: '2rem', textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#64748B' }}>
+            STATUS: {eventMeta.registrationStatus.toUpperCase()} • 100% FREE PARTICIPATION • GOVERNMENT COLLEGE RATIFIED
           </div>
-        </div>
+        </SuperheroPanel>
       </div>
     </section>
   );

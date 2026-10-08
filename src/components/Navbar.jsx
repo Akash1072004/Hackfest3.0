@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ArrowUpRight, User, LayoutDashboard } from 'lucide-react';
-import { eventMeta } from '../data/eventData';
+import { Menu, X, ArrowUpRight, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, profile, isConfigured } = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      setScrolled(window.scrollY > 30);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -34,123 +33,170 @@ export default function Navbar() {
   };
 
   const navItems = [
-    { label: 'HOME', id: 'hero', path: '/' },
-    { label: 'ABOUT', id: 'about', path: '/about' },
-    { label: 'COMPETITIONS', id: 'competitions', path: '/competitions' },
+    { label: 'COMMAND', id: 'hero', path: '/' },
+    { label: 'BRIEFING', id: 'about', path: '/about' },
+    { label: 'ARENAS', id: 'competitions', path: '/competitions' },
     { label: 'MISSIONS', id: 'problems', path: '/missions' },
-    { label: 'SCHEDULE', id: 'schedule', path: '/schedule' },
-    { label: 'PRIZES', id: 'prizes', path: '/prizes' },
-    { label: 'LEADERBOARD', id: 'leaderboard', path: '/leaderboard' },
-    { label: 'FAQ', id: 'faq', path: '/faq' },
+    { label: 'TIMELINE', id: 'schedule', path: '/schedule' },
+    { label: 'VAULT', id: 'prizes', path: '/prizes' },
+    { label: 'RANKINGS', id: 'leaderboard', path: '/leaderboard' },
+    { label: 'DIRECTIVES', id: 'faq', path: '/faq' },
   ];
 
   return (
     <>
-      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
-        <div className="container-wide navbar-inner">
+      <nav className={`navbar stark-navbar ${scrolled ? 'scrolled stark-navbar-scrolled' : ''}`}>
+        <div className="navbar-inner">
+          {/* Stark Tech Brand Crest */}
           <Link to="/" className="nav-brand" onClick={() => handleNavClick('hero')}>
-            <div className="brand-crest">
-              <svg viewBox="0 0 40 40" width="34" height="34">
-                <polygon points="20,2 38,12 33,34 20,39 7,34 2,12" fill="#8F3035" stroke="#B98545" strokeWidth="1.8" />
-                <path d="M14 14 L14 26 M14 20 L22 20 M22 14 L22 26" stroke="#ECE8DF" strokeWidth="2" strokeLinecap="square" />
-                <circle cx="28" cy="24" r="2" fill="#B98545" />
+            <div className="stark-reactor-crest" aria-hidden="true">
+              <svg viewBox="0 0 44 44" width="38" height="38">
+                {/* Outer Hexagon Shield */}
+                <polygon
+                  points="22,2 40,12 40,32 22,42 4,32 4,12"
+                  fill="#0D111A"
+                  stroke="#00BFFF"
+                  strokeWidth="1.6"
+                  strokeDasharray="4 2"
+                />
+                {/* Inner Energy Triangle */}
+                <polygon
+                  points="22,10 33,29 11,29"
+                  fill="rgba(230, 36, 41, 0.25)"
+                  stroke="#E62429"
+                  strokeWidth="1.8"
+                />
+                {/* Arc Reactor Core Center */}
+                <circle cx="22" cy="22" r="4.5" fill="#00BFFF" />
+                <circle cx="22" cy="22" r="7.5" fill="none" stroke="#F5B642" strokeWidth="1" />
               </svg>
             </div>
             <div className="brand-text-wrap">
-              <span className="brand-title">{eventMeta.name}</span>
-              <span className="brand-sub">REC BANDA</span>
+              <span className="brand-title stark-brand-title">
+                HACKFEST <span style={{ color: 'var(--color-arc-blue)' }}>3.0</span>
+              </span>
+              <span className="brand-sub stark-brand-sub">
+                STARK COMMAND // REC BANDA
+              </span>
             </div>
           </Link>
 
-          <ul className="nav-links">
-            {navItems.map((item) => (
-              <li key={item.label} className="nav-item">
-                {item.path.startsWith('/#') || item.path === '/' ? (
-                  <button
-                    type="button"
-                    onClick={() => handleNavClick(item.id)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                  >
-                    {item.label}
-                  </button>
-                ) : (
-                  <Link to={item.path} style={{ textDecoration: 'none' }}>
-                    {item.label}
-                  </Link>
-                )}
-              </li>
-            ))}
+          {/* Central Holographic Navigation Links */}
+          <ul className="nav-links stark-nav-links">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <li key={item.label} className={`nav-item ${isActive ? 'active' : ''}`}>
+                  {item.path.startsWith('/#') || item.path === '/' ? (
+                    <button
+                      type="button"
+                      onClick={() => handleNavClick(item.id)}
+                      className="stark-nav-btn"
+                    >
+                      <span className="stark-nav-label">{item.label}</span>
+                      <span className="stark-nav-indicator" />
+                    </button>
+                  ) : (
+                    <Link to={item.path} className="stark-nav-link">
+                      <span className="stark-nav-label">{item.label}</span>
+                      <span className="stark-nav-indicator" />
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
           </ul>
 
+          {/* Action Hub */}
           <div className="nav-actions">
+            {/* Live System Status Indicator */}
+            <div className="stark-sys-status hidden-mobile" title="Command Network Active">
+              <span className="sys-status-dot" />
+              <span className="sys-status-text">SYS: ONLINE</span>
+            </div>
+
             {user ? (
               <Link
                 to="/dashboard"
-                className="btn btn-primary"
-                style={{ padding: '0.65rem 1.4rem', fontSize: '0.84rem' }}
+                className="btn btn-primary stark-cta-btn nav-dashboard-btn"
               >
                 <LayoutDashboard size={15} />
-                DASHBOARD
+                COMMAND CENTER
               </Link>
             ) : (
-              <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+              <div className="nav-auth-actions">
                 <Link
                   to="/login"
-                  style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--color-warm-off-white)', textDecoration: 'none', padding: '0.5rem 0.8rem' }}
+                  className="stark-login-link"
                 >
-                  SIGN IN
+                  OPERATIVE LOGIN
                 </Link>
                 <Link
                   to="/register"
-                  className="btn btn-primary"
-                  style={{ padding: '0.65rem 1.4rem', fontSize: '0.84rem' }}
+                  className="btn btn-primary stark-cta-btn"
                 >
-                  REGISTER
+                  ASSEMBLE
                   <ArrowUpRight size={16} />
                 </Link>
               </div>
             )}
 
             <button
-              className="mobile-toggle"
+              className="mobile-toggle stark-mobile-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+              {mobileMenuOpen ? <X size={26} color="var(--color-arc-blue)" /> : <Menu size={26} color="var(--color-tech-white)" />}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Drawer */}
+      {/* Holographic Mobile Command Drawer */}
       {mobileMenuOpen && (
-        <div className="mobile-nav-drawer">
+        <div className="mobile-nav-drawer stark-mobile-drawer">
+          <div className="drawer-header-telemetry">
+            <span className="hud-tag-dot" />
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-arc-blue)' }}>
+              TACTICAL HUD // PORTABLE DISPLAY
+            </span>
+          </div>
+
           <button
             className="modal-close"
             onClick={() => setMobileMenuOpen(false)}
             aria-label="Close menu"
           >
-            <X size={28} />
+            <X size={26} />
           </button>
-          <ul className="mobile-nav-links">
+
+          <ul className="mobile-nav-links stark-mobile-links">
             {navItems.map((item) => (
               <li key={item.label}>
                 <button
                   onClick={() => handleNavClick(item.id)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '1.25rem',
+                    letterSpacing: '0.08em',
+                    color: 'var(--color-tech-white)',
+                  }}
                 >
                   {item.label}
                 </button>
               </li>
             ))}
-            <li style={{ marginTop: '1.5rem', width: '100%', maxWidth: '240px', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            <li style={{ marginTop: '2rem', width: '100%', maxWidth: '280px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {user ? (
                 <Link
                   to="/dashboard"
                   className="btn btn-primary"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  GO TO DASHBOARD
+                  ACCESS COMMAND CENTER
                 </Link>
               ) : (
                 <>
@@ -159,14 +205,14 @@ export default function Navbar() {
                     className="btn btn-primary"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    REGISTER NOW
+                    JOIN THE MISSION
                   </Link>
                   <Link
                     to="/login"
                     className="btn btn-secondary"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    SIGN IN
+                    OPERATIVE LOGIN
                   </Link>
                 </>
               )}

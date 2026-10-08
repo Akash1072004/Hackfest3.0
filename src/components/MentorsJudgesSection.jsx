@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { UserCheck, Shield, Award, CheckCircle, Scale } from 'lucide-react';
+import { Shield, Scale, Cpu, UserCheck, Terminal, Award } from 'lucide-react';
 import { mentorsAndJudges as defaultData, competitions } from '../data/eventData';
 import { eventService } from '../services/eventService';
+import SuperheroPanel from './ui/SuperheroPanel';
+import HoloBadge from './ui/HoloBadge';
 
 export default function MentorsJudgesSection() {
   const [activeTab, setActiveTab] = useState('judges');
@@ -19,70 +21,113 @@ export default function MentorsJudgesSection() {
   const ideathonComp = competitions.find((c) => c.id === 'ideathon');
 
   return (
-    <section id="mentors-judges" className="section mentors-section">
+    <section id="mentors-judges" className="section mentors-section superhero-council-section">
       <div className="section-transition-top" />
       <div className="container">
+        {/* Header */}
         <div className="section-header center">
-          <span className="chapter-badge">
-            <span style={{ color: 'var(--color-warm-amber)', fontWeight: 700 }}>CHAPTER 08</span>
-            <span>EXPERTISE & GOVERNANCE</span>
-          </span>
-          <h2 className="heading-section">MENTORS & JUDGES</h2>
+          <HoloBadge variant="gold" icon={Shield}>
+            HIGH COUNCIL // CHAPTER 08
+          </HoloBadge>
+          <h2 className="heading-section marvel-section-title">THE HIGH COUNCIL: JURY & MENTORS</h2>
           <p className="section-lead">
-            Guided and evaluated by distinguished academic leadership, senior developers, and industry practitioners.
+            Guided and evaluated by distinguished academic leadership, senior systems architects, and veteran tech practitioners.
           </p>
         </div>
 
-        {/* Tab switch between Judges and Mentors */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '3rem' }}>
+        {/* Tab switch */}
+        <div className="stark-council-tabs">
           <button
-            className={`workflow-tab-btn ${activeTab === 'judges' ? 'active' : ''}`}
+            className={`workflow-tab-btn stark-tab-btn ${activeTab === 'judges' ? 'active stark-tab-active' : ''}`}
             onClick={() => setActiveTab('judges')}
           >
+            <span className="stark-tab-indicator" />
             EVALUATION JURY & PATRONS
           </button>
           <button
-            className={`workflow-tab-btn ${activeTab === 'mentors' ? 'active' : ''}`}
+            className={`workflow-tab-btn stark-tab-btn ${activeTab === 'mentors' ? 'active stark-tab-active' : ''}`}
             onClick={() => setActiveTab('mentors')}
           >
-            TECHNICAL MENTORS
+            <span className="stark-tab-indicator" />
+            TECHNICAL MENTORS & ARCHITECTS
           </button>
           <button
-            className={`workflow-tab-btn ${activeTab === 'criteria' ? 'active' : ''}`}
+            className={`workflow-tab-btn stark-tab-btn ${activeTab === 'criteria' ? 'active stark-tab-active' : ''}`}
             onClick={() => setActiveTab('criteria')}
           >
-            OFFICIAL JUDGING CRITERIA
+            <span className="stark-tab-indicator" />
+            COUNCIL EVALUATION MATRIX
           </button>
         </div>
 
         {activeTab === 'judges' && (
-          <div className="mentors-grid">
-            {people.judges.map((judge) => (
-              <div key={judge.id} className="mentor-card">
-                <div className="mentor-avatar-wrap">
-                  <Shield size={28} />
+          <div className="mentors-grid stark-council-grid">
+            {people.judges.map((judge, idx) => (
+              <SuperheroPanel
+                key={judge.id || idx}
+                variant="gold"
+                tag={`DOSSIER // JURY TIER 0${idx + 1}`}
+                issueNumber="COUNCIL"
+                className="mentor-card"
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1rem' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: '4px', background: 'rgba(245, 182, 66, 0.15)', border: '1px solid var(--color-stark-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Shield size={24} color="var(--color-stark-gold)" />
+                  </div>
+                  <div>
+                    <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', color: '#FFFFFF', margin: 0 }}>
+                      {judge.name}
+                    </h3>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-stark-gold)' }}>
+                      {judge.designation}
+                    </div>
+                  </div>
                 </div>
-                <h3 className="mentor-name">{judge.name}</h3>
-                <div className="mentor-designation">{judge.designation}</div>
-                <div className="mentor-org">{judge.organization}</div>
-                <p className="mentor-bio">{judge.bio}</p>
-              </div>
+
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.76rem', color: '#64748B', marginBottom: '0.6rem' }}>
+                  ORGANIZATION: {judge.organization}
+                </div>
+
+                <p style={{ color: '#94A3B8', fontSize: '0.88rem', lineHeight: '1.55', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '0.6rem' }}>
+                  {judge.bio}
+                </p>
+              </SuperheroPanel>
             ))}
           </div>
         )}
 
         {activeTab === 'mentors' && (
-          <div className="mentors-grid">
-            {people.mentors.map((mentor) => (
-              <div key={mentor.id} className="mentor-card">
-                <div className="mentor-avatar-wrap">
-                  <UserCheck size={28} />
+          <div className="mentors-grid stark-council-grid">
+            {people.mentors.map((mentor, idx) => (
+              <SuperheroPanel
+                key={mentor.id || idx}
+                variant="blue"
+                tag={`DOSSIER // CADRE 0${idx + 1}`}
+                issueNumber="ARCHITECT"
+                className="mentor-card"
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1rem' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: '4px', background: 'rgba(0, 191, 255, 0.15)', border: '1px solid var(--color-arc-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Cpu size={24} color="var(--color-arc-blue)" />
+                  </div>
+                  <div>
+                    <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', color: '#FFFFFF', margin: 0 }}>
+                      {mentor.name}
+                    </h3>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-arc-blue)' }}>
+                      {mentor.designation}
+                    </div>
+                  </div>
                 </div>
-                <h3 className="mentor-name">{mentor.name}</h3>
-                <div className="mentor-designation">{mentor.designation}</div>
-                <div className="mentor-org">EXPERTISE: {mentor.expertise}</div>
-                <p className="mentor-bio">{mentor.bio}</p>
-              </div>
+
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.76rem', color: '#64748B', marginBottom: '0.6rem' }}>
+                  EXPERTISE: {mentor.expertise}
+                </div>
+
+                <p style={{ color: '#94A3B8', fontSize: '0.88rem', lineHeight: '1.55', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '0.6rem' }}>
+                  {mentor.bio}
+                </p>
+              </SuperheroPanel>
             ))}
           </div>
         )}
@@ -90,46 +135,68 @@ export default function MentorsJudgesSection() {
         {activeTab === 'criteria' && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
             {/* Hackathon Criteria */}
-            <div style={{ background: 'rgba(37, 42, 49, 0.7)', border: '1px solid var(--border-accent-crimson)', borderRadius: 'var(--radius-md)', padding: '2rem' }}>
+            <SuperheroPanel variant="red" tag="HACKATHON 9-DIMENSION RUBRIC" issueNumber="SCORING">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem' }}>
-                <Scale size={20} color="var(--color-muted-crimson)" />
-                <h3 className="heading-display" style={{ fontSize: '1.25rem' }}>
-                  HACKATHON CRITERIA
+                <Scale size={20} color="var(--color-energy-red)" />
+                <h3 className="heading-display" style={{ fontSize: '1.35rem', color: '#FFFFFF' }}>
+                  HACKATHON EVALUATION RUBRIC
                 </h3>
               </div>
-              <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', marginBottom: '1.4rem' }}>
-                Weightages: <strong style={{ color: 'var(--color-warm-amber)' }}>[TO BE DECIDED]</strong> by jury consensus.
+              <p style={{ fontSize: '0.86rem', color: '#94A3B8', marginBottom: '1.4rem' }}>
+                Evaluated live by the High Council during evening stage presentations on Day 2.
               </p>
-              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                {hackathonComp.judgingCriteria.map((c, i) => (
-                  <li key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0.8rem', background: 'rgba(28, 32, 38, 0.6)', borderRadius: 'var(--radius-sm)', fontSize: '0.84rem' }}>
-                    <span style={{ color: 'var(--color-warm-off-white)' }}>{c.criterion}</span>
-                    <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-warm-amber)' }}>{c.weight}</span>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', padding: 0 }}>
+                {(hackathonComp?.judgingCriteria || []).map((c, i) => (
+                  <li
+                    key={i}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      padding: '0.55rem 0.85rem',
+                      background: 'rgba(5, 7, 13, 0.75)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      borderRadius: '4px',
+                      fontSize: '0.84rem',
+                    }}
+                  >
+                    <span style={{ color: '#F5F7FA' }}>{c.criterion}</span>
+                    <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-energy-red)', fontWeight: 600 }}>{c.weight}</span>
                   </li>
                 ))}
               </ul>
-            </div>
+            </SuperheroPanel>
 
             {/* Ideathon Criteria */}
-            <div style={{ background: 'rgba(37, 42, 49, 0.7)', border: '1px solid var(--border-accent-steel)', borderRadius: 'var(--radius-md)', padding: '2rem' }}>
+            <SuperheroPanel variant="blue" tag="IDEATHON DEFENSE RUBRIC" issueNumber="DEFENSE">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem' }}>
-                <Scale size={20} color="var(--color-steel-blue)" />
-                <h3 className="heading-display" style={{ fontSize: '1.25rem' }}>
-                  IDEATHON CRITERIA
+                <Scale size={20} color="var(--color-arc-blue)" />
+                <h3 className="heading-display" style={{ fontSize: '1.35rem', color: '#FFFFFF' }}>
+                  IDEATHON DEFENSE RUBRIC
                 </h3>
               </div>
-              <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', marginBottom: '1.4rem' }}>
-                Weightages: <strong style={{ color: 'var(--color-warm-amber)' }}>[TO BE DECIDED]</strong> by jury consensus.
+              <p style={{ fontSize: '0.86rem', color: '#94A3B8', marginBottom: '1.4rem' }}>
+                Scored across strategic novelty, architectural feasibility, and Q&A composure.
               </p>
-              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                {ideathonComp.judgingCriteria.map((c, i) => (
-                  <li key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0.8rem', background: 'rgba(28, 32, 38, 0.6)', borderRadius: 'var(--radius-sm)', fontSize: '0.84rem' }}>
-                    <span style={{ color: 'var(--color-warm-off-white)' }}>{c.criterion}</span>
-                    <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-warm-amber)' }}>{c.weight}</span>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', padding: 0 }}>
+                {(ideathonComp?.judgingCriteria || []).map((c, i) => (
+                  <li
+                    key={i}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      padding: '0.55rem 0.85rem',
+                      background: 'rgba(5, 7, 13, 0.75)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      borderRadius: '4px',
+                      fontSize: '0.84rem',
+                    }}
+                  >
+                    <span style={{ color: '#F5F7FA' }}>{c.criterion}</span>
+                    <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-arc-blue)', fontWeight: 600 }}>{c.weight}</span>
                   </li>
                 ))}
               </ul>
-            </div>
+            </SuperheroPanel>
           </div>
         )}
       </div>

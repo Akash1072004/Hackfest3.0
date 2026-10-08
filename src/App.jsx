@@ -4,6 +4,8 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import CyberNoiseBackground from './components/ui/CyberNoiseBackground';
+import ComicHalftoneOverlay from './components/ui/ComicHalftoneOverlay';
 
 // Existing Pages
 import HomePage from './pages/HomePage';
@@ -48,6 +50,8 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <div className="site-wrapper">
+          <CyberNoiseBackground />
+          <ComicHalftoneOverlay />
           <Navbar />
           <Routes>
             {/* Main Cinematic Landing Page */}

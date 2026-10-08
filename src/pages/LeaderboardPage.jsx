@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { eventService } from '../services/eventService';
-import { Trophy, ArrowLeft, Award, Lock, Sparkles } from 'lucide-react';
+import { Trophy, ArrowLeft, Award, Lock, Zap, Star, Loader2 } from 'lucide-react';
 import { eventMeta } from '../data/eventData';
+import HudPanel from '../components/ui/HudPanel';
+import SuperheroPanel from '../components/ui/SuperheroPanel';
+import HoloBadge from '../components/ui/HoloBadge';
 
 export default function LeaderboardPage() {
   const [published, setPublished] = useState(false);
@@ -54,73 +57,180 @@ export default function LeaderboardPage() {
   }, []);
 
   return (
-    <div style={{ paddingTop: 'calc(var(--nav-height) + 2rem)', paddingBottom: '6rem' }}>
-      <div className="container" style={{ maxWidth: '960px' }}>
+    <div style={{ paddingTop: 'calc(var(--nav-height) + 2.5rem)', paddingBottom: '6rem', position: 'relative' }}>
+      <div className="container" style={{ maxWidth: '1020px', position: 'relative', zIndex: 10 }}>
         <Link
           to="/"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-warm-amber)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', marginBottom: '1.5rem' }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-arc-blue)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', letterSpacing: '0.08em', marginBottom: '1.5rem' }}
         >
           <ArrowLeft size={16} />
-          RETURN TO HOME
+          RETURN TO COMMAND BASE
         </Link>
 
-        <span className="chapter-badge">CHAMPIONSHIP HALL</span>
-        <h1 className="heading-display" style={{ fontSize: 'clamp(2.4rem, 5vw, 3.6rem)', marginBottom: '0.4rem' }}>
-          OFFICIAL LEADERBOARD
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', marginBottom: '2.5rem' }}>
-          Final rankings and honors compiled across all three arenas of {eventMeta.name}.
-        </p>
+        {/* Header Telemetry */}
+        <div style={{ marginBottom: '2.5rem' }}>
+          <HoloBadge variant="gold" icon={Trophy} style={{ marginBottom: '0.8rem' }}>
+            APEX HONORS // CHAPTER 13
+          </HoloBadge>
+          <h1 className="heading-display marvel-section-title" style={{ fontSize: 'clamp(2.6rem, 5vw, 4.4rem)', marginBottom: '0.4rem', color: '#FFFFFF' }}>
+            EARTH'S MIGHTIEST BUILDERS
+          </h1>
+          <p style={{ color: '#94A3B8', fontSize: '1.05rem', maxWidth: '640px', lineHeight: '1.6' }}>
+            Official standings, jury ratings, and verified honors compiled across all three arenas of {eventMeta.name}.
+          </p>
+        </div>
 
-        {!published ? (
-          <div style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: '3.5rem 2rem', textAlign: 'center' }}>
-            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(185, 133, 69, 0.15)', border: '1px solid var(--color-warm-amber)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto', color: 'var(--color-warm-amber)' }}>
-              <Lock size={32} />
+        {loading ? (
+          <HudPanel variant="cyan" tag="DECRYPTING TELEMETRY // LOADING" scan={true}>
+            <div style={{ padding: '3.5rem 2rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+              <Loader2 size={36} color="var(--color-arc-blue)" className="animate-spin" />
+              <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: '#F5F7FA', letterSpacing: '0.05em' }}>
+                SYNCHRONIZING APEX STANDINGS...
+              </div>
             </div>
-            <h2 className="heading-display" style={{ fontSize: '1.8rem', marginBottom: '0.6rem' }}>
-              LEADERBOARD UNDER SEAL
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', maxWidth: '520px', margin: '0 auto 1.5rem auto', lineHeight: '1.6' }}>
-              Final scoring is currently in active deliberation by the evaluation jury. Official standings will be unveiled during the Grand Awards Ceremony in the Multipurpose Hall.
-            </p>
-            <Link to="/schedule" className="btn btn-secondary">
-              VIEW CEREMONY SCHEDULE
-            </Link>
-          </div>
+          </HudPanel>
+        ) : !published ? (
+          <HudPanel variant="gold" tag="STATUS // VAULT ENCRYPTED" scan={true}>
+            <div style={{ padding: '3rem 2rem', textAlign: 'center' }}>
+              <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(245, 182, 66, 0.15)', border: '1px solid var(--color-stark-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto', color: 'var(--color-stark-gold)', boxShadow: '0 0 25px rgba(245, 182, 66, 0.3)' }}>
+                <Lock size={32} />
+              </div>
+              <h2 className="heading-display" style={{ fontSize: '2rem', marginBottom: '0.6rem', color: '#F5F7FA' }}>
+                RANKINGS UNDER QUANTUM SEAL
+              </h2>
+              <p style={{ color: '#94A3B8', maxWidth: '560px', margin: '0 auto 1.8rem auto', lineHeight: '1.6', fontSize: '0.96rem' }}>
+                Operational scoring is in final deliberation by the High Council. Standings will be decrypted and unveiled live during the Grand Awards Ceremony in the Multipurpose Hall.
+              </p>
+              <Link to="/schedule" className="btn btn-reactor" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem' }}>
+                <Zap size={16} />
+                VIEW CEREMONY FLIGHT PLAN
+              </Link>
+            </div>
+          </HudPanel>
         ) : (
-          <div style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-accent-amber)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-              <thead>
-                <tr style={{ background: '#111827', borderBottom: '1px solid var(--border-subtle)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--color-warm-amber)' }}>
-                  <th style={{ padding: '1.2rem' }}>POSITION</th>
-                  <th style={{ padding: '1.2rem' }}>SQUAD / PROJECT</th>
-                  <th style={{ padding: '1.2rem' }}>ARENA</th>
-                  <th style={{ padding: '1.2rem', textAlign: 'right' }}>FINAL SCORE</th>
-                </tr>
-              </thead>
-              <tbody>
-                {standings.map((s, idx) => (
-                  <tr key={s.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                    <td style={{ padding: '1.2rem', fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: idx === 0 ? 'var(--color-warm-amber)' : 'var(--color-warm-off-white)' }}>
-                      #{idx + 1}
-                    </td>
-                    <td style={{ padding: '1.2rem' }}>
-                      <div style={{ fontWeight: 700, color: 'var(--color-warm-off-white)', fontSize: '1.05rem' }}>{s.title}</div>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)' }}>{s.team?.name || 'Individual'}</div>
-                    </td>
-                    <td style={{ padding: '1.2rem', color: 'var(--text-secondary)' }}>
-                      {s.competition?.name || 'HACKATHON'}
-                    </td>
-                    <td style={{ padding: '1.2rem', textAlign: 'right', fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: 'var(--color-warm-amber)' }}>
-                      {s.avgScore.toFixed(1)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+            {/* Top 3 Podium Highlights */}
+            {standings.length >= 3 && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.2rem', marginBottom: '1.5rem' }}>
+                {/* 1st Place */}
+                <SuperheroPanel variant="gold" tag="#1 CHAMPION" issueNumber="APEX" className="podium-top-card">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.6rem' }}>
+                    <div style={{ width: 38, height: 38, borderRadius: '4px', background: 'rgba(245, 182, 66, 0.2)', border: '1px solid var(--color-stark-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-stark-gold)' }}>
+                      <CrownIcon />
+                    </div>
+                    <div>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-stark-gold)', letterSpacing: '0.1em' }}>#1 CHAMPION</div>
+                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: '#FFFFFF', fontWeight: 700 }}>{standings[0]?.title}</div>
+                    </div>
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#94A3B8' }}>{standings[0]?.team?.name || 'Solo Operative'}</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', borderTop: '1px solid rgba(245, 182, 66, 0.2)', paddingTop: '0.6rem' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#64748B' }}>{standings[0]?.competition?.name}</span>
+                    <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', color: 'var(--color-stark-gold)', fontWeight: 700 }}>{standings[0]?.avgScore.toFixed(1)}</span>
+                  </div>
+                </SuperheroPanel>
+
+                {/* 2nd Place */}
+                <SuperheroPanel variant="blue" tag="#2 VANGUARD" issueNumber="RUNNER-UP" className="podium-top-card">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.6rem' }}>
+                    <div style={{ width: 38, height: 38, borderRadius: '4px', background: 'rgba(0, 191, 255, 0.2)', border: '1px solid var(--color-arc-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-arc-blue)' }}>
+                      <Star size={18} />
+                    </div>
+                    <div>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-arc-blue)', letterSpacing: '0.1em' }}>#2 VANGUARD</div>
+                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: '#FFFFFF', fontWeight: 700 }}>{standings[1]?.title}</div>
+                    </div>
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#94A3B8' }}>{standings[1]?.team?.name || 'Solo Operative'}</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', borderTop: '1px solid rgba(0, 191, 255, 0.2)', paddingTop: '0.6rem' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#64748B' }}>{standings[1]?.competition?.name}</span>
+                    <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', color: 'var(--color-arc-blue)', fontWeight: 700 }}>{standings[1]?.avgScore.toFixed(1)}</span>
+                  </div>
+                </SuperheroPanel>
+
+                {/* 3rd Place */}
+                <SuperheroPanel variant="red" tag="#3 DEFENDER" issueNumber="HONORS" className="podium-top-card">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.6rem' }}>
+                    <div style={{ width: 38, height: 38, borderRadius: '4px', background: 'rgba(230, 36, 41, 0.2)', border: '1px solid var(--color-energy-red)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-energy-red)' }}>
+                      <Award size={18} />
+                    </div>
+                    <div>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-energy-red)', letterSpacing: '0.1em' }}>#3 DEFENDER</div>
+                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: '#FFFFFF', fontWeight: 700 }}>{standings[2]?.title}</div>
+                    </div>
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#94A3B8' }}>{standings[2]?.team?.name || 'Solo Operative'}</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', borderTop: '1px solid rgba(230, 36, 41, 0.2)', paddingTop: '0.6rem' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#64748B' }}>{standings[2]?.competition?.name}</span>
+                    <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', color: 'var(--color-energy-red)', fontWeight: 700 }}>{standings[2]?.avgScore.toFixed(1)}</span>
+                  </div>
+                </SuperheroPanel>
+              </div>
+            )}
+
+            {/* Complete Ranking Table */}
+            <HudPanel variant="steel" tag="COMPLETE SQUAD ROSTER // TELEMETRY" scan={false}>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ background: 'rgba(5, 7, 13, 0.9)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', letterSpacing: '0.1em' }}>
+                      <th style={{ padding: '1rem 1.25rem' }}>RANK</th>
+                      <th style={{ padding: '1rem 1.25rem' }}>SQUAD & PROTOTYPE</th>
+                      <th style={{ padding: '1rem 1.25rem' }}>ARENA SECTOR</th>
+                      <th style={{ padding: '1rem 1.25rem', textAlign: 'right' }}>SCORE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {standings.map((s, idx) => {
+                      const isFirst = idx === 0;
+                      const isSecond = idx === 1;
+                      const isThird = idx === 2;
+                      const rankColor = isFirst ? 'var(--color-stark-gold)' : isSecond ? 'var(--color-arc-blue)' : isThird ? 'var(--color-energy-red)' : '#F5F7FA';
+
+                      return (
+                        <tr
+                          key={s.id}
+                          style={{
+                            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                            background: isFirst ? 'rgba(245, 182, 66, 0.05)' : isSecond ? 'rgba(0, 191, 255, 0.04)' : isThird ? 'rgba(230, 36, 41, 0.04)' : 'transparent',
+                            transition: 'background 0.2s ease'
+                          }}
+                        >
+                          <td style={{ padding: '1.1rem 1.25rem', fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: rankColor, fontWeight: 700 }}>
+                            #{idx + 1}
+                          </td>
+                          <td style={{ padding: '1.1rem 1.25rem' }}>
+                            <div style={{ fontWeight: 600, color: '#F5F7FA', fontSize: '1.05rem', fontFamily: 'var(--font-heading)' }}>
+                              {s.title}
+                            </div>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8' }}>
+                              {s.team?.name || 'Solo Operative'}
+                            </div>
+                          </td>
+                          <td style={{ padding: '1.1rem 1.25rem', color: '#64748B', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
+                            {s.competition?.name || 'FLAGSHIP HACKATHON'}
+                          </td>
+                          <td style={{ padding: '1.1rem 1.25rem', textAlign: 'right', fontFamily: 'var(--font-heading)', fontSize: '1.5rem', color: rankColor, fontWeight: 700 }}>
+                            {s.avgScore.toFixed(1)}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </HudPanel>
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+function CrownIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" />
+    </svg>
   );
 }

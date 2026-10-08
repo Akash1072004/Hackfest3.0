@@ -1,71 +1,89 @@
 import React, { useState } from 'react';
-import { ArrowRight, ChevronRight, Workflow } from 'lucide-react';
+import { Workflow } from 'lucide-react';
 import { howItWorks } from '../data/eventData';
+import SuperheroPanel from './ui/SuperheroPanel';
+import HoloBadge from './ui/HoloBadge';
 
 export default function HowItWorksSection() {
   const [activeWorkflow, setActiveWorkflow] = useState('hackathon');
-
   const current = howItWorks[activeWorkflow];
 
+  const variants = ['blue', 'gold', 'red', 'green', 'gold'];
+
   return (
-    <section id="how-it-works" className="section how-it-works-section">
+    <section id="how-it-works" className="section how-it-works-section superhero-blueprint-section">
       <div className="section-transition-top" />
       <div className="container">
+        {/* Header */}
         <div className="section-header center">
-          <span className="chapter-badge">
-            <span style={{ color: 'var(--color-warm-amber)', fontWeight: 700 }}>CHAPTER 07</span>
-            <span>OPERATIONAL BLUEPRINT</span>
-          </span>
-          <h2 className="heading-section">HOW THE EVENT WORKS</h2>
+          <HoloBadge variant="cyan" icon={Workflow}>
+            ENGAGEMENT PROTOCOL // CHAPTER 07
+          </HoloBadge>
+          <h2 className="heading-section marvel-section-title">DEPLOYMENT BLUEPRINT</h2>
           <p className="section-lead">
-            Clear, step-by-step technical pipelines for each competition track.
+            Step-by-step technical pipelines from initial check-in to prototype release across each arena.
           </p>
         </div>
 
         {/* Workflow Track Selector */}
-        <div className="workflow-tabs">
+        <div className="workflow-tabs stark-workflow-tabs">
           <button
-            className={`workflow-tab-btn ${activeWorkflow === 'hackathon' ? 'active' : ''}`}
+            className={`workflow-tab-btn stark-tab-btn ${activeWorkflow === 'hackathon' ? 'active stark-tab-active' : ''}`}
             onClick={() => setActiveWorkflow('hackathon')}
           >
-            FLAGSHIP HACKATHON
+            <span className="stark-tab-indicator" />
+            HACKATHON DEPLOYMENT
           </button>
           <button
-            className={`workflow-tab-btn ${activeWorkflow === 'codeathon' ? 'active' : ''}`}
+            className={`workflow-tab-btn stark-tab-btn ${activeWorkflow === 'codeathon' ? 'active stark-tab-active' : ''}`}
             onClick={() => setActiveWorkflow('codeathon')}
           >
-            CODEATHON (1.5H)
+            <span className="stark-tab-indicator" />
+            CODEATHON SPRINT (1.5H)
           </button>
           <button
-            className={`workflow-tab-btn ${activeWorkflow === 'ideathon' ? 'active' : ''}`}
+            className={`workflow-tab-btn stark-tab-btn ${activeWorkflow === 'ideathon' ? 'active stark-tab-active' : ''}`}
             onClick={() => setActiveWorkflow('ideathon')}
           >
-            IDEATHON (PITCH)
+            <span className="stark-tab-indicator" />
+            IDEATHON MATRIX (PITCH)
           </button>
         </div>
 
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <h3 className="heading-display" style={{ fontSize: '1.45rem', color: 'var(--color-warm-off-white)' }}>
+          <h3 className="heading-display" style={{ fontSize: '1.6rem', color: '#FFFFFF' }}>
             {current.title}
           </h3>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--color-warm-amber)', marginTop: '4px' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.84rem', color: 'var(--color-stark-gold)', marginTop: '4px' }}>
             {current.subtitle}
           </p>
         </div>
 
         {/* Step Cards Grid */}
-        <div className="workflow-steps-track">
+        <div className="workflow-steps-track stark-workflow-track">
           {current.steps.map((st, i) => (
-            <div key={i} className="workflow-step-card">
-              <div className="workflow-step-header">
-                <span className="workflow-step-num">STEP {st.step}</span>
-                {i < current.steps.length - 1 && (
-                  <ArrowRight size={16} color="var(--color-soft-gray)" style={{ opacity: 0.5 }} />
-                )}
+            <SuperheroPanel
+              key={i}
+              variant={variants[i % variants.length]}
+              tag={`PHASE 0${st.step}`}
+              issueNumber={st.phase}
+              className="workflow-step-card"
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+                <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.8rem', color: '#FFFFFF', fontWeight: 800 }}>
+                  #{st.step}
+                </span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)' }}>
+                  {st.phase}
+                </span>
               </div>
-              <h4 className="workflow-step-title">{st.name}</h4>
-              <p className="workflow-step-desc">{st.desc}</p>
-            </div>
+              <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: '#FFFFFF', marginBottom: '0.5rem' }}>
+                {st.title}
+              </h4>
+              <p style={{ color: '#94A3B8', fontSize: '0.9rem', lineHeight: '1.6', margin: 0 }}>
+                {st.desc}
+              </p>
+            </SuperheroPanel>
           ))}
         </div>
       </div>

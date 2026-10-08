@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ChevronDown, FileText, HelpCircle, ShieldAlert } from 'lucide-react';
 import { rulesData, faqsData as defaultFaqs } from '../data/eventData';
 import { eventService } from '../services/eventService';
+import HudPanel from './ui/HudPanel';
+import HoloBadge from './ui/HoloBadge';
 
 export default function RulesFaqSection() {
   const [faqs, setFaqs] = useState(defaultFaqs);
@@ -24,42 +26,45 @@ export default function RulesFaqSection() {
       <div className="section-transition-top" />
       <div className="container">
         <div className="section-header">
-          <span className="chapter-badge">
-            <span style={{ color: 'var(--color-warm-amber)', fontWeight: 700 }}>CHAPTER 10</span>
-            <span>GOVERNANCE & PROTOCOLS</span>
-          </span>
-          <h2 className="heading-section">RULES & FAQ</h2>
+          <HoloBadge variant="gold" icon={ShieldAlert}>
+            GOVERNANCE & PROTOCOLS // CHAPTER 10
+          </HoloBadge>
+          <h2 className="heading-section stark-section-title">RULES & FAQ PROTOCOLS</h2>
           <p className="section-lead">
-            Essential guidelines, regulatory standards, and common inquiries for all participants.
+            Essential guidelines, regulatory standards, and verified answers for all operatives.
           </p>
         </div>
 
         <div className="rules-faq-grid">
-          {/* Left Column: Official Rules */}
-          <div>
-            <h3 className="rules-col-title">
-              <FileText size={22} color="var(--color-warm-amber)" />
+          {/* Left Column: Official Rules in HUD Frame */}
+          <HudPanel variant="gold" tag="DIRECTIVES // ENGAGEMENT CODE" scan={false}>
+            <h3 className="rules-col-title" style={{ color: 'var(--color-stark-gold)', display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.4rem' }}>
+              <FileText size={22} color="var(--color-stark-gold)" />
               EVENT RULES & CONDUCT
             </h3>
 
             <div>
               {rulesData.map((category, idx) => (
-                <div key={idx} className="rules-category-block">
-                  <h4 className="rules-category-title">{category.category}</h4>
-                  <ul className="rules-list">
+                <div key={idx} className="rules-category-block" style={{ marginBottom: '1.4rem' }}>
+                  <h4 className="rules-category-title" style={{ color: '#F5F7FA', fontFamily: 'var(--font-heading)', letterSpacing: '0.05em' }}>
+                    {category.category}
+                  </h4>
+                  <ul className="rules-list" style={{ marginTop: '0.5rem' }}>
                     {category.rules.map((rule, rIdx) => (
-                      <li key={rIdx}>{rule}</li>
+                      <li key={rIdx} style={{ color: '#94A3B8', fontSize: '0.92rem', lineHeight: '1.6', marginBottom: '0.4rem' }}>
+                        {rule}
+                      </li>
                     ))}
                   </ul>
                 </div>
               ))}
             </div>
-          </div>
+          </HudPanel>
 
-          {/* Right Column: FAQ Accordions */}
-          <div>
-            <h3 className="faq-col-title">
-              <HelpCircle size={22} color="var(--color-steel-blue)" />
+          {/* Right Column: FAQ Accordions in HUD Frame */}
+          <HudPanel variant="cyan" tag="TELEMETRY // QUERY INTERFACE" scan={false}>
+            <h3 className="faq-col-title" style={{ color: 'var(--color-arc-blue)', display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.4rem' }}>
+              <HelpCircle size={22} color="var(--color-arc-blue)" />
               FREQUENTLY ASKED QUESTIONS
             </h3>
 
@@ -72,14 +77,38 @@ export default function RulesFaqSection() {
                   <div
                     key={idx}
                     className={`accordion-item ${isOpen ? 'open' : ''}`}
+                    style={{
+                      background: isOpen ? 'rgba(0, 191, 255, 0.06)' : 'rgba(13, 17, 26, 0.6)',
+                      border: `1px solid ${isOpen ? 'rgba(0, 191, 255, 0.4)' : 'rgba(255, 255, 255, 0.08)'}`,
+                      borderRadius: '6px',
+                      marginBottom: '0.8rem',
+                      overflow: 'hidden',
+                      transition: 'all 0.25s ease'
+                    }}
                   >
                     <button
                       className="accordion-trigger"
                       onClick={() => toggleFaq(idx)}
                       aria-expanded={isOpen}
+                      style={{
+                        width: '100%',
+                        padding: '1rem 1.25rem',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        background: 'transparent',
+                        border: 'none',
+                        color: isOpen ? '#FFFFFF' : '#E2E8F0',
+                        fontFamily: 'var(--font-heading)',
+                        fontSize: '1.05rem',
+                        cursor: 'pointer',
+                        textAlign: 'left'
+                      }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span className="accordion-num">{paddedNum}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--color-arc-blue)' }}>
+                          {paddedNum}
+                        </span>
                         <span>{item.q}</span>
                       </div>
                       <ChevronDown
@@ -87,13 +116,22 @@ export default function RulesFaqSection() {
                         style={{
                           transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                           transition: 'transform 0.25s ease',
-                          flexShrink: 0
+                          flexShrink: 0,
+                          color: 'var(--color-arc-blue)'
                         }}
                       />
                     </button>
 
                     {isOpen && (
-                      <div className="accordion-content">
+                      <div
+                        className="accordion-content"
+                        style={{
+                          padding: '0 1.25rem 1.25rem 2.8rem',
+                          color: '#94A3B8',
+                          fontSize: '0.94rem',
+                          lineHeight: '1.65'
+                        }}
+                      >
                         {item.a}
                       </div>
                     )}
@@ -101,7 +139,7 @@ export default function RulesFaqSection() {
                 );
               })}
             </div>
-          </div>
+          </HudPanel>
         </div>
       </div>
     </section>

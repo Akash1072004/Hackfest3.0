@@ -23,62 +23,82 @@
 
 :root {
   /* ------------------------------------------------------------------------
-     1. COLOR SYSTEM (Cinematic, Controlled, Non-Neon)
+     1. COLOR SYSTEM (Cinematic Superhero & Stark-Tech)
      ------------------------------------------------------------------------ */
-  --color-deep-navy: #111827;
-  --color-graphite: #252A31;
-  --color-charcoal: #1C2026;
-  --color-steel-blue: #3C536B;
-  --color-dark-burgundy: #57242B;
-  --color-muted-crimson: #8F3035;
-  --color-warm-amber: #B98545;
-  --color-muted-gold: #A57B3B;
-  --color-warm-off-white: #ECE8DF;
-  --color-soft-gray: #A7A9AD;
+  /* Primary Dark Base */
+  --color-abyss-black: #05070D;
+  --color-deep-space: #080B12;
+  --color-command-dark: #0D111A;
+  --color-stark-metal: #151A24;
+  --color-cyber-slate: #1D2430;
+
+  /* Superhero Energy Accents */
+  --color-energy-red: #E62429;
+  --color-arc-blue: #00BFFF;
+  --color-stark-gold: #F5B642;
+  --color-holo-cyan: #00F0FF;
+  --color-tech-white: #F5F7FA;
+  --color-metallic-silver: #A7B0BE;
+
+  /* Backward Compatibility Tokens */
+  --color-deep-navy: #080B12;
+  --color-graphite: #151A24;
+  --color-charcoal: #0D111A;
+  --color-steel-blue: #00BFFF;
+  --color-dark-burgundy: #57151A;
+  --color-muted-crimson: #E62429;
+  --color-warm-amber: #F5B642;
+  --color-muted-gold: #F5B642;
+  --color-warm-off-white: #F5F7FA;
+  --color-soft-gray: #A7B0BE;
 
   /* Semantic Theme Tokens */
-  --bg-primary: #111827;
-  --bg-secondary: #1C2026;
-  --bg-tertiary: #252A31;
+  --bg-primary: #080B12;
+  --bg-secondary: #0D111A;
+  --bg-tertiary: #151A24;
   
-  --surface-card: rgba(28, 32, 38, 0.78);
-  --surface-card-hover: rgba(37, 42, 49, 0.92);
-  --surface-glass: rgba(17, 24, 39, 0.82);
-  --surface-overlay: rgba(17, 24, 39, 0.7);
+  --surface-card: rgba(13, 17, 26, 0.82);
+  --surface-card-hover: rgba(21, 26, 36, 0.94);
+  --surface-glass: rgba(8, 11, 18, 0.88);
+  --surface-overlay: rgba(5, 7, 13, 0.85);
 
-  --text-primary: #ECE8DF;
-  --text-secondary: #A7A9AD;
-  --text-muted: #7E8289;
-  --text-inverse: #111827;
+  --text-primary: #F5F7FA;
+  --text-secondary: #A7B0BE;
+  --text-muted: #6B7280;
+  --text-inverse: #05070D;
 
-  --border-subtle: rgba(167, 169, 173, 0.16);
-  --border-medium: rgba(167, 169, 173, 0.28);
-  --border-accent-crimson: rgba(143, 48, 53, 0.45);
-  --border-accent-steel: rgba(60, 83, 107, 0.5);
-  --border-accent-amber: rgba(185, 133, 69, 0.4);
+  --border-subtle: rgba(0, 191, 255, 0.14);
+  --border-medium: rgba(0, 191, 255, 0.28);
+  --border-accent-crimson: rgba(230, 36, 41, 0.55);
+  --border-accent-steel: rgba(0, 191, 255, 0.5);
+  --border-accent-amber: rgba(245, 182, 66, 0.5);
 
-  /* Shadows & Glows (Atmospheric, not fluorescent) */
-  --shadow-card: 0 16px 36px -12px rgba(0, 0, 0, 0.55), 0 0 1px 1px var(--border-subtle);
-  --shadow-hover: 0 24px 48px -12px rgba(0, 0, 0, 0.75), 0 0 1px 1px var(--border-medium);
-  --shadow-crimson: 0 8px 30px rgba(143, 48, 53, 0.2);
-  --shadow-amber: 0 8px 30px rgba(185, 133, 69, 0.2);
+  /* HUD Holographic Shadows & Glows */
+  --shadow-card: 0 16px 40px -10px rgba(0, 0, 0, 0.8), 0 0 1px 1px var(--border-subtle);
+  --shadow-hover: 0 24px 50px -10px rgba(0, 0, 0, 0.9), 0 0 16px rgba(0, 191, 255, 0.25);
+  --shadow-crimson: 0 8px 32px rgba(230, 36, 41, 0.35);
+  --shadow-arc-blue: 0 8px 32px rgba(0, 191, 255, 0.35);
+  --shadow-stark-gold: 0 8px 32px rgba(245, 182, 66, 0.35);
 
   /* ------------------------------------------------------------------------
      2. TYPOGRAPHY SYSTEM
      ------------------------------------------------------------------------ */
-  /* Main display headings ONLY (custom font drop-in ready) */
-  --font-heading: 'HackfestCustomFont', 'Syne', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  /* Subheadings & body text (clean, modern, highly readable) */
-  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  /* Technical metadata, chapters, timestamps */
+  /* Cinematic Display Headings */
+  --font-heading: 'Orbitron', 'HackfestCustomFont', 'Syne', sans-serif;
+  --font-display: 'Orbitron', 'HackfestCustomFont', 'Syne', sans-serif;
+  --font-cinematic: 'Bebas Neue', 'Orbitron', sans-serif;
+  --font-subheading: 'Rajdhani', -apple-system, sans-serif;
+  /* Subheadings & body text */
+  --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  /* Technical HUD telemetry, coordinates, chapters, timestamps */
   --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
 
   /* ------------------------------------------------------------------------
      3. LAYOUT & SPACING
      ------------------------------------------------------------------------ */
-  --container-max: 1240px;
+  --container-max: 1400px;
   --container-wide: 1400px;
-  --nav-height: 76px;
+  --nav-height: 80px;
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 14px;
@@ -224,22 +244,47 @@ img {
 /* --------------------------------------------------------------------------
    CONTAINERS & SECTION ARCHITECTURE
    -------------------------------------------------------------------------- */
-.container {
+.site-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.container,
+.container-wide {
   width: 100%;
   max-width: var(--container-max);
   margin-left: auto;
   margin-right: auto;
-  padding-left: clamp(1.25rem, 3.5vw, 2.5rem);
-  padding-right: clamp(1.25rem, 3.5vw, 2.5rem);
+  padding-left: 32px;
+  padding-right: 32px;
+  box-sizing: border-box;
 }
 
-.container-wide {
-  width: 100%;
-  max-width: var(--container-wide);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: clamp(1.25rem, 3.5vw, 2.5rem);
-  padding-right: clamp(1.25rem, 3.5vw, 2.5rem);
+@media (max-width: 1200px) {
+  .container,
+  .container-wide {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (max-width: 991px) {
+  .container,
+  .container-wide {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .container,
+  .container-wide {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 .section {
@@ -405,9 +450,12 @@ img {
   top: 0;
   left: 0;
   right: 0;
+  width: 100%;
+  max-width: 100%;
   height: var(--nav-height);
   z-index: 1000;
   transition: background-color var(--transition-fast), border-color var(--transition-fast), backdrop-filter var(--transition-fast);
+  box-sizing: border-box;
 }
 
 .navbar.scrolled {
@@ -418,10 +466,37 @@ img {
 }
 
 .navbar-inner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 100%;
+}
+
+@media (max-width: 1200px) {
+  .navbar-inner {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (max-width: 991px) {
+  .navbar-inner {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar-inner {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 .nav-brand {
@@ -464,8 +539,37 @@ img {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 1.85rem;
+  gap: 1.35rem;
   list-style: none;
+}
+
+@media (max-width: 1366px) {
+  .nav-links {
+    gap: 0.9rem;
+  }
+  .nav-item a,
+  .stark-nav-btn,
+  .stark-nav-link {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 1199px) {
+  .nav-links {
+    gap: 0.55rem;
+  }
+  .brand-sub {
+    display: none;
+  }
+  .stark-sys-status {
+    display: none;
+  }
+  .nav-item a,
+  .stark-nav-btn,
+  .stark-nav-link {
+    font-size: 0.73rem;
+    padding: 0.2rem 0.3rem;
+  }
 }
 
 .nav-item a {
@@ -719,14 +823,70 @@ img {
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .nav-links {
-    display: none;
+    display: none !important;
   }
   .mobile-toggle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stark-sys-status {
+    display: none !important;
   }
   .footer-grid {
     grid-template-columns: 1fr 1fr;
     gap: 2.5rem;
+  }
+}
+
+.nav-auth-actions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.stark-login-link {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-tech-white);
+  text-decoration: none;
+  padding: 0.5rem 0.8rem;
+  letter-spacing: 0.08em;
+  transition: color var(--transition-fast);
+}
+
+.stark-login-link:hover {
+  color: var(--color-arc-blue);
+}
+
+.stark-cta-btn {
+  padding: 0.65rem 1.4rem;
+  font-size: 0.84rem;
+}
+
+@media (max-width: 767px) {
+  .stark-login-link {
+    display: none !important;
+  }
+  .stark-cta-btn {
+    padding: 0.45rem 0.85rem !important;
+    font-size: 0.76rem !important;
+  }
+  .brand-title {
+    font-size: 1.05rem;
+  }
+  .nav-brand {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .nav-auth-actions,
+  .nav-dashboard-btn {
+    display: none !important;
+  }
+  .brand-title {
+    font-size: 0.98rem;
   }
 }
 
@@ -744,3 +904,279 @@ img {
     text-align: center;
   }
 }
+
+/* ==========================================================================
+   4. MARVEL-INSPIRED STARK-TECH HUD DESIGN SYSTEM ADDITIONS
+   ========================================================================== */
+
+/* Ambient Cyber Horizon & Grid Floor */
+.cyber-ambient-environment {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.cyber-grid-floor {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(0, 191, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 191, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 15%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 15%, transparent 75%);
+}
+
+.cyber-vignette-radial {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, transparent 35%, rgba(5, 7, 13, 0.75) 100%);
+}
+
+/* Stark-Tech HUD Card Frame */
+.hud-panel-frame {
+  position: relative;
+  background: rgba(13, 17, 26, 0.82);
+  border: 1px solid var(--border-medium);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s, border-color 0.28s;
+  will-change: transform;
+}
+
+.hud-panel-frame:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(0, 191, 255, 0.55);
+}
+
+.hud-variant-cyan {
+  border-color: rgba(0, 191, 255, 0.3);
+}
+.hud-variant-cyan:hover {
+  border-color: rgba(0, 191, 255, 0.65);
+  box-shadow: 0 16px 48px -10px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 191, 255, 0.3);
+}
+
+.hud-variant-red {
+  border-color: rgba(230, 36, 41, 0.35);
+}
+.hud-variant-red:hover {
+  border-color: rgba(230, 36, 41, 0.75);
+  box-shadow: 0 16px 48px -10px rgba(0, 0, 0, 0.85), 0 0 20px rgba(230, 36, 41, 0.35);
+}
+
+.hud-variant-gold {
+  border-color: rgba(245, 182, 66, 0.35);
+}
+.hud-variant-gold:hover {
+  border-color: rgba(245, 182, 66, 0.75);
+  box-shadow: 0 16px 48px -10px rgba(0, 0, 0, 0.85), 0 0 20px rgba(245, 182, 66, 0.35);
+}
+
+/* Corner Markings [+] */
+.hud-corner {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+  opacity: 0.75;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.hud-panel-frame:hover .hud-corner {
+  opacity: 1;
+}
+
+.hud-corner-tl {
+  top: 5px;
+  left: 5px;
+  border-top: 2px solid var(--color-arc-blue);
+  border-left: 2px solid var(--color-arc-blue);
+}
+.hud-corner-tr {
+  top: 5px;
+  right: 5px;
+  border-top: 2px solid var(--color-arc-blue);
+  border-right: 2px solid var(--color-arc-blue);
+}
+.hud-corner-bl {
+  bottom: 5px;
+  left: 5px;
+  border-bottom: 2px solid var(--color-arc-blue);
+  border-left: 2px solid var(--color-arc-blue);
+}
+.hud-corner-br {
+  bottom: 5px;
+  right: 5px;
+  border-bottom: 2px solid var(--color-arc-blue);
+  border-right: 2px solid var(--color-arc-blue);
+}
+
+.hud-variant-red .hud-corner-tl,
+.hud-variant-red .hud-corner-tr,
+.hud-variant-red .hud-corner-bl,
+.hud-variant-red .hud-corner-br {
+  border-color: var(--color-energy-red);
+}
+
+.hud-variant-gold .hud-corner-tl,
+.hud-variant-gold .hud-corner-tr,
+.hud-variant-gold .hud-corner-bl,
+.hud-variant-gold .hud-corner-br {
+  border-color: var(--color-stark-gold);
+}
+
+/* Holographic Scanner Beam */
+.hud-scanner-beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, rgba(0, 191, 255, 0.7), transparent);
+  animation: hudScan 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+@keyframes hudScan {
+  0% { top: 0%; opacity: 0; }
+  15% { opacity: 0.65; }
+  85% { opacity: 0.65; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Top Telemetry Strip */
+.hud-telemetry-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.8rem;
+  background: rgba(5, 7, 13, 0.65);
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-arc-blue);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hud-tag-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-arc-blue);
+  box-shadow: 0 0 6px var(--color-arc-blue);
+  animation: hudPulseDot 2s ease-in-out infinite;
+}
+
+@keyframes hudPulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.6); opacity: 0.4; }
+}
+
+/* Holo Badge Component */
+.holo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 191, 255, 0.08);
+  border: 1px solid rgba(0, 191, 255, 0.35);
+  color: var(--color-arc-blue);
+  box-shadow: 0 0 10px rgba(0, 191, 255, 0.12);
+  width: fit-content;
+}
+
+.holo-badge-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  box-shadow: 0 0 8px currentColor;
+  animation: hudPulseDot 2s ease-in-out infinite;
+}
+
+.holo-badge-red {
+  background: rgba(230, 36, 41, 0.1);
+  border-color: rgba(230, 36, 41, 0.4);
+  color: var(--color-energy-red);
+  box-shadow: 0 0 10px rgba(230, 36, 41, 0.15);
+}
+
+.holo-badge-gold {
+  background: rgba(245, 182, 66, 0.1);
+  border-color: rgba(245, 182, 66, 0.4);
+  color: var(--color-stark-gold);
+  box-shadow: 0 0 10px rgba(245, 182, 66, 0.15);
+}
+
+/* High-Impact Superhero Buttons */
+.btn-reactor {
+  background: linear-gradient(135deg, rgba(0, 191, 255, 0.22) 0%, rgba(0, 191, 255, 0.08) 100%);
+  color: var(--color-tech-white);
+  border: 1px solid var(--color-arc-blue);
+  box-shadow: 0 0 20px rgba(0, 191, 255, 0.3), inset 0 0 12px rgba(0, 191, 255, 0.15);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  padding: 0.95rem 2rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-reactor:hover {
+  background: linear-gradient(135deg, rgba(0, 191, 255, 0.35) 0%, rgba(0, 191, 255, 0.15) 100%);
+  box-shadow: 0 0 32px rgba(0, 191, 255, 0.55), inset 0 0 18px rgba(0, 191, 255, 0.25);
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+.btn-avenger {
+  background: linear-gradient(135deg, #e62429 0%, #a01519 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 24px rgba(230, 36, 41, 0.45);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  padding: 0.95rem 2rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-avenger:hover {
+  background: linear-gradient(135deg, #ff2e34 0%, #b8191e 100%);
+  box-shadow: 0 6px 36px rgba(230, 36, 41, 0.7);
+  transform: translateY(-2px);
+  border-color: var(--color-stark-gold);
+}
+
+/* Reduced Motion Respect */
+@media (prefers-reduced-motion: reduce) {
+  .hud-scanner-beam {
+    animation: none;
+    display: none;
+  }
+  .hud-tag-dot,
+  .holo-badge-pulse {
+    animation: none;
+  }
+  .hero-bg-image {
+    animation: none;
+  }
+  .hud-panel-frame {
+    transition: none;
+  }
+}
+

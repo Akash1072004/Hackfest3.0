@@ -1,53 +1,74 @@
 import React from 'react';
-import { Award, Compass, Sparkles, Terminal, Users2, ShieldCheck, Hammer, Lightbulb } from 'lucide-react';
+import { Terminal, Users2, Hammer, Lightbulb, Activity } from 'lucide-react';
 import { eventHighlights, additionalHighlights } from '../data/eventData';
+import SuperheroPanel from './ui/SuperheroPanel';
+import HoloBadge from './ui/HoloBadge';
 
 export default function HighlightsSection() {
   const highlightIcons = [
-    <Terminal size={22} color="var(--color-steel-blue)" />,
-    <Lightbulb size={22} color="var(--color-warm-amber)" />,
-    <Users2 size={22} color="var(--color-muted-crimson)" />,
-    <Hammer size={22} color="var(--color-warm-off-white)" />
+    <Terminal size={22} color="var(--color-arc-blue)" />,
+    <Lightbulb size={22} color="var(--color-stark-gold)" />,
+    <Users2 size={22} color="var(--color-energy-red)" />,
+    <Hammer size={22} color="var(--color-tech-white)" />
   ];
 
+  const variants = ['blue', 'gold', 'red', 'green'];
+
   return (
-    <section id="highlights" className="section highlights-section">
+    <section id="highlights" className="section highlights-section marvel-telemetry-section">
       <div className="section-transition-top" />
       <div className="container">
         <div className="section-header center">
-          <span className="chapter-badge">
-            <span style={{ color: 'var(--color-warm-amber)', fontWeight: 700 }}>CHAPTER 03</span>
-            <span>SCALE & METRICS</span>
-          </span>
-          <h2 className="heading-section">EVENT HIGHLIGHTS</h2>
+          <HoloBadge variant="cyan" icon={Activity}>
+            MULTIVERSE METRICS // CHAPTER 03
+          </HoloBadge>
+          <h2 className="heading-section marvel-section-title">TACTICAL SCALE & HERO METRICS</h2>
           <p className="section-lead">
-            Structured for deep immersion and maximum output across every tier of computing.
+            Calibrated for deep immersive engineering, rigorous mentorship, and production-grade prototype deployment.
           </p>
         </div>
 
-        {/* 4 Core Statistics */}
-        <div className="stats-grid">
+        {/* 4 Core Statistics in Comic Action Panels */}
+        <div className="stats-grid stark-stats-grid">
           {eventHighlights.map((stat, idx) => (
-            <div key={idx} className="stat-card">
-              <div className="corner-accent corner-tl" />
-              <div className="corner-accent corner-br" />
-              <div className="stat-number">{stat.number}</div>
-              <div className="stat-label">{stat.label}</div>
-              <p className="stat-desc">{stat.description}</p>
-            </div>
+            <SuperheroPanel
+              key={idx}
+              variant={variants[idx % variants.length]}
+              tag={`HERO METRIC 0${idx + 1}`}
+              issueNumber="STAT"
+              className="stark-stat-card"
+            >
+              <div className="stark-stat-card-inner">
+                <div className="stat-number marvel-stat-num">{stat.number}</div>
+                <div className="stat-label marvel-stat-title">{stat.label}</div>
+                <div className="stark-stat-energy-bar" />
+                <p className="stat-desc stark-stat-description">{stat.description}</p>
+              </div>
+            </SuperheroPanel>
           ))}
         </div>
 
         {/* 4 Additional Features / Values */}
-        <div className="features-grid">
+        <div className="features-grid stark-features-grid" style={{ marginTop: '2.5rem' }}>
           {additionalHighlights.map((feat, idx) => (
-            <div key={idx} className="feature-block">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.5rem' }}>
-                {highlightIcons[idx % highlightIcons.length]}
-                <h3 className="feature-title">{feat.title}</h3>
+            <SuperheroPanel
+              key={idx}
+              variant="dark"
+              tag={feat.title.toUpperCase()}
+              className="stark-feature-panel"
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem' }}>
+                <div className="stark-feat-icon-box">
+                  {highlightIcons[idx % highlightIcons.length]}
+                </div>
+                <h3 className="feature-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', color: '#FFFFFF', margin: 0 }}>
+                  {feat.title}
+                </h3>
               </div>
-              <p className="feature-desc">{feat.desc}</p>
-            </div>
+              <p style={{ color: '#94A3B8', fontSize: '0.88rem', lineHeight: '1.55', margin: 0 }}>
+                {feat.desc}
+              </p>
+            </SuperheroPanel>
           ))}
         </div>
       </div>

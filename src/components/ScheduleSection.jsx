@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, MapPin, User, ChevronDown } from 'lucide-react';
+import { Clock, MapPin, User, Shield, Zap, ChevronRight, Award } from 'lucide-react';
 import { scheduleData as defaultScheduleData } from '../data/eventData';
 import { eventService } from '../services/eventService';
+import HoloBadge from './ui/HoloBadge';
 
 export default function ScheduleSection() {
   const [activeDay, setActiveDay] = useState('day1');
@@ -17,77 +18,99 @@ export default function ScheduleSection() {
 
   const currentSchedule = schedule[activeDay] || defaultScheduleData[activeDay];
 
+  const day1Milestones = ['RECRUIT', 'ASSEMBLE', 'BUILD', 'BATTLE'];
+  const day2Milestones = ['DEPLOY', 'EVALUATE', 'FINAL BATTLE', 'CHAMPIONS'];
+  const currentMilestones = activeDay === 'day1' ? day1Milestones : day2Milestones;
+
   return (
-    <section id="schedule" className="section schedule-section">
+    <section id="schedule" className="section schedule-section superhero-timeline-section">
       <div className="section-transition-top" />
       <div className="container">
+        {/* Header */}
         <div className="section-header center">
-          <span className="chapter-badge">
-            <span style={{ color: 'var(--color-warm-amber)', fontWeight: 700 }}>CHAPTER 06</span>
-            <span>CHRONOLOGY OF EVENTS</span>
-          </span>
-          <h2 className="heading-section">EVENT SCHEDULE</h2>
+          <HoloBadge variant="cyan" icon={Clock}>
+            OPERATION TIMELINE // CHAPTER 06
+          </HoloBadge>
+          <h2 className="heading-section marvel-section-title">MISSION TIMELINE: 48-HOUR FLIGHT PLAN</h2>
           <p className="section-lead">
-            The chronological flight plan across both days of HackFest 3.0.
-            Times are currently configurable data marked as [TO BE DECIDED] until final verification.
+            The chronological flight plan across both high-stakes operational days of HackFest 3.0.
           </p>
         </div>
 
-        {/* Day Switcher */}
-        <div className="schedule-tabs">
+        {/* Superhero Operational Phase Pipeline Bar */}
+        <div className="superhero-phase-bar">
+          {currentMilestones.map((m, idx) => (
+            <React.Fragment key={idx}>
+              <div className="superhero-phase-step">
+                <span className="phase-step-num">0{idx + 1}</span>
+                <span className="phase-step-name">{m}</span>
+              </div>
+              {idx < currentMilestones.length - 1 && (
+                <span className="phase-step-arrow">→</span>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* Day Switcher Hub */}
+        <div className="schedule-tabs stark-schedule-tabs" style={{ marginTop: '2rem' }}>
           <button
-            className={`schedule-tab-btn ${activeDay === 'day1' ? 'active' : ''}`}
+            className={`schedule-tab-btn stark-tab-btn ${activeDay === 'day1' ? 'active stark-tab-active' : ''}`}
             onClick={() => setActiveDay('day1')}
           >
-            DAY 01 • INAUGURATION & SPRINTS
+            <span className="stark-tab-indicator" />
+            DAY 01 • RECRUIT, ASSEMBLE & ARENA SPRINTS
           </button>
           <button
-            className={`schedule-tab-btn ${activeDay === 'day2' ? 'active' : ''}`}
+            className={`schedule-tab-btn stark-tab-btn ${activeDay === 'day2' ? 'active stark-tab-active' : ''}`}
             onClick={() => setActiveDay('day2')}
           >
-            DAY 02 • THE FLAGSHIP HACKATHON
+            <span className="stark-tab-indicator" style={{ background: 'var(--color-energy-red)' }} />
+            DAY 02 • THE FINAL BATTLE & CHAMPION SEALS
           </button>
         </div>
 
         {/* Day Header Info */}
-        <div style={{ maxWidth: '860px', margin: '0 auto 2rem auto', textAlign: 'center' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.86rem', color: 'var(--color-warm-amber)', letterSpacing: '0.12em', marginBottom: '0.35rem' }}>
-            {currentSchedule.theme}
+        <div className="stark-schedule-meta-box">
+          <div className="stark-schedule-theme-tag" style={{ color: 'var(--color-stark-gold)', fontWeight: 700 }}>
+            OPERATION: {currentSchedule.theme.toUpperCase()}
           </div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.84rem', color: 'var(--text-muted)' }}>
-            <MapPin size={14} color="var(--color-steel-blue)" />
-            <span>VENUE: {currentSchedule.venue}</span>
+          <div className="stark-schedule-venue-tag">
+            <MapPin size={14} color="var(--color-arc-blue)" />
+            <span>PRIMARY COORDINATES: {currentSchedule.venue}</span>
           </div>
         </div>
 
-        {/* Timeline Stream */}
-        <div className="timeline-stream">
+        {/* Futuristic Timeline Stream */}
+        <div className="timeline-stream stark-timeline-stream">
+          <div className="stark-conduit-line" />
+
           {currentSchedule.items.map((item, idx) => (
             <div
               key={idx}
-              className={`timeline-card ${item.highlight ? 'highlight' : ''}`}
+              className={`timeline-card stark-timeline-card ${item.highlight ? 'stark-timeline-highlight' : ''}`}
             >
-              <div className="timeline-step">
-                {item.order}
+              <div className="timeline-step stark-timeline-node">
+                <span className="stark-node-inner">{item.order}</span>
               </div>
 
-              <div className="timeline-info">
+              <div className="timeline-info stark-timeline-content">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                  <h3 className="timeline-title">{item.title}</h3>
+                  <h3 className="timeline-title stark-timeline-title">{item.title}</h3>
                   {item.badge && (
-                    <span className="chapter-badge" style={{ margin: 0, padding: '0.15rem 0.5rem', fontSize: '0.7rem' }}>
+                    <HoloBadge variant={item.highlight ? 'gold' : 'cyan'}>
                       {item.badge}
-                    </span>
+                    </HoloBadge>
                   )}
                 </div>
 
-                <p className="timeline-desc">{item.description}</p>
+                <p className="timeline-desc stark-timeline-desc">{item.description}</p>
 
                 {/* Dignitaries if Opening Ceremony / Motivational Address */}
                 {item.dignitaries && (
-                  <div className="timeline-dignitaries">
+                  <div className="timeline-dignitaries stark-dignitaries-row">
                     {item.dignitaries.map((dig, dIdx) => (
-                      <span key={dIdx} className="dignitary-badge">
+                      <span key={dIdx} className="dignitary-badge stark-dig-badge">
                         <User size={12} style={{ display: 'inline', marginRight: '4px' }} />
                         {dig.name} ({dig.role})
                       </span>
@@ -96,8 +119,8 @@ export default function ScheduleSection() {
                 )}
               </div>
 
-              <div className="timeline-time-badge">
-                <Clock size={13} style={{ display: 'inline', marginRight: '5px' }} />
+              <div className="timeline-time-badge stark-time-beacon">
+                <Clock size={13} style={{ display: 'inline', marginRight: '6px' }} />
                 <span>{item.time}</span>
               </div>
             </div>

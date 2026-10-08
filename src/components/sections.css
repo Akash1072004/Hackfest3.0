@@ -1177,3 +1177,1557 @@
     gap: 1.2rem;
   }
 }
+
+/* ==========================================================================
+   STARK-TECH / MARVEL-INSPIRED CINEMATIC UI ENGINE
+   ========================================================================== */
+
+/* 01. STARK HERO SECTION */
+.stark-hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: calc(var(--nav-height) + 2.5rem);
+  padding-bottom: 5rem;
+  background-color: var(--color-bg-base);
+  overflow: hidden;
+}
+
+.stark-hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-cyber-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(0, 191, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 191, 255, 0.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(circle at 60% 40%, black 30%, transparent 80%);
+}
+
+.hero-radial-glow {
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  top: 15%;
+  right: 5%;
+  background: radial-gradient(circle, rgba(0, 191, 255, 0.12) 0%, rgba(230, 36, 41, 0.05) 45%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.stark-hero-layout {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 3.5rem;
+  align-items: center;
+  width: 100%;
+}
+
+.stark-hero-text-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.stark-meta-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-bottom: 1.4rem;
+}
+
+.stark-hero-tag {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-stark-gold);
+  background: rgba(245, 182, 66, 0.1);
+  border: 1px solid rgba(245, 182, 66, 0.35);
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  letter-spacing: 0.12em;
+}
+
+.stark-hero-inst {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #94A3B8;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stark-hero-title {
+  font-family: var(--font-heading);
+  font-size: clamp(3.4rem, 7.5vw, 6.2rem);
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.85rem;
+  color: #FFFFFF;
+}
+
+.stark-glow-accent {
+  color: var(--color-arc-blue);
+  text-shadow: 
+    0 0 20px rgba(0, 191, 255, 0.7),
+    0 0 45px rgba(0, 191, 255, 0.4),
+    0 0 80px rgba(0, 191, 255, 0.2);
+}
+
+.stark-hero-tagline {
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 2.4vw, 1.65rem);
+  font-weight: 700;
+  color: var(--color-stark-gold);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 1.4rem;
+  text-shadow: 0 0 16px rgba(245, 182, 66, 0.35);
+}
+
+.stark-hero-desc {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #94A3B8;
+  max-width: 620px;
+  margin-bottom: 2.2rem;
+}
+
+.stark-hero-actions {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.8rem;
+}
+
+.stark-stats-hud {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  background: rgba(13, 17, 26, 0.8);
+  border: 1px solid rgba(0, 191, 255, 0.25);
+  box-shadow: inset 0 0 20px rgba(0, 191, 255, 0.04), 0 8px 30px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  padding: 1.1rem 1.4rem;
+  backdrop-filter: blur(12px);
+}
+
+.stark-stat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.stark-stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748B;
+  letter-spacing: 0.1em;
+}
+
+.stark-stat-val {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #F5F7FA;
+  letter-spacing: 0.04em;
+}
+
+.stark-hero-3d-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.stark-reactor-frame {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  height: 480px;
+  border-radius: 12px;
+  background: radial-gradient(circle at center, rgba(0, 191, 255, 0.08) 0%, rgba(5, 7, 13, 0.92) 75%);
+  border: 1px solid rgba(0, 191, 255, 0.35);
+  box-shadow: 
+    0 0 35px rgba(0, 191, 255, 0.15),
+    inset 0 0 25px rgba(0, 191, 255, 0.06);
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+.reactor-telemetry-header {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  right: 18px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--color-arc-blue);
+  letter-spacing: 0.1em;
+  pointer-events: none;
+}
+
+.hud-tag-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-arc-blue);
+  box-shadow: 0 0 8px var(--color-arc-blue);
+}
+
+/* 02. MISSION BRIEFING */
+.stark-briefing-section {
+  position: relative;
+  background: var(--color-bg-base);
+}
+
+.briefing-hud-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.briefing-card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0.85rem;
+}
+
+.briefing-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.briefing-directive-code {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #94A3B8;
+}
+
+.briefing-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.briefing-title {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+}
+
+.briefing-desc {
+  font-size: 0.94rem;
+  color: #94A3B8;
+  line-height: 1.65;
+}
+
+/* 03. TACTICAL SCALE & METRICS */
+.stark-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.stark-stat-card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.stark-stat-num {
+  font-family: var(--font-heading);
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #F5F7FA;
+  letter-spacing: 0.02em;
+}
+
+.stark-stat-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-stark-gold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stark-stat-energy-bar {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-arc-blue) 0%, transparent 100%);
+  margin: 0.4rem 0 0.6rem 0;
+}
+
+.stark-stat-description {
+  font-size: 0.88rem;
+  color: #94A3B8;
+  line-height: 1.5;
+}
+
+.stark-features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+/* 04. THE THREE ARENAS */
+.stark-arenas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.arena-card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.arena-phase-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  width: fit-content;
+}
+
+.arena-glance-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin: 1.4rem 0;
+  padding: 0.8rem 1rem;
+  background: rgba(8, 11, 18, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+}
+
+.arena-glance-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.arena-glance-lbl {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #64748B;
+  letter-spacing: 0.08em;
+}
+
+.arena-glance-val {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #F5F7FA;
+}
+
+/* 05. MISSION DATABASE */
+.stark-missions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+  margin-top: 3rem;
+}
+
+.mission-card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mission-hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.85rem;
+}
+
+.mission-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 1rem 0 1.5rem 0;
+}
+
+.mission-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #94A3B8;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.2rem 0.55rem;
+  border-radius: 3px;
+}
+
+/* 06. TIMELINE & FLIGHT PLAN */
+.stark-schedule-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.stark-tab-btn {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 0.8rem 1.8rem;
+  background: rgba(13, 17, 26, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.stark-tab-btn:hover {
+  border-color: var(--color-arc-blue);
+  color: #F5F7FA;
+}
+
+.stark-tab-active {
+  background: rgba(0, 191, 255, 0.12);
+  border-color: var(--color-arc-blue);
+  color: #F5F7FA;
+  box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
+}
+
+.stark-tab-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-arc-blue);
+  box-shadow: 0 0 8px var(--color-arc-blue);
+}
+
+.stark-schedule-meta-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.9rem 1.4rem;
+  background: rgba(13, 17, 26, 0.6);
+  border: 1px solid rgba(0, 191, 255, 0.2);
+  border-radius: 6px;
+  margin-bottom: 2.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #94A3B8;
+}
+
+.stark-timeline-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.timeline-badge-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+/* 07. REWARD VAULT 3D */
+.stark-3d-vault-frame {
+  position: relative;
+  width: 100%;
+  background: radial-gradient(circle at center, rgba(0, 191, 255, 0.06) 0%, rgba(5, 7, 13, 0.95) 70%);
+  border: 1px solid rgba(0, 191, 255, 0.3);
+  box-shadow: 0 0 45px rgba(0, 191, 255, 0.12);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2.5rem 0 3.5rem 0;
+  overflow: hidden;
+}
+
+.vault-telemetry-strip {
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--color-arc-blue);
+  letter-spacing: 0.12em;
+}
+
+.vault-pedestal-labels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.vault-podium-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.8rem;
+  border-radius: 6px;
+  background: rgba(13, 17, 26, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.podium-rank {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-arc-blue);
+}
+
+.podium-rank.champion {
+  color: var(--color-stark-gold);
+}
+
+.podium-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #F5F7FA;
+}
+
+.stark-vault-summary {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.stark-vault-img-wrap {
+  border-radius: 8px;
+  border: 1px solid rgba(0, 191, 255, 0.25);
+  box-shadow: 0 0 30px rgba(0, 191, 255, 0.1);
+  overflow: hidden;
+}
+
+/* 08. THE HIGH COUNCIL */
+.stark-council-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.stark-council-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.75rem;
+  margin-top: 2rem;
+}
+
+.council-avatar-box {
+  width: 100%;
+  height: 220px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+
+.council-avatar-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(1.08) brightness(0.95);
+  transition: transform 0.4s ease;
+}
+
+.council-avatar-box:hover img {
+  transform: scale(1.05);
+}
+
+/* 09. RESPONSIVE QUERIES */
+@media (max-width: 1024px) {
+  .stark-hero-layout {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .stark-hero-3d-col {
+    order: -1;
+  }
+  .stark-reactor-frame {
+    max-width: 380px;
+    height: 380px;
+  }
+  .stark-stats-grid,
+  .stark-features-grid,
+  .stark-arenas-grid,
+  .stark-missions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stark-vault-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .stark-hero-section {
+    padding-top: calc(var(--nav-height) + 1.5rem);
+    padding-bottom: 3.5rem;
+  }
+  .stark-stats-hud {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  .stark-reactor-frame {
+    max-width: 320px;
+    height: 320px;
+  }
+  .stark-stats-grid,
+  .stark-features-grid,
+  .stark-arenas-grid,
+  .stark-missions-grid {
+    grid-template-columns: 1fr;
+  }
+  .vault-pedestal-labels {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  .stark-schedule-tabs,
+  .stark-council-tabs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-radial-glow,
+  .hud-tag-dot,
+  .hud-scanner-beam {
+    animation: none !important;
+  }
+  .hud-panel:hover {
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   MARVEL SUPERHERO CINEMATIC UNIVERSE STYLES
+   ========================================================================== */
+
+/* 01. MARVEL CINEMATIC HERO SECTION */
+.marvel-cinematic-hero-section {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: calc(var(--nav-height) + 1.5rem);
+  padding-bottom: 3.5rem;
+  background: radial-gradient(ellipse at 65% 35%, #0e1524 0%, #05070d 75%);
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+
+.marvel-hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.marvel-city-vignette {
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(180deg, rgba(5, 7, 13, 0.6) 0%, transparent 40%, rgba(5, 7, 13, 0.95) 100%),
+    radial-gradient(circle at 75% 35%, rgba(0, 191, 255, 0.12) 0%, transparent 60%);
+}
+
+.marvel-sky-nebula {
+  position: absolute;
+  top: 5%;
+  right: 10%;
+  width: min(600px, 80vw);
+  height: min(600px, 80vw);
+  background: radial-gradient(circle, rgba(230, 36, 41, 0.15) 0%, rgba(245, 182, 66, 0.08) 45%, transparent 70%);
+  filter: blur(80px);
+}
+
+.marvel-hero-container {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.8rem, 3.5vw, 3rem);
+  width: 100%;
+  max-width: 1400px;
+  box-sizing: border-box;
+}
+
+.marvel-hero-layout,
+.marvel-hero-grid {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+  gap: clamp(1.5rem, 3vw, 3.5rem);
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.marvel-hero-narrative-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.marvel-comic-badge-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+  align-self: flex-start;
+}
+
+.marvel-logo-badge {
+  background: #e62429;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 2px;
+  box-shadow: 2px 2px 0px #000000, 0 0 12px rgba(230, 36, 41, 0.5);
+}
+
+.marvel-hero-inst {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #94a3b8;
+  letter-spacing: 0.1em;
+}
+
+.marvel-title-wrap {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1.25rem;
+}
+
+.marvel-main-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.8rem, 5.2vw, 5.4rem);
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  max-width: 100%;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-shadow: 
+    3px 3px 0px #000000,
+    0 0 35px rgba(230, 36, 41, 0.5);
+}
+
+.marvel-title-word {
+  color: #ffffff;
+}
+
+.marvel-title-number {
+  color: #00bfff;
+  margin-left: 0.4rem;
+  text-shadow: 
+    0 0 25px rgba(0, 191, 255, 0.8),
+    0 0 50px rgba(0, 191, 255, 0.4);
+}
+
+.marvel-impact-burst-tag {
+  font-family: var(--font-heading);
+  font-size: clamp(0.95rem, 1.6vw, 1.35rem);
+  font-weight: 800;
+  color: #f5b642;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  max-width: 100%;
+  text-shadow: 2px 2px 0px #000000, 0 0 16px rgba(245, 182, 66, 0.4);
+}
+
+.marvel-hero-desc {
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  line-height: 1.65;
+  color: #cbd5e1;
+  width: 100%;
+  max-width: 720px;
+  margin-bottom: 2rem;
+}
+
+.marvel-hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 0;
+}
+
+.marvel-assemble-btn {
+  padding: 0.95rem 2rem;
+  font-size: 0.95rem;
+  box-shadow: 4px 4px 0px #000000, 0 0 25px rgba(230, 36, 41, 0.6);
+}
+
+.btn-replay-sequence {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(13, 17, 26, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #94a3b8;
+  padding: 0.8rem 1.2rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-replay-sequence:hover {
+  border-color: #00bfff;
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
+}
+
+.marvel-roster-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  background: rgba(8, 11, 18, 0.85);
+  border: 2px solid rgba(230, 36, 41, 0.3);
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+  border-radius: 6px;
+  padding: 1.1rem 1.4rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.marvel-roster-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.marvel-roster-lbl {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #64748b;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.marvel-roster-val {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f5f7fa;
+}
+
+.marvel-hero-3d-col {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.marvel-cinematic-viewport {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: clamp(340px, 40vw, 480px);
+  background: radial-gradient(circle at center, rgba(14, 21, 36, 0.6) 0%, rgba(5, 7, 13, 0.95) 75%);
+  border: 2px solid #e62429;
+  box-shadow: 
+    6px 6px 0px rgba(0, 0, 0, 0.9),
+    0 0 35px rgba(230, 36, 41, 0.25);
+  border-radius: 8px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.marvel-cinematic-viewport canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  display: block;
+}
+
+.marvel-viewport-tag {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  right: 18px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #f5b642;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.marvel-tag-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e62429;
+  box-shadow: 0 0 10px #e62429;
+  animation: pulse 1.5s infinite;
+}
+
+.marvel-viewport-footer {
+  position: absolute;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.marvel-hint-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(5, 7, 13, 0.85);
+  border: 1px solid rgba(245, 182, 66, 0.35);
+  padding: 0.3rem 0.85rem;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #cbd5e1;
+  letter-spacing: 0.08em;
+}
+
+/* 02. DOCTOR DOOM THREAT BATTLEGROUND */
+.doom-battle-section {
+  position: relative;
+  background: #05070d;
+}
+
+.doom-villain-stage-card {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: clamp(300px, 42vw, 440px);
+  background: radial-gradient(circle at center, rgba(0, 255, 119, 0.06) 0%, rgba(5, 7, 13, 0.98) 75%);
+  border: 2px solid #00ff77;
+  box-shadow: 
+    8px 8px 0px rgba(0, 0, 0, 0.9),
+    0 0 45px rgba(0, 255, 119, 0.2);
+  border-radius: 8px;
+  margin-top: 2.5rem;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.doom-villain-stage-card canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  display: block;
+}
+
+.doom-stage-header {
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: #00ff77;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.doom-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ff77;
+  box-shadow: 0 0 10px #00ff77;
+  animation: pulse 1.2s infinite;
+}
+
+.doom-stage-footer {
+  position: absolute;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.doom-warning-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(5, 7, 13, 0.9);
+  border: 1px solid rgba(0, 255, 119, 0.4);
+  padding: 0.35rem 0.95rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #00ff77;
+  letter-spacing: 0.1em;
+}
+
+.doom-threats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.8rem;
+}
+
+.doom-threat-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.doom-threat-code {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.1em;
+}
+
+.doom-threat-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #e62429;
+  font-weight: 700;
+}
+
+.doom-threat-title {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.8rem;
+  line-height: 1.2;
+}
+
+.doom-threat-brief {
+  font-size: 0.92rem;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.doom-threat-action-bar {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #f5b642;
+  letter-spacing: 0.08em;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* 03. AVENGERS ASSEMBLE TEAM REGISTRATION */
+.avengers-assemble-section {
+  position: relative;
+  background: #05070d;
+}
+
+.hero-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.hero-slot-card {
+  position: relative;
+  background: rgba(13, 17, 26, 0.9);
+  border-radius: 6px;
+  padding: 1.6rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  cursor: pointer;
+}
+
+.hero-slot-card:hover,
+.hero-slot-active {
+  transform: translateY(-8px);
+}
+
+.hero-slot-avatar-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.hero-slot-silhouette {
+  width: 52px;
+  height: 52px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-slot-badge {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.hero-slot-role {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.04em;
+}
+
+.hero-slot-archetype {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.8rem;
+}
+
+.hero-slot-desc {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  line-height: 1.55;
+  margin-bottom: 1.2rem;
+}
+
+.hero-slot-glow-bar {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  margin-top: auto;
+}
+
+.deployment-steps-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem;
+  padding: 1.4rem;
+  background: rgba(5, 7, 13, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  margin-bottom: 2rem;
+}
+
+.deployment-step-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.deployment-step-num {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #f5b642;
+  letter-spacing: 0.1em;
+}
+
+.deployment-step-lbl {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.deployment-step-desc {
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.marvel-hero-cta {
+  padding: 1.2rem 3.5rem;
+  font-size: 1.1rem;
+  box-shadow: 6px 6px 0px #000000, 0 0 35px rgba(230, 36, 41, 0.7);
+}
+
+/* 04. SUPERHERO TIMELINE MILESTONE BAR */
+.superhero-phase-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.superhero-phase-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(13, 17, 26, 0.8);
+  border: 1px solid rgba(0, 191, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.phase-step-num {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: #00bfff;
+  font-weight: 700;
+}
+
+.phase-step-name {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  color: #f5f7fa;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.phase-step-arrow {
+  color: #e62429;
+  font-weight: 900;
+  font-size: 1.2rem;
+}
+
+/* 05. INFINITY VAULT SECTION */
+.infinity-vault-section {
+  position: relative;
+  background: #05070d;
+}
+
+.infinity-3d-vault-card {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: clamp(300px, 42vw, 440px);
+  background: radial-gradient(circle at center, rgba(245, 182, 66, 0.08) 0%, rgba(5, 7, 13, 0.98) 75%);
+  border: 2px solid #f5b642;
+  box-shadow: 
+    8px 8px 0px rgba(0, 0, 0, 0.9),
+    0 0 50px rgba(245, 182, 66, 0.25);
+  border-radius: 8px;
+  margin: 2.5rem 0 3.5rem 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.infinity-3d-vault-card canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  display: block;
+}
+
+.marvel-section-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  text-shadow: 2px 2px 0px #000000;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS FOR MARVEL CINEMATIC EXPERIENCE
+   ========================================================================== */
+
+/* 1. Large Desktop (>= 1440px) */
+@media (min-width: 1440px) {
+  .marvel-hero-grid,
+  .marvel-hero-layout {
+    grid-template-columns: minmax(0, 1.18fr) minmax(420px, 0.82fr);
+    gap: 3.5rem;
+  }
+  .marvel-cinematic-viewport {
+    max-width: 520px;
+    height: 480px;
+  }
+}
+
+/* 2. Desktop (1200px - 1439px) */
+@media (max-width: 1439px) and (min-width: 1200px) {
+  .marvel-hero-grid,
+  .marvel-hero-layout {
+    grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+    gap: 2.8rem;
+  }
+  .marvel-cinematic-viewport {
+    max-width: 480px;
+    height: 450px;
+  }
+  .marvel-main-title {
+    font-size: clamp(2.8rem, 5vw, 4.8rem);
+  }
+}
+
+/* 3. Laptop (992px - 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .marvel-hero-grid,
+  .marvel-hero-layout {
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    gap: 2rem;
+  }
+  .marvel-cinematic-viewport {
+    max-width: 420px;
+    height: 400px;
+  }
+  .marvel-main-title {
+    font-size: clamp(2.5rem, 4.5vw, 4rem);
+  }
+  .marvel-impact-burst-tag {
+    font-size: 1.1rem;
+    letter-spacing: 0.14em;
+  }
+  .marvel-hero-desc {
+    max-width: 600px;
+    font-size: 0.98rem;
+    margin-bottom: 1.6rem;
+  }
+  .marvel-hero-actions {
+    gap: 0.8rem;
+  }
+  .marvel-assemble-btn {
+    padding: 0.85rem 1.6rem;
+    font-size: 0.88rem;
+  }
+  .marvel-roster-strip {
+    padding: 1rem 1.2rem;
+    gap: 1rem;
+  }
+}
+
+/* 4. Tablet (768px - 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+  .marvel-hero-grid,
+  .marvel-hero-layout {
+    grid-template-columns: 1fr;
+    gap: 2.4rem;
+  }
+  .marvel-hero-narrative-col {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .marvel-hero-desc {
+    max-width: 680px;
+    margin-bottom: 1.8rem;
+  }
+  .marvel-hero-actions {
+    justify-content: flex-start;
+  }
+  .marvel-hero-3d-col {
+    order: 2;
+    width: 100%;
+  }
+  .marvel-cinematic-viewport {
+    max-width: 440px;
+    height: 380px;
+    margin: 0 auto;
+  }
+  .marvel-roster-strip {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+  .doom-threats-grid,
+  .hero-slots-grid,
+  .deployment-steps-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 5. Mobile (< 768px) */
+@media (max-width: 767px) {
+  .marvel-cinematic-hero-section {
+    padding-top: calc(var(--nav-height) + 1rem);
+    padding-bottom: 2.5rem;
+  }
+  .marvel-hero-grid,
+  .marvel-hero-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .marvel-hero-narrative-col {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .marvel-comic-badge-strip {
+    gap: 0.5rem;
+  }
+  .marvel-logo-badge {
+    font-size: 0.78rem;
+    padding: 0.25rem 0.55rem;
+  }
+  .marvel-hero-inst {
+    font-size: 0.72rem;
+  }
+  .marvel-main-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .marvel-impact-burst-tag {
+    font-size: 0.92rem;
+    letter-spacing: 0.1em;
+  }
+  .marvel-hero-desc {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .marvel-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 0.75rem;
+  }
+  .marvel-assemble-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.85rem 1rem;
+    font-size: 0.86rem;
+    white-space: normal;
+    text-align: center;
+  }
+  .btn-reactor,
+  .btn-replay-sequence {
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem 1rem;
+    font-size: 0.84rem;
+  }
+  .marvel-hero-3d-col {
+    order: 2;
+    width: 100%;
+  }
+  .marvel-cinematic-viewport {
+    max-width: 340px;
+    height: 310px;
+    margin: 0 auto;
+  }
+  .marvel-roster-strip {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    padding: 1rem;
+  }
+  .doom-threats-grid,
+  .hero-slots-grid,
+  .deployment-steps-row {
+    grid-template-columns: 1fr;
+  }
+  .superhero-phase-bar {
+    display: none;
+  }
+}
+
+/* 6. Small Mobile (< 480px) */
+@media (max-width: 479px) {
+  .marvel-main-title {
+    font-size: clamp(1.85rem, 8vw, 2.4rem);
+  }
+  .marvel-impact-burst-tag {
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+  }
+  .marvel-assemble-btn {
+    font-size: 0.82rem;
+    padding: 0.8rem 0.75rem;
+  }
+  .marvel-cinematic-viewport {
+    max-width: 100%;
+    height: 270px;
+  }
+  .marvel-viewport-tag {
+    font-size: 0.65rem;
+    top: 8px;
+    left: 10px;
+    right: 10px;
+  }
+  .marvel-roster-val {
+    font-size: 0.95rem;
+  }
+}
+
+

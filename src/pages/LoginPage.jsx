@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ArrowLeft, ArrowUpRight, Lock, Mail, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Lock, Mail, AlertCircle, Loader2, ShieldCheck, Zap } from 'lucide-react';
 import { eventMeta } from '../data/eventData';
+import HudPanel from '../components/ui/HudPanel';
+import HoloBadge from '../components/ui/HoloBadge';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -31,107 +33,110 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ minHeight: '85vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'calc(var(--nav-height) + 2rem) 1.5rem 4rem' }}>
-      <div className="container" style={{ maxWidth: '480px' }}>
+    <div style={{ minHeight: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'calc(var(--nav-height) + 2rem) 1.5rem 4rem', position: 'relative' }}>
+      <div className="container" style={{ maxWidth: '500px', position: 'relative', zIndex: 10 }}>
         <Link
           to="/"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-warm-amber)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', marginBottom: '1.5rem' }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-arc-blue)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', letterSpacing: '0.08em', marginBottom: '1.5rem' }}
         >
           <ArrowLeft size={16} />
-          RETURN TO HOME
+          RETURN TO HOME BASE
         </Link>
 
-        <div style={{ background: 'rgba(37, 42, 49, 0.85)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: 'clamp(2rem, 5vw, 2.8rem)', boxShadow: 'var(--shadow-card)' }}>
+        <HudPanel variant="cyan" tag="ACCESS PORTAL // SEC-LVL 4" scan={true}>
           <div style={{ marginBottom: '1.8rem' }}>
-            <span className="chapter-badge">ACCESS PORTAL</span>
-            <h1 className="heading-display" style={{ fontSize: '2rem', marginBottom: '0.4rem' }}>
-              SIGN IN
+            <HoloBadge variant="cyan" icon={ShieldCheck} style={{ marginBottom: '0.8rem' }}>
+              ACCESS COMMAND CENTER
+            </HoloBadge>
+            <h1 className="heading-display" style={{ fontSize: '2.2rem', marginBottom: '0.4rem', color: '#FFFFFF', letterSpacing: '0.04em' }}>
+              AUTHENTICATION REQUIRED
             </h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
-              Enter your credentials to manage registrations, teams, and submissions for {eventMeta.name}.
+            <p style={{ color: '#94A3B8', fontSize: '0.92rem', lineHeight: '1.6' }}>
+              Verify identity to access your tactical dashboard, team assets, and mission submissions for {eventMeta.name}.
             </p>
           </div>
 
           {!isConfigured && (
-            <div style={{ background: 'rgba(185, 133, 69, 0.12)', border: '1px solid var(--border-accent-amber)', borderRadius: 'var(--radius-sm)', padding: '0.9rem 1rem', marginBottom: '1.5rem', fontSize: '0.82rem', color: 'var(--color-warm-off-white)', lineHeight: '1.5' }}>
-              <strong>Notice:</strong> Supabase environment variables are currently pending setup. You can still explore all public features and dashboards.
+            <div style={{ background: 'rgba(245, 182, 66, 0.1)', border: '1px solid var(--color-stark-gold)', borderRadius: '4px', padding: '0.9rem 1rem', marginBottom: '1.5rem', fontSize: '0.82rem', color: '#F5F7FA', lineHeight: '1.5', fontFamily: 'var(--font-mono)' }}>
+              <strong>Notice:</strong> Supabase environment configuration pending. Public simulation interfaces remain active.
             </div>
           )}
 
           {error && (
-            <div style={{ background: 'rgba(143, 48, 53, 0.2)', border: '1px solid var(--border-accent-crimson)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1rem', display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#ffb4b7', fontSize: '0.85rem', marginBottom: '1.4rem' }}>
-              <AlertCircle size={18} style={{ flexShrink: 0 }} />
+            <div style={{ background: 'rgba(230, 36, 41, 0.15)', border: '1px solid var(--color-energy-red)', borderRadius: '4px', padding: '0.8rem 1rem', display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#FFB4B7', fontSize: '0.85rem', marginBottom: '1.4rem' }}>
+              <AlertCircle size={18} style={{ flexShrink: 0, color: 'var(--color-energy-red)' }} />
               <span>{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
-              <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.4rem', letterSpacing: '0.05em' }}>
-                EMAIL ADDRESS
+              <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.4rem', letterSpacing: '0.08em' }}>
+                OPERATIVE EMAIL
               </label>
               <div style={{ position: 'relative' }}>
-                <Mail size={18} color="var(--color-soft-gray)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                <Mail size={18} color="var(--color-arc-blue)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="builder@institution.ac.in"
+                  placeholder="operative@institution.ac.in"
                   required
-                  style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.7rem', background: '#111827', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--color-warm-off-white)', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
+                  style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(0, 191, 255, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.94rem' }}
                 />
               </div>
             </div>
 
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                <label style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', letterSpacing: '0.05em' }}>
-                  PASSWORD
+                <label style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', letterSpacing: '0.08em' }}>
+                  SECURITY PASSPHRASE
                 </label>
-                <Link to="/forgot-password" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--color-warm-amber)' }}>
-                  FORGOT?
+                <Link to="/forgot-password" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)' }}>
+                  RECOVER KEY?
                 </Link>
               </div>
               <div style={{ position: 'relative' }}>
-                <Lock size={18} color="var(--color-soft-gray)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                <Lock size={18} color="var(--color-arc-blue)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   required
-                  style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.7rem', background: '#111827', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--color-warm-off-white)', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
+                  style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(0, 191, 255, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.94rem' }}
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="btn btn-primary"
+              className="btn btn-reactor"
               disabled={loading}
-              style={{ width: '100%', marginTop: '0.5rem', justifyContent: 'center' }}
+              style={{ width: '100%', marginTop: '0.6rem', justifyContent: 'center' }}
             >
               {loading ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
-                  AUTHENTICATING...
+                  AUTHENTICATING OPERATIVE...
                 </>
               ) : (
                 <>
-                  ENTER SYSTEM
+                  <Zap size={18} />
+                  AUTHORIZE & ENTER
                   <ArrowUpRight size={18} />
                 </>
               )}
             </button>
           </form>
 
-          <div style={{ marginTop: '1.8rem', textAlign: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: '1.2rem', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-            Not registered yet?{' '}
-            <Link to="/signup" style={{ color: 'var(--color-warm-amber)', fontWeight: 600 }}>
-              Create Builder Account
+          <div style={{ marginTop: '1.8rem', textAlign: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1.2rem', fontSize: '0.88rem', color: '#94A3B8' }}>
+            New operative?{' '}
+            <Link to="/signup" style={{ color: 'var(--color-stark-gold)', fontWeight: 600 }}>
+              Create Operative Profile
             </Link>
           </div>
-        </div>
+        </HudPanel>
       </div>
     </div>
   );
