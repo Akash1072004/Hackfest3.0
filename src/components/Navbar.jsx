@@ -16,7 +16,8 @@ export default function Navbar() {
       setScrolled(window.scrollY > 30);
       const introEl = document.getElementById('cinematic-intro');
       if (introEl && location.pathname === '/') {
-        setPastIntro(window.scrollY >= introEl.offsetHeight * 0.85);
+        const totalScrollable = introEl.offsetHeight - window.innerHeight;
+        setPastIntro(window.scrollY >= introEl.offsetTop + totalScrollable);
       } else {
         setPastIntro(true);
       }

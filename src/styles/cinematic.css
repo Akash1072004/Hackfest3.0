@@ -27,19 +27,12 @@
   box-sizing: border-box;
 }
 
-/* Minimalist HUD Navbar Mode during Cinematic Intro */
+/* Minimalist HUD Navbar Mode during Cinematic Intro: strictly hidden until intro finishes */
 .navbar.navbar-in-intro {
-  background: transparent !important;
-  border-bottom: 1px solid transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  box-shadow: none !important;
-  opacity: 0.85;
-  transition: opacity 0.4s ease, background 0.4s ease;
-}
-
-.navbar.navbar-in-intro:hover {
-  opacity: 1;
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
 /* --- 2. Cinematic Loading Screen Overlay --- */
@@ -512,6 +505,12 @@
   color: #00bfff;
   font-weight: 700;
   text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+}
+
+.active-stage-cyan {
+  color: #00e5ff;
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.7);
 }
 
 .active-stage-amber {

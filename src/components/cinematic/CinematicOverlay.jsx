@@ -10,27 +10,33 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [synthAudio, setSynthAudio] = useState(null);
 
-  // Determine current cinematic phase across all 7 scenes
-  let phaseName = 'COSMIC ARRIVAL // DEEP SPACE';
+  // Determine current cinematic phase across all 9 sequential scenes
+  let phaseName = 'DEEP SPACE INTRODUCTION // SECTOR 01';
   let phaseDetail = 'QUIET COSMOS • MULTI-DEPTH STARFIELD';
-  if (progress >= 0.12 && progress < 0.26) {
-    phaseName = 'PLANETARY FLYBY // THE UNIVERSE';
-    phaseDetail = 'CELESTIAL ROTATION • ATMOSPHERIC HORIZON';
-  } else if (progress >= 0.28 && progress < 0.46) {
-    phaseName = 'DOCTOR DOOM REVEALED';
-    phaseDetail = 'AUTHENTIC 3D ARMOR • EMERALD RIM LIGHTING';
-  } else if (progress >= 0.46 && progress < 0.58) {
-    phaseName = 'BIFROST CELESTIAL SURGE';
-    phaseDetail = 'ATMOSPHERIC THUNDER • MALE THOR ASSET PENDING';
-  } else if (progress >= 0.58 && progress < 0.74) {
-    phaseName = 'IRON MAN MARK VII ARRIVAL';
-    phaseDetail = 'AUTHENTIC 3D SUIT • ARC REACTOR & SUPERSONIC HOVER';
-  } else if (progress >= 0.74 && progress < 0.88) {
-    phaseName = 'SPIDER-MAN SWING ARRIVAL';
-    phaseDetail = 'AUTHENTIC MOVABLE 3D HERO • WEB-SLINGING ACTION';
-  } else if (progress >= 0.88) {
-    phaseName = 'SUPERHERO ASSEMBLY • HACKFEST 3.0';
-    phaseDetail = 'MULTIVERSE CHAMPIONS ASSEMBLED // REC BANDA';
+  if (progress >= 0.10 && progress < 0.22) {
+    phaseName = 'SUPERSONIC FLYBY // SPACE FIGHTER';
+    phaseDetail = 'CYAN ENGINE THRUSTERS • CELESTIAL HORIZON';
+  } else if (progress >= 0.22 && progress < 0.35) {
+    phaseName = 'DOCTOR DOOM // LATVERIAN MONARCH';
+    phaseDetail = 'EMERALD ENERGY RIM • ARMORED COMMAND';
+  } else if (progress >= 0.35 && progress < 0.46) {
+    phaseName = 'THOR // CELESTIAL MJOLNIR & THUNDER';
+    phaseDetail = 'ASGARDIAN HAMMER • BIFROST LIGHTNING';
+  } else if (progress >= 0.46 && progress < 0.60) {
+    phaseName = 'IRON MAN MARK VII // PORTAL EMERGENCE';
+    phaseDetail = 'SUPERSONIC FLIGHT • UPRIGHT HEROIC HOVER';
+  } else if (progress >= 0.60 && progress < 0.72) {
+    phaseName = 'SPIDER-MAN // WEB SLINGER';
+    phaseDetail = 'ACROBATIC REVEAL • DYNAMIC MULTIVERSE ENTRY';
+  } else if (progress >= 0.72 && progress < 0.80) {
+    phaseName = 'SPACECRAFT VANGUARD // ESCORT MANEUVER';
+    phaseDetail = 'TACTICAL REPOSITION • STARFIELD PERIMETER';
+  } else if (progress >= 0.80 && progress < 0.90) {
+    phaseName = 'MULTIVERSE HEROES ASSEMBLED // ALL CHAMPIONS';
+    phaseDetail = 'FULL SQUAD FORMATION • STANDING READY';
+  } else if (progress >= 0.90) {
+    phaseName = 'HACKFEST 3.0 // DIMENSIONAL REVEAL';
+    phaseDetail = 'THE NEXT GENERATION HEROES • REC BANDA';
   }
 
   // Web Audio Synth for ambient futuristic reactor hum & cosmic pulse
@@ -105,9 +111,9 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
     };
   }, [synthAudio]);
 
-  // Title reveal threshold & opacity calculation (fades in at 0.89, fully visible by 0.97+)
-  const revealOpacity = Math.min(1, Math.max(0, (progress - 0.89) / 0.08));
-  const showReveal = progress >= 0.89;
+  // Title reveal threshold & opacity calculation (STRICTLY in Scene 9: progress >= 0.90)
+  const revealOpacity = Math.min(1, Math.max(0, (progress - 0.90) / 0.04));
+  const showReveal = progress >= 0.90;
 
   return (
     <div className="cinematic-overlay-hud">
@@ -157,40 +163,42 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
         </div>
       </div>
 
-      {/* CENTER MOVIE TITLE REVEAL (Progress >= 0.88) */}
-      <div
-        className={`cinematic-title-reveal ${showReveal ? 'reveal-active' : ''}`}
-        style={{
-          opacity: revealOpacity,
-          transform: `scale(${0.92 + revealOpacity * 0.08})`,
-        }}
-      >
-        <div className="cinematic-title-pill">
-          <Sparkles size={14} className="spin-slow" />
-          <span>STUDENT DEVELOPER CLUB • REC BANDA</span>
+      {/* CENTER MOVIE TITLE REVEAL (Progress >= 0.90) */}
+      {showReveal && (
+        <div
+          className={`cinematic-title-reveal ${showReveal ? 'reveal-active' : ''}`}
+          style={{
+            opacity: revealOpacity,
+            transform: `scale(${0.92 + revealOpacity * 0.08})`,
+          }}
+        >
+          <div className="cinematic-title-pill">
+            <Sparkles size={14} className="spin-slow" />
+            <span>STUDENT DEVELOPER CLUB • REC BANDA</span>
+          </div>
+
+          <div className="cinematic-title-hero">
+            <h1 className="cinematic-title-text">
+              <span className="title-hackfest">HACKFEST</span>{' '}
+              <span className="title-number">3.0</span>
+            </h1>
+            <div className="cinematic-title-glow-line"></div>
+          </div>
+
+          <h2 className="cinematic-subtitle-tag">
+            THE NEXT GENERATION HEROES
+          </h2>
+
+          <p className="cinematic-inst-tag">
+            RAJKIYA ENGINEERING COLLEGE BANDA
+          </p>
+
+          <div className="cinematic-enter-indicator" onClick={onSkip} role="button" tabIndex={0}>
+            <span>ENTER THE BATTLEFIELD</span>
+            <ChevronDown size={18} className="bounce-arrow" />
+          </div>
         </div>
-
-        <div className="cinematic-title-hero">
-          <h1 className="cinematic-title-text">
-            <span className="title-hackfest">HACKFEST</span>{' '}
-            <span className="title-number">3.0</span>
-          </h1>
-          <div className="cinematic-title-glow-line"></div>
-        </div>
-
-        <h2 className="cinematic-subtitle-tag">
-          THE NEXT GENERATION HEROES
-        </h2>
-
-        <p className="cinematic-inst-tag">
-          RAJKIYA ENGINEERING COLLEGE BANDA
-        </p>
-
-        <div className="cinematic-enter-indicator" onClick={onSkip} role="button" tabIndex={0}>
-          <span>ENTER THE BATTLEFIELD</span>
-          <ChevronDown size={18} className="bounce-arrow" />
-        </div>
-      </div>
+      )}
 
       {/* BOTTOM HUD / SCROLL TIMELINE BAR */}
       <div className="cinematic-hud-bottom">
@@ -209,17 +217,21 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
           <div className="timeline-stages-desktop">
             <span className={progress >= 0.0 ? 'active-stage' : ''}>[01] SPACE</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.12 ? 'active-stage' : ''}>[02] PLANET</span>
+            <span className={progress >= 0.10 ? 'active-stage-cyan' : ''}>[02] FLYBY</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.28 ? 'active-stage-emerald' : ''}>[03] DOOM</span>
+            <span className={progress >= 0.22 ? 'active-stage-amber' : ''}>[03] DOOM</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.46 ? 'active-stage' : ''}>[04] BIFROST</span>
+            <span className={progress >= 0.35 ? 'active-stage-cyan' : ''}>[04] THOR</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.58 ? 'active-stage-amber' : ''}>[05] IRON MAN</span>
+            <span className={progress >= 0.46 ? 'active-stage-amber' : ''}>[05] IRON MAN</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.74 ? 'active-stage' : ''}>[06] SPIDER-MAN</span>
+            <span className={progress >= 0.60 ? 'active-stage-cyan' : ''}>[06] SPIDEY</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.88 ? 'active-stage-white' : ''}>[07] ASSEMBLY</span>
+            <span className={progress >= 0.72 ? 'active-stage' : ''}>[07] VANGUARD</span>
+            <span className="stage-sep">→</span>
+            <span className={progress >= 0.80 ? 'active-stage-white' : ''}>[08] ASSEMBLE</span>
+            <span className="stage-sep">→</span>
+            <span className={progress >= 0.90 ? 'active-stage-amber' : ''}>[09] REVEAL</span>
           </div>
           <div className="timeline-fps">
             <span>60 FPS</span>

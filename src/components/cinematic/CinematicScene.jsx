@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import StarFieldController from './StarField';
 import CosmicPlanetController from './CosmicPlanet';
+import PortalEffectController from './PortalEffect';
+import SpacecraftModelController from './SpacecraftModel';
 import HeroModelController from './HeroModel';
 import VillainModelController from './VillainModel';
 import LightningWarriorController from './LightningWarrior';
@@ -10,24 +12,40 @@ import { createCinematicCamera } from './CinematicCamera';
 
 /**
  * CinematicScene:
- * Master Three.js WebGL canvas hosting the clean, character-focused superhero cinematic.
+ * Master Three.js WebGL canvas hosting the upgraded superhero multiverse cinematic.
  * 
- * Design:
+ * Features:
  * - Deep black cosmic space with crisp stars at multiple depths
- * - Distant planetary flyby (the_universe.glb)
- * - ALL FOUR REAL 3D CHARACTER MODELS: Doctor Doom, Thor, Iron Man, Spider-Man
- * - NO giant green planets, NO random black rocks, NO oversized rings, NO clutter
- * - Controlled character-specific lighting (emerald for Doom, blue-white for Thor, cyan-gold for Iron Man, cobalt-red for Spider-Man)
- * - Slow, buttery-smooth, reversible scroll progression
+ * - Authentic 3D Space Fighter (space_fighter.glb) deep space arrival and supersonic flyby
+ * - Distant rotating 3D planet (the_universe.glb) with cyan/blue atmospheric rim
+ * - Doctor Strange-inspired magical dimensional portal with fiery orange-gold rim,
+ *   rotating energy arcs, eldritch mandala runes, swirling dimensional vortex,
+ *   and "HACKFEST 3.0" title reveal inside the gateway
+ * - Authentic Mark VII Iron Man (ironman.glb) starting behind the portal,
+ *   flying forward through the circular opening, illuminating his chest Arc Reactor
+ *   and foot thrusters, and decelerating into a confident, 100% straight upright heroic hover
+ * - Grand Multiverse Superhero Assembly (Doctor Doom, Spider-Man, Iron Man) & Spacecraft Vanguard Escort
+ * - Buttery-smooth, reversible scroll progression
  */
-export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} }) {
+function CinematicSceneComponent({
+  progress = 0,
+  progressRef: externalProgressRef,
+  isPastIntro = false,
+  onAssetLoaded = () => {},
+}) {
   const containerRef = useRef(null);
-  const progressRef = useRef(progress);
+  const internalProgressRef = useRef(progress);
+  const activeProgressRef = externalProgressRef || internalProgressRef;
+  const isPastIntroRef = useRef(isPastIntro);
   const [hasWebGL, setHasWebGL] = useState(true);
 
   useEffect(() => {
-    progressRef.current = progress;
+    internalProgressRef.current = progress;
   }, [progress]);
+
+  useEffect(() => {
+    isPastIntroRef.current = isPastIntro;
+  }, [isPastIntro]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -55,51 +73,58 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
     // 1. Scene with deep black space background
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x010206);
-    scene.fog = new THREE.FogExp2(0x010206, 0.008);
+    scene.fog = new THREE.FogExp2(0x010206, 0.007);
 
     // 2. Camera
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 300);
     const cameraController = createCinematicCamera(camera, width / height);
 
-    // 3. Renderer
+    // 3. Renderer with optimized pixel ratio & zero shadow map overhead
     const renderer = new THREE.WebGLRenderer({
       powerPreference: 'high-performance',
       antialias: !isMobile,
       alpha: false,
     });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.2 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.0 : 1.5));
+    renderer.shadowMap.enabled = false;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.15;
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
     renderer.domElement.style.display = 'block';
     renderer.domElement.style.maxWidth = '100%';
     container.appendChild(renderer.domElement);
 
-    // 4. Clean Cinematic Studio Lighting for Character Models
-    const ambientLight = new THREE.AmbientLight(0x0a1220, 1.4);
+    // 4. Clean Cinematic Studio Lighting for Character Models & Portal
+    const ambientLight = new THREE.AmbientLight(0x0c1424, 1.5);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.0);
+    const keyLight = new THREE.DirectionalLight(0xfff6ea, 2.2);
     keyLight.position.set(4, 6, 6);
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0x182840, 1.2);
+    const fillLight = new THREE.DirectionalLight(0x1a2c48, 1.4);
     fillLight.position.set(-5, -2, 4);
     scene.add(fillLight);
 
-    const backRim = new THREE.DirectionalLight(0x406080, 1.5);
+    const backRim = new THREE.DirectionalLight(0x406080, 1.6);
     backRim.position.set(0, 5, -5);
     scene.add(backRim);
 
-    // 5. Initialize Clean Controllers (Stars, Cosmic Planet & Real Characters)
+    // 5. Initialize Controllers: Stars, 3D Planet, Doctor Strange Portal & Characters
     const starField = new StarFieldController(isMobile);
     scene.add(starField.root);
 
     const cosmicPlanet = new CosmicPlanetController(isMobile);
     scene.add(cosmicPlanet.root);
+
+    const spacecraft = new SpacecraftModelController(isMobile);
+    scene.add(spacecraft.root);
+
+    const portal = new PortalEffectController(isMobile);
+    scene.add(portal.root);
 
     const villain = new VillainModelController(isMobile);
     scene.add(villain.root);
@@ -113,81 +138,69 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
     const spiderMan = new SpiderManModelController(isMobile);
     scene.add(spiderMan.root);
 
-    // Load Cosmic Planet (the_universe.glb) & All Four Real Character Models
-    cosmicPlanet.load();
+    // Progressive Asynchronous Staged Loader:
+    // 1. Immediately load lightweight planet (550KB) so the initial space scene is ready in <100ms.
+    // 2. Report ready early to eliminate initial page freeze and loading stutter.
+    // 3. Staged sequential model queue with microtask yields prevents WebGL texture upload GPU stalls.
+    let isDisposed = false;
+    cosmicPlanet.load().then(() => {
+      onAssetLoaded(35);
+    });
 
-    let heroDone = false;
-    let villainDone = false;
-    let thorDone = false;
-    let spiderDone = false;
+    const loadSequentialQueue = async () => {
+      try {
+        await new Promise((r) => setTimeout(r, 120));
+        if (isDisposed) return;
 
-    const checkAllLoaded = () => {
-      if (heroDone && villainDone && thorDone && spiderDone) {
+        // 1. Spacecraft (Scene 2)
+        await spacecraft.load((pct) => onAssetLoaded(35 + pct * 0.15)).catch(() => {});
+        onAssetLoaded(50);
+        if (isDisposed) return;
+        await new Promise((r) => setTimeout(r, 80));
+
+        // 2. Doctor Doom (Scene 3)
+        await villain.load((pct) => onAssetLoaded(50 + pct * 0.15)).catch(() => {});
+        onAssetLoaded(65);
+        if (isDisposed) return;
+        await new Promise((r) => setTimeout(r, 80));
+
+        // 3. Thor Mjolnir (Scene 4)
+        await lightningWarrior.load((pct) => onAssetLoaded(65 + pct * 0.07)).catch(() => {});
+        onAssetLoaded(72);
+        if (isDisposed) return;
+        await new Promise((r) => setTimeout(r, 80));
+
+        // 4. Iron Man (Scene 5)
+        await hero.load((pct) => onAssetLoaded(72 + pct * 0.18)).catch(() => {});
+        onAssetLoaded(90);
+        if (isDisposed) return;
+        await new Promise((r) => setTimeout(r, 80));
+
+        // 5. Spider-Man (Scene 6)
+        await spiderMan.load((pct) => onAssetLoaded(90 + pct * 0.10)).catch(() => {});
+        onAssetLoaded(100);
+      } catch (err) {
+        console.warn('Asynchronous loader queue error:', err);
         onAssetLoaded(100);
       }
     };
 
-    // 1. Doctor Doom
-    villain
-      .load((pct) => onAssetLoaded(pct * 0.25))
-      .then(() => {
-        villainDone = true;
-        checkAllLoaded();
-      })
-      .catch((err) => {
-        console.warn('Doctor Doom load fallback:', err);
-        villainDone = true;
-        checkAllLoaded();
-      });
-
-    // 2. Thor
-    lightningWarrior
-      .load((pct) => onAssetLoaded(25 + pct * 0.25))
-      .then(() => {
-        thorDone = true;
-        checkAllLoaded();
-      })
-      .catch((err) => {
-        console.warn('Thor load fallback:', err);
-        thorDone = true;
-        checkAllLoaded();
-      });
-
-    // 3. Iron Man
-    hero
-      .load((pct) => onAssetLoaded(50 + pct * 0.25))
-      .then(() => {
-        heroDone = true;
-        checkAllLoaded();
-      })
-      .catch((err) => {
-        console.warn('Iron Man load fallback:', err);
-        heroDone = true;
-        checkAllLoaded();
-      });
-
-    // 4. Spider-Man
-    spiderMan
-      .load((pct) => onAssetLoaded(75 + pct * 0.25))
-      .then(() => {
-        spiderDone = true;
-        checkAllLoaded();
-      })
-      .catch((err) => {
-        console.warn('Spider-Man load fallback:', err);
-        spiderDone = true;
-        checkAllLoaded();
-      });
+    loadSequentialQueue();
 
     // 6. Animation Render Loop with Smooth Progress Damping (Lerp)
     let animationFrameId;
     const clock = new THREE.Clock();
-    let smoothedProgress = progressRef.current;
+    let smoothedProgress = activeProgressRef.current;
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
+
+      // Pause rendering if browser tab is hidden or user has scrolled past intro
+      if (typeof document !== 'undefined' && document.hidden) return;
+      if (isPastIntroRef.current) return;
+
       const elapsedTime = clock.getElapsedTime();
-      const targetProg = progressRef.current;
+      const targetProg = activeProgressRef.current;
 
       // Smooth progress interpolation: responsive and silky smooth
       smoothedProgress += (targetProg - smoothedProgress) * 0.12;
@@ -195,6 +208,8 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
       // Update controllers
       starField.update(smoothedProgress, elapsedTime);
       cosmicPlanet.update(smoothedProgress, elapsedTime);
+      spacecraft.update(smoothedProgress, elapsedTime);
+      portal.update(smoothedProgress, elapsedTime);
       villain.update(smoothedProgress, elapsedTime);
       lightningWarrior.update(smoothedProgress, elapsedTime);
       hero.update(smoothedProgress, elapsedTime);
@@ -215,7 +230,7 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
       const newH = container.clientHeight || window.innerHeight;
       cameraController.resize(newW, newH);
       renderer.setSize(newW, newH);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, newW < 768 ? 1.2 : 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, newW < 768 ? 1.0 : 1.5));
     };
 
     const resizeObserver = new ResizeObserver(handleResize);
@@ -230,6 +245,8 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
         renderer,
         starField,
         cosmicPlanet,
+        spacecraft,
+        portal,
         villain,
         lightningWarrior,
         hero,
@@ -239,6 +256,7 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
 
     // 8. Cleanup & Resource Disposal
     return () => {
+      isDisposed = true;
       cancelAnimationFrame(animationFrameId);
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
@@ -250,6 +268,8 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
       cameraController.dispose();
       starField.dispose();
       cosmicPlanet.dispose();
+      spacecraft.dispose();
+      portal.dispose();
       villain.dispose();
       lightningWarrior.dispose();
       hero.dispose();
@@ -285,3 +305,20 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
     />
   );
 }
+
+function arePropsEqual(prevProps, nextProps) {
+  // If external progressRef is provided, skip re-renders when only progress number changes
+  if (nextProps.progressRef && prevProps.progressRef === nextProps.progressRef) {
+    return (
+      prevProps.isPastIntro === nextProps.isPastIntro &&
+      prevProps.onAssetLoaded === nextProps.onAssetLoaded
+    );
+  }
+  return (
+    prevProps.progress === nextProps.progress &&
+    prevProps.isPastIntro === nextProps.isPastIntro &&
+    prevProps.onAssetLoaded === nextProps.onAssetLoaded
+  );
+}
+
+export default React.memo(CinematicSceneComponent, arePropsEqual);

@@ -199,48 +199,98 @@ export class VillainModelController {
   update(progress, elapsedTime) {
     let isVisible = false;
 
-    // -------------------------------------------------------------
-    // SCENE 3: DOCTOR DOOM'S REVEAL (0.28 - 0.46)
-    // -------------------------------------------------------------
-    if (progress >= 0.28 && progress < 0.46) {
+    // CONTINUOUS TRANSITION LIFECYCLE:
+    // Entrance: 0.20 to 0.26 (Glides forward into center stage)
+    // Showcase: 0.26 to 0.34 (Commands center stage)
+    // Smooth Transition Out: 0.34 to 0.46 (Glides smoothly to right flank)
+    // Flank Formation Hold: 0.46 to 0.78 (Remains visible on right wing)
+    // Assembly: 0.78 to 0.88 (Assembled in lineup)
+    // Title Reveal: 0.88 to 1.00 (Parts smoothly to far-right wing to clear center title)
+
+    if (progress >= 0.20) {
       isVisible = true;
-      const p = (progress - 0.28) / 0.18; // 0 to 1 across 18% of scroll duration
 
-      // Doom emerges smoothly forward from deep space darkness: Z = -4.0 -> -0.5
-      const emergeEase = Math.pow(p, 1.2);
-      const posZ = THREE.MathUtils.lerp(-4.0, -0.5, emergeEase);
-      this.root.position.set(0, 0, posZ);
+      let posX = 0.0;
+      let posY = 0.2;
+      let posZ = 0.6;
+      let rotY = 0.0;
+      let scale = 1.0;
+      let lightScale = 1.0;
 
-      // Subtle breathing float and menacing slight rotation
-      this.characterPivot.position.y = Math.sin(elapsedTime * 2.0) * 0.03;
-      this.characterPivot.rotation.y = Math.sin(elapsedTime * 0.8) * 0.04;
+      if (progress < 0.26) {
+        // ENTRANCE (0.20 - 0.26): Glides forward from deep space
+        const p = (progress - 0.20) / 0.06; // 0 to 1
+        const smoothP = 1 - Math.pow(1 - p, 2.5);
 
-      // Vivid lighting from the start:
-      this.rimLight.intensity = 3.5 + p * 1.5;
-      this.fillLight.intensity = 2.0 + p * 1.0;
-      this.keyLight.intensity = 1.8 + p * 1.0;
-      this.materials.portalRing.opacity = 0.5 + p * 0.3;
-      this.materials.stardust.opacity = 0.4 + p * 0.4;
-    }
-    // -------------------------------------------------------------
-    // SCENE 7: SUPERHERO ASSEMBLY (0.88 - 1.00)
-    // -------------------------------------------------------------
-    else if (progress >= 0.88) {
-      isVisible = true;
-      const p = (progress - 0.88) / 0.12;
+        posX = 0.0;
+        posY = THREE.MathUtils.lerp(0.8, 0.2, smoothP) + Math.sin(elapsedTime * 2.0) * 0.03;
+        posZ = THREE.MathUtils.lerp(-4.0, 0.6, smoothP);
+        scale = THREE.MathUtils.lerp(0.4, 1.0, smoothP);
+        rotY = Math.sin(elapsedTime * 0.8) * 0.04;
+        lightScale = smoothP;
+      } else if (progress < 0.33) {
+        // SHOWCASE (0.26 - 0.33): Commanding center stage presence
+        posX = 0.0;
+        posY = 0.2 + Math.sin(elapsedTime * 2.0) * 0.03;
+        posZ = 0.6;
+        scale = 1.0;
+        rotY = Math.sin(elapsedTime * 0.8) * 0.05;
+        lightScale = 1.0;
+      } else if (progress < 0.40) {
+        // SMOOTH TRANSITION OUT (0.33 - 0.40): Glides smoothly to right flank
+        const p = (progress - 0.33) / 0.07; // 0 to 1
+        const smoothP = Math.sin((p * Math.PI) / 2);
 
-      // Right flank champion: X = 2.4, Y = 0.0, Z = -0.4
-      this.root.position.set(2.4, 0.0, -0.4);
-      this.characterPivot.rotation.set(0, -0.25, 0);
-      this.characterPivot.position.y = Math.sin(elapsedTime * 1.8) * 0.03;
+        posX = THREE.MathUtils.lerp(0.0, 2.8, smoothP);
+        posY = THREE.MathUtils.lerp(0.2, 0.0, smoothP) + Math.sin(elapsedTime * 1.8) * 0.03;
+        posZ = THREE.MathUtils.lerp(0.6, -0.5, smoothP);
+        scale = THREE.MathUtils.lerp(1.0, 0.95, smoothP);
+        rotY = THREE.MathUtils.lerp(0.0, -0.25, smoothP);
+        lightScale = THREE.MathUtils.lerp(1.0, 0.8, smoothP);
+      } else if (progress < 0.88) {
+        // FLANK FORMATION & ASSEMBLY (0.40 - 0.88): Stationed on right flank
+        posX = 2.8;
+        posY = 0.0 + Math.sin(elapsedTime * 1.8 + 1.0) * 0.03;
+        posZ = -0.5;
+        scale = 0.95;
+        rotY = -0.25;
+        lightScale = 0.8;
+      } else {
+        // FINAL TITLE REVEAL (0.88 - 1.00): Parts outward to far-right wing to clear center title!
+        const p = (progress - 0.88) / 0.12; // 0 to 1
+        const smoothP = Math.sin((p * Math.PI) / 2);
 
-      this.rimLight.intensity = 4.0;
-      this.fillLight.intensity = 2.2;
-      this.keyLight.intensity = 2.0;
-      this.materials.portalRing.opacity = 0.6;
-      this.materials.stardust.opacity = 0.5;
+        posX = THREE.MathUtils.lerp(2.8, 5.4, smoothP);
+        posY = THREE.MathUtils.lerp(0.0, -0.1, smoothP) + Math.sin(elapsedTime * 1.6 + 1.0) * 0.03;
+        posZ = THREE.MathUtils.lerp(-0.5, -0.8, smoothP);
+        scale = 0.88;
+        rotY = THREE.MathUtils.lerp(-0.25, -0.35, smoothP);
+        lightScale = 0.75;
+      }
+
+      this.root.position.set(posX, posY, posZ);
+      this.root.scale.set(scale, scale, scale);
+      this.characterPivot.rotation.set(0, rotY, 0);
+
+      this.rimLight.intensity = 5.0 * lightScale;
+      this.fillLight.intensity = 2.8 * lightScale;
+      this.keyLight.intensity = 2.5 * lightScale;
+
+      // Green shield ring only active during solo showcase; fades out cleanly afterwards
+      let ringOpacity = 0.0;
+      if (progress >= 0.22 && progress < 0.33) {
+        ringOpacity = 0.4;
+      } else if (progress >= 0.33 && progress < 0.40) {
+        ringOpacity = THREE.MathUtils.lerp(0.4, 0.0, (progress - 0.33) / 0.07);
+      }
+      this.materials.portalRing.opacity = ringOpacity;
+      this.materials.stardust.opacity = 0.55 * lightScale;
     } else {
       isVisible = false;
+      this.root.scale.set(0.001, 0.001, 0.001);
+      this.rimLight.intensity = 0;
+      this.fillLight.intensity = 0;
+      this.keyLight.intensity = 0;
     }
 
     this.root.visible = isVisible;

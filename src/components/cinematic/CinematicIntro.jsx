@@ -18,6 +18,7 @@ import '../../styles/cinematic.css';
  */
 export default function CinematicIntro({ onIntroComplete = () => {} }) {
   const containerRef = useRef(null);
+  const scrollProgressRef = useRef(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(20);
   const [isReady, setIsReady] = useState(false);
@@ -90,10 +91,12 @@ export default function CinematicIntro({ onIntroComplete = () => {} }) {
             return;
           }
 
-          // Top of container relative to viewport top
-          const currentScroll = -rect.top;
+          // Top of container relative to viewport scroll
+          const scrollY = window.scrollY || window.pageYOffset || 0;
+          const currentScroll = Math.max(0, scrollY - container.offsetTop);
           const rawProgress = currentScroll / totalScrollable;
           const clamped = Math.min(1, Math.max(0, rawProgress));
+          scrollProgressRef.current = clamped;
           setScrollProgress(clamped);
 
           const past = currentScroll >= totalScrollable;
@@ -177,6 +180,8 @@ export default function CinematicIntro({ onIntroComplete = () => {} }) {
         {/* Master Three.js WebGL Scene */}
         <CinematicScene
           progress={scrollProgress}
+          progressRef={scrollProgressRef}
+          isPastIntro={isPastIntro}
           onAssetLoaded={handleAssetLoaded}
         />
 

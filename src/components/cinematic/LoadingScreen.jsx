@@ -63,7 +63,7 @@ export default function LoadingScreen({ progress = 100, isLoaded = false, onComp
               MULTIVERSE PROTOCOL // ISSUE #03
             </span>
             <h2 className="loading-main-title">
-              HACKFEST <span style={{ color: '#00bfff' }}>3.0</span>
+              SYSTEM INITIALIZING <span style={{ color: '#00bfff' }}>CORE</span>
             </h2>
           </div>
         </div>
@@ -101,7 +101,7 @@ export default function LoadingScreen({ progress = 100, isLoaded = false, onComp
             autoFocus
           >
             <Zap size={16} />
-            <span>ENTER HACKFEST UNIVERSE</span>
+            <span>LAUNCH MISSION SEQUENCE</span>
             <ArrowRight size={16} />
           </button>
         )}

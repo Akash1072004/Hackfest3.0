@@ -265,8 +265,12 @@ export default function CursorTrail() {
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none fixed inset-0 h-full w-full"
       style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
         zIndex: 99999,
         pointerEvents: 'none',
       }}

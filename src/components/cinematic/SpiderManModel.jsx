@@ -172,15 +172,15 @@ export class SpiderManModelController {
   setupModel() {
     if (!this.model) return;
 
-    // Scale to ~1.75 to match Doom & Iron Man stature
-    const targetScale = 1.75;
+    // Scale to ~1.25 for balanced heroic proportions with Doom & Iron Man
+    const targetScale = 1.25;
     this.model.scale.set(targetScale, targetScale, targetScale);
 
     // Spider-Man model is exported oriented along X axis.
     // Rotate +90deg around Z so head points UP (+Y) and feet point DOWN (-Y).
-    // Position offset (0.4, 1.81, 0) centers feet at Y = 0 and head at Y = 3.37.
+    // Center position offset without horizontal shift
     this.model.rotation.set(0, 0, Math.PI / 2);
-    this.model.position.set(0.4, 1.81, 0);
+    this.model.position.set(0.0, 1.35, 0);
 
     this.model.traverse((child) => {
       if (child.isMesh) {
@@ -206,50 +206,89 @@ export class SpiderManModelController {
       this.mixer.update(delta);
     }
 
+    // CONTINUOUS TRANSITION LIFECYCLE:
+    // Entrance: 0.58 to 0.64 (Swings/glides into center stage)
+    // Showcase: 0.64 to 0.72 (Acrobatic center stage showcase)
+    // Smooth Transition Out: 0.72 to 0.80 (Glides smoothly to left flank)
+    // Flank Formation Hold & Assembly: 0.80 to 0.88 (Assembled on left flank)
+    // Title Reveal: 0.88 to 1.00 (Parts smoothly to far-left wing to clear center title)
+
     let isVisible = false;
-
-    // -------------------------------------------------------------
-    // SCENE 6: SPIDER-MAN'S REVEAL (0.74 - 0.88)
-    // -------------------------------------------------------------
-    if (progress >= 0.74 && progress < 0.88) {
+    if (progress >= 0.58) {
       isVisible = true;
-      const p = (progress - 0.74) / 0.14; // 0 to 1 across 14% of scroll duration
 
-      // Smooth acrobatic swing into frame: X: -2.2 -> -0.8, Y: 0.8 -> 0.0, Z: -3.0 -> -0.5
-      const swingEase = 1 - Math.pow(1 - p, 2.5);
-      const posX = THREE.MathUtils.lerp(-2.2, -0.8, swingEase);
-      const posY = THREE.MathUtils.lerp(0.8, 0.0, swingEase);
-      const posZ = THREE.MathUtils.lerp(-3.0, -0.5, swingEase);
+      let posX = 0.0;
+      let posY = 0.7;
+      let posZ = 0.6;
+      let rotY = 0.0;
+      let scale = 1.0;
+      let lightScale = 1.0;
+
+      if (progress < 0.64) {
+        // ENTRANCE (0.58 - 0.64): Swings in from upper-left
+        const p = (progress - 0.58) / 0.06; // 0 to 1
+        const smoothP = 1 - Math.pow(1 - p, 2.5);
+
+        posX = THREE.MathUtils.lerp(-4.2, 0.0, smoothP);
+        posY = THREE.MathUtils.lerp(1.8, 0.7, smoothP) + Math.sin(elapsedTime * 2.2) * 0.04;
+        posZ = THREE.MathUtils.lerp(-2.0, 0.6, smoothP);
+        scale = THREE.MathUtils.lerp(0.4, 1.0, smoothP);
+        rotY = Math.sin(elapsedTime * 1.2) * 0.08;
+        lightScale = smoothP;
+      } else if (progress < 0.72) {
+        // SHOWCASE (0.64 - 0.72): Center stage acrobatic showcase
+        posX = 0.0;
+        posY = 0.7 + Math.sin(elapsedTime * 2.2) * 0.04;
+        posZ = 0.6;
+        scale = 1.0;
+        rotY = Math.sin(elapsedTime * 1.2) * 0.08;
+        lightScale = 1.0;
+      } else if (progress < 0.80) {
+        // SMOOTH TRANSITION OUT (0.72 - 0.80): Glides smoothly to left flank
+        const p = (progress - 0.72) / 0.08; // 0 to 1
+        const smoothP = Math.sin((p * Math.PI) / 2);
+
+        posX = THREE.MathUtils.lerp(0.0, -2.8, smoothP);
+        posY = THREE.MathUtils.lerp(0.7, 0.1, smoothP) + Math.sin(elapsedTime * 1.8) * 0.03;
+        posZ = THREE.MathUtils.lerp(0.6, -0.5, smoothP);
+        scale = THREE.MathUtils.lerp(1.0, 0.95, smoothP);
+        rotY = THREE.MathUtils.lerp(0.0, 0.25, smoothP);
+        lightScale = THREE.MathUtils.lerp(1.0, 0.8, smoothP);
+      } else if (progress < 0.88) {
+        // FLANK FORMATION & ASSEMBLY (0.80 - 0.88): Left flank in squad formation
+        posX = -2.8;
+        posY = 0.1 + Math.sin(elapsedTime * 1.8 + 0.5) * 0.03;
+        posZ = -0.5;
+        scale = 0.95;
+        rotY = 0.25;
+        lightScale = 0.8;
+      } else {
+        // FINAL TITLE REVEAL (0.88 - 1.00): Parts outward to far-left wing to clear center title!
+        const p = (progress - 0.88) / 0.12; // 0 to 1
+        const smoothP = Math.sin((p * Math.PI) / 2);
+
+        posX = THREE.MathUtils.lerp(-2.8, -5.4, smoothP);
+        posY = THREE.MathUtils.lerp(0.1, 0.0, smoothP) + Math.sin(elapsedTime * 1.6 + 0.5) * 0.03;
+        posZ = THREE.MathUtils.lerp(-0.5, -0.8, smoothP);
+        scale = 0.85;
+        rotY = THREE.MathUtils.lerp(0.25, 0.35, smoothP);
+        lightScale = 0.75;
+      }
+
       this.root.position.set(posX, posY, posZ);
+      this.root.scale.set(scale, scale, scale);
+      this.characterPivot.rotation.set(0, rotY, 0);
 
-      // Facing angle
-      this.characterPivot.rotation.y = 0.2 + Math.sin(elapsedTime * 1.5) * 0.04;
-      this.characterPivot.position.y = Math.sin(elapsedTime * 2.0) * 0.03;
-
-      // Lights
-      this.blueLight.intensity = 3.5;
-      this.redLight.intensity = 2.5;
-      this.frontLight.intensity = 2.0;
-      this.materials.webGlow.opacity = 0.6;
-    }
-    // -------------------------------------------------------------
-    // SCENE 7: SUPERHERO ASSEMBLY (0.88 - 1.00)
-    // -------------------------------------------------------------
-    else if (progress >= 0.88) {
-      isVisible = true;
-      const p = (progress - 0.88) / 0.12;
-
-      // Left flank champion: X = -2.4, Y = 0.0, Z = -0.4
-      this.root.position.set(-2.4, 0.0, -0.4);
-      this.characterPivot.rotation.set(0, 0.25, 0);
-      this.characterPivot.position.y = Math.sin(elapsedTime * 1.8) * 0.03;
-
-      this.blueLight.intensity = 3.2;
-      this.redLight.intensity = 2.2;
-      this.frontLight.intensity = 1.8;
-      this.materials.webGlow.opacity = 0.5;
+      this.blueLight.intensity = 4.0 * lightScale;
+      this.redLight.intensity = 3.0 * lightScale;
+      this.frontLight.intensity = 2.2 * lightScale;
+      this.materials.webGlow.opacity = 0.6 * lightScale;
     } else {
       isVisible = false;
+      this.root.scale.set(0.001, 0.001, 0.001);
+      this.blueLight.intensity = 0;
+      this.redLight.intensity = 0;
+      this.frontLight.intensity = 0;
     }
 
     this.root.visible = isVisible;
