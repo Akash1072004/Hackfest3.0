@@ -181,18 +181,18 @@ export class BlackHoleController {
   }
 
   update(progress, time) {
-    if (progress < 0.14 || progress > 0.24) {
+    if (progress < 0.14 || progress > 0.32) {
       this.root.visible = false;
       return;
     }
 
     let visibility = 0;
-    if (progress < 0.18) {
-      visibility = (progress - 0.14) / 0.04;
-    } else if (progress <= 0.21) {
+    if (progress < 0.20) {
+      visibility = (progress - 0.14) / 0.06;
+    } else if (progress <= 0.28) {
       visibility = 1.0;
     } else {
-      visibility = Math.max(0, 1.0 - (progress - 0.21) / 0.03);
+      visibility = Math.max(0, 1.0 - (progress - 0.28) / 0.04);
     }
 
     if (visibility <= 0.01) {

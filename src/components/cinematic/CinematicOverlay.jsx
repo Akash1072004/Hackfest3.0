@@ -10,33 +10,27 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [synthAudio, setSynthAudio] = useState(null);
 
-  // Determine current cinematic phase
-  let phaseName = 'MARK VIII // STANDBY';
-  let phaseDetail = 'SENSORS ACTIVE • DORMANT ARMOR ONLINE';
-  if (progress >= 0.12 && progress < 0.24) {
-    phaseName = 'INTERSTELLAR EXPEDITION';
-    phaseDetail = 'WARP CORRIDOR ACTIVE • SINGULARITY & SPIRAL GALAXY';
-  } else if (progress >= 0.24 && progress < 0.45) {
-    phaseName = 'MULTIVERSE INCURSION EVENT';
-    phaseDetail = 'PLANET ENTRY // REALITY CRACKS & COLLAPSING HORIZON';
-  } else if (progress >= 0.45 && progress < 0.58) {
-    phaseName = 'FLIGHT PURSUIT VECTOR';
-    phaseDetail = 'REPULSOR BOOST ENGAGED • SUPERSONIC VELOCITY';
-  } else if (progress >= 0.58 && progress < 0.68) {
-    phaseName = 'MYSTIC ANOMALY DETECTED';
-    phaseDetail = 'DARK TECH SORCERER // EMERALD ENERGY SURGE';
-  } else if (progress >= 0.68 && progress < 0.77) {
-    phaseName = 'COSMIC CONFRONTATION';
-    phaseDetail = 'FACE-OFF ACTIVE • OPPOSING BEAMS CLASHING';
-  } else if (progress >= 0.77 && progress < 0.86) {
-    phaseName = 'THUNDER CONVERGENCE';
-    phaseDetail = 'LIGHTNING STRIKE CONFIRMED • WARRIOR ONLINE';
-  } else if (progress >= 0.86 && progress < 0.94) {
-    phaseName = 'SUPERHERO TEAM ASSEMBLE';
-    phaseDetail = 'MULTIVERSE TRINITY ASSEMBLED • COSMIC DEFENSE';
-  } else if (progress >= 0.94) {
-    phaseName = 'PORTAL CONVERGENCE COMPLETE';
-    phaseDetail = 'WELCOME TO HACKFEST 3.0 // STUDENT DEVELOPER CLUB';
+  // Determine current cinematic phase across all 7 scenes
+  let phaseName = 'COSMIC ARRIVAL // DEEP SPACE';
+  let phaseDetail = 'QUIET COSMOS • MULTI-DEPTH STARFIELD';
+  if (progress >= 0.12 && progress < 0.26) {
+    phaseName = 'PLANETARY FLYBY // THE UNIVERSE';
+    phaseDetail = 'CELESTIAL ROTATION • ATMOSPHERIC HORIZON';
+  } else if (progress >= 0.28 && progress < 0.46) {
+    phaseName = 'DOCTOR DOOM REVEALED';
+    phaseDetail = 'AUTHENTIC 3D ARMOR • EMERALD RIM LIGHTING';
+  } else if (progress >= 0.46 && progress < 0.58) {
+    phaseName = 'BIFROST CELESTIAL SURGE';
+    phaseDetail = 'ATMOSPHERIC THUNDER • MALE THOR ASSET PENDING';
+  } else if (progress >= 0.58 && progress < 0.74) {
+    phaseName = 'IRON MAN MARK VII ARRIVAL';
+    phaseDetail = 'AUTHENTIC 3D SUIT • ARC REACTOR & SUPERSONIC HOVER';
+  } else if (progress >= 0.74 && progress < 0.88) {
+    phaseName = 'SPIDER-MAN SWING ARRIVAL';
+    phaseDetail = 'AUTHENTIC MOVABLE 3D HERO • WEB-SLINGING ACTION';
+  } else if (progress >= 0.88) {
+    phaseName = 'SUPERHERO ASSEMBLY • HACKFEST 3.0';
+    phaseDetail = 'MULTIVERSE CHAMPIONS ASSEMBLED // REC BANDA';
   }
 
   // Web Audio Synth for ambient futuristic reactor hum & cosmic pulse
@@ -111,9 +105,9 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
     };
   }, [synthAudio]);
 
-  // Title reveal threshold & opacity calculation (fades in at 0.88, fully visible by 0.96+)
-  const revealOpacity = Math.min(1, Math.max(0, (progress - 0.88) / 0.09));
-  const showReveal = progress >= 0.88;
+  // Title reveal threshold & opacity calculation (fades in at 0.89, fully visible by 0.97+)
+  const revealOpacity = Math.min(1, Math.max(0, (progress - 0.89) / 0.08));
+  const showReveal = progress >= 0.89;
 
   return (
     <div className="cinematic-overlay-hud">
@@ -213,21 +207,19 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
             <span>{Math.round(progress * 100)}%</span>
           </div>
           <div className="timeline-stages-desktop">
-            <span className={progress >= 0.12 ? 'active-stage' : ''}>[01] COSMOS</span>
+            <span className={progress >= 0.0 ? 'active-stage' : ''}>[01] SPACE</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.24 ? 'active-stage-violet' : ''}>[02] INCURSION</span>
+            <span className={progress >= 0.12 ? 'active-stage' : ''}>[02] PLANET</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.45 ? 'active-stage' : ''}>[03] FLIGHT</span>
+            <span className={progress >= 0.28 ? 'active-stage-emerald' : ''}>[03] DOOM</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.58 ? 'active-stage-emerald' : ''}>[04] VILLAIN</span>
+            <span className={progress >= 0.46 ? 'active-stage' : ''}>[04] BIFROST</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.68 ? 'active-stage-amber' : ''}>[05] FACE-OFF</span>
+            <span className={progress >= 0.58 ? 'active-stage-amber' : ''}>[05] IRON MAN</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.77 ? 'active-stage' : ''}>[06] THUNDER</span>
+            <span className={progress >= 0.74 ? 'active-stage' : ''}>[06] SPIDER-MAN</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.86 ? 'active-stage-red' : ''}>[07] ASSEMBLE</span>
-            <span className="stage-sep">→</span>
-            <span className={progress >= 0.94 ? 'active-stage-white' : ''}>[08] HACKFEST 3.0</span>
+            <span className={progress >= 0.88 ? 'active-stage-white' : ''}>[07] ASSEMBLY</span>
           </div>
           <div className="timeline-fps">
             <span>60 FPS</span>

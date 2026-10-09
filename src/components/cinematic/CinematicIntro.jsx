@@ -99,6 +99,10 @@ export default function CinematicIntro({ onIntroComplete = () => {} }) {
           const past = currentScroll >= totalScrollable;
           setIsPastIntro(past);
 
+          if (clamped > 0.01) {
+            setHasEntered(true);
+          }
+
           if (clamped >= 0.99) {
             onIntroComplete(true);
           } else {
@@ -154,8 +158,8 @@ export default function CinematicIntro({ onIntroComplete = () => {} }) {
       aria-label="HackFest 3.0 Cinematic Intro"
       className="relative w-full bg-slate-950 text-white"
       style={{
-        // 650vh scroll track for complete 9-phase cinematic movie experience
-        height: isMobile ? '460vh' : '650vh',
+        // 1250vh pinned scroll track: slow, deliberate, movie-trailer pacing so every character reveal is appreciated
+        height: isMobile ? '850vh' : '1250vh',
         position: 'relative',
       }}
     >
