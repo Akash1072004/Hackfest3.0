@@ -163,8 +163,8 @@ export class LightningEffectController {
   }
 
   update(progress, time) {
-    // Active during 70% - 76% (Strike & shockwave) with residual sparks to 80%
-    if (progress < 0.69 || progress > 0.82) {
+    // Active during 76% - 85% (Strike & shockwave)
+    if (progress < 0.76 || progress > 0.85) {
       this.root.visible = false;
       this.materials.boltCore.opacity = 0;
       this.materials.boltGlow.opacity = 0;
@@ -176,10 +176,7 @@ export class LightningEffectController {
 
     this.root.visible = true;
 
-    // Phase 1: Pre-strike sparks (69% - 71%)
-    // Phase 2: Massive lightning strike impact (71% - 74%)
-    // Phase 3: Shockwave ring expansion & dissipating sparks (74% - 78%)
-    const p = (progress - 0.70) / 0.10; // 0 to 1
+    const p = (progress - 0.77) / 0.07; // 0 to 1
 
     if (p >= 0.05 && p < 0.38) {
       // MASSIVE STRIKE MOMENT!

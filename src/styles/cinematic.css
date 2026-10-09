@@ -526,6 +526,12 @@
   text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
 }
 
+.active-stage-violet {
+  color: #c850ff;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(200, 80, 255, 0.6);
+}
+
 .active-stage-red {
   color: #e62429;
   font-weight: 700;

@@ -126,9 +126,9 @@ export class GalaxyController {
   }
 
   update(progress, time) {
-    // The Galaxy is visible in universe travel (0.20 to 0.35) and team assembly / portal (0.75 to 0.98)
-    const inUniverse = progress >= 0.20 && progress <= 0.35;
-    const inAssembly = progress >= 0.75 && progress <= 0.98;
+    // The Galaxy is visible in universe travel (0.14 to 0.24) and team assembly / portal (0.82 to 0.98)
+    const inUniverse = progress >= 0.14 && progress <= 0.24;
+    const inAssembly = progress >= 0.82 && progress <= 0.98;
 
     if (!inUniverse && !inAssembly) {
       this.root.visible = false;
@@ -140,11 +140,11 @@ export class GalaxyController {
     // Appearance ramp
     let visibility = 0;
     if (inUniverse) {
-      if (progress < 0.25) visibility = (progress - 0.20) / 0.05;
-      else if (progress <= 0.30) visibility = 1.0;
-      else visibility = Math.max(0, 1.0 - (progress - 0.30) / 0.05);
+      if (progress < 0.18) visibility = (progress - 0.14) / 0.04;
+      else if (progress <= 0.21) visibility = 1.0;
+      else visibility = Math.max(0, 1.0 - (progress - 0.21) / 0.03);
     } else {
-      if (progress < 0.82) visibility = (progress - 0.75) / 0.07;
+      if (progress < 0.86) visibility = (progress - 0.82) / 0.04;
       else if (progress <= 0.94) visibility = 1.0;
       else visibility = Math.max(0, 1.0 - (progress - 0.94) / 0.04);
     }

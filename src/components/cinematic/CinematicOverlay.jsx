@@ -13,25 +13,28 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
   // Determine current cinematic phase
   let phaseName = 'MARK VIII // STANDBY';
   let phaseDetail = 'SENSORS ACTIVE • DORMANT ARMOR ONLINE';
-  if (progress >= 0.15 && progress < 0.32) {
+  if (progress >= 0.12 && progress < 0.24) {
     phaseName = 'INTERSTELLAR EXPEDITION';
     phaseDetail = 'WARP CORRIDOR ACTIVE • SINGULARITY & SPIRAL GALAXY';
-  } else if (progress >= 0.32 && progress < 0.46) {
+  } else if (progress >= 0.24 && progress < 0.45) {
+    phaseName = 'MULTIVERSE INCURSION EVENT';
+    phaseDetail = 'PLANET ENTRY // REALITY CRACKS & COLLAPSING HORIZON';
+  } else if (progress >= 0.45 && progress < 0.58) {
     phaseName = 'FLIGHT PURSUIT VECTOR';
     phaseDetail = 'REPULSOR BOOST ENGAGED • SUPERSONIC VELOCITY';
-  } else if (progress >= 0.46 && progress < 0.58) {
+  } else if (progress >= 0.58 && progress < 0.68) {
     phaseName = 'MYSTIC ANOMALY DETECTED';
     phaseDetail = 'DARK TECH SORCERER // EMERALD ENERGY SURGE';
-  } else if (progress >= 0.58 && progress < 0.70) {
+  } else if (progress >= 0.68 && progress < 0.77) {
     phaseName = 'COSMIC CONFRONTATION';
     phaseDetail = 'FACE-OFF ACTIVE • OPPOSING BEAMS CLASHING';
-  } else if (progress >= 0.70 && progress < 0.82) {
+  } else if (progress >= 0.77 && progress < 0.86) {
     phaseName = 'THUNDER CONVERGENCE';
     phaseDetail = 'LIGHTNING STRIKE CONFIRMED • WARRIOR ONLINE';
-  } else if (progress >= 0.82 && progress < 0.92) {
+  } else if (progress >= 0.86 && progress < 0.94) {
     phaseName = 'SUPERHERO TEAM ASSEMBLE';
     phaseDetail = 'MULTIVERSE TRINITY ASSEMBLED • COSMIC DEFENSE';
-  } else if (progress >= 0.92) {
+  } else if (progress >= 0.94) {
     phaseName = 'PORTAL CONVERGENCE COMPLETE';
     phaseDetail = 'WELCOME TO HACKFEST 3.0 // STUDENT DEVELOPER CLUB';
   }
@@ -210,19 +213,21 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
             <span>{Math.round(progress * 100)}%</span>
           </div>
           <div className="timeline-stages-desktop">
-            <span className={progress >= 0.15 ? 'active-stage' : ''}>[01] COSMOS</span>
+            <span className={progress >= 0.12 ? 'active-stage' : ''}>[01] COSMOS</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.32 ? 'active-stage' : ''}>[02] FLIGHT</span>
+            <span className={progress >= 0.24 ? 'active-stage-violet' : ''}>[02] INCURSION</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.46 ? 'active-stage-emerald' : ''}>[03] VILLAIN</span>
+            <span className={progress >= 0.45 ? 'active-stage' : ''}>[03] FLIGHT</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.58 ? 'active-stage-amber' : ''}>[04] FACE-OFF</span>
+            <span className={progress >= 0.58 ? 'active-stage-emerald' : ''}>[04] VILLAIN</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.70 ? 'active-stage' : ''}>[05] THUNDER</span>
+            <span className={progress >= 0.68 ? 'active-stage-amber' : ''}>[05] FACE-OFF</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.82 ? 'active-stage-red' : ''}>[06] ASSEMBLE</span>
+            <span className={progress >= 0.77 ? 'active-stage' : ''}>[06] THUNDER</span>
             <span className="stage-sep">→</span>
-            <span className={progress >= 0.92 ? 'active-stage-white' : ''}>[07] HACKFEST 3.0</span>
+            <span className={progress >= 0.86 ? 'active-stage-red' : ''}>[07] ASSEMBLE</span>
+            <span className="stage-sep">→</span>
+            <span className={progress >= 0.94 ? 'active-stage-white' : ''}>[08] HACKFEST 3.0</span>
           </div>
           <div className="timeline-fps">
             <span>60 FPS</span>

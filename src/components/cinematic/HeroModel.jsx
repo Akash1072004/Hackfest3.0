@@ -292,12 +292,12 @@ export class HeroModelController {
 
     let isVisible = false;
 
-    if (progress < 0.15) {
+    if (progress < 0.12) {
       // -----------------------------------------------------------
-      // 1. HERO AWAKENING (0% - 15%)
+      // 1. HERO AWAKENING (0% - 12%)
       // -----------------------------------------------------------
       isVisible = true;
-      const wake = progress / 0.15;
+      const wake = progress / 0.12;
       this.root.scale.set(1.15, 1.15, 1.15);
       this.root.position.set(0, Math.sin(time * 1.5) * 0.05, 0);
       this.root.rotation.set(0, Math.sin(time * 0.8) * 0.06, 0);
@@ -305,12 +305,12 @@ export class HeroModelController {
       if (this.materials.core) this.materials.core.emissiveIntensity = 0.8 + wake * 1.8;
       if (this.materials.eyes) this.materials.eyes.emissiveIntensity = 0.5 + wake * 2.2;
       if (this.thrusterParticles) this.thrusterParticles.visible = false;
-    } else if (progress < 0.22) {
+    } else if (progress < 0.18) {
       // -----------------------------------------------------------
-      // 2. INITIAL LAUNCH INTO DEEP SPACE (15% - 22%)
+      // 2. INITIAL LAUNCH INTO DEEP SPACE (12% - 18%)
       // -----------------------------------------------------------
       isVisible = true;
-      const p = (progress - 0.15) / 0.07;
+      const p = (progress - 0.12) / 0.06;
       this.root.scale.set(1.15, 1.15, 1.15);
       this.root.rotation.set(-0.6 * p, 0, 0);
       this.root.position.set(0, 0.2 + p * 1.8, -p * 35.0);
@@ -321,20 +321,20 @@ export class HeroModelController {
         this.thrusterParticles.visible = true;
         this.thrusterParticles.material.opacity = (1 - p * 0.5);
       }
-    } else if (progress >= 0.22 && progress < 0.32) {
+    } else if (progress >= 0.18 && progress < 0.45) {
       // -----------------------------------------------------------
-      // Universe travel / Stars / Black hole / Galaxy (Hero in distance)
+      // Universe travel & Incursion (Hero not in frame)
       // -----------------------------------------------------------
       isVisible = false;
-    } else if (progress >= 0.32 && progress < 0.46) {
+    } else if (progress >= 0.45 && progress < 0.58) {
       // -----------------------------------------------------------
-      // 3. IRON-MAN-INSPIRED CINEMATIC FLIGHT SCENE (32% - 46%)
+      // 3. IRON-MAN-INSPIRED CINEMATIC FLIGHT SCENE (45% - 58%)
       // -----------------------------------------------------------
       isVisible = true;
-      const p = (progress - 0.32) / 0.14; // 0 to 1
+      const p = (progress - 0.45) / 0.13; // 0 to 1
 
       if (p < 0.2) {
-        // 0% - 20%: Appears in deep space, glowing reactor core shines through dark
+        // 0% - 20%: Appears in deep space after incursion blackout, glowing reactor shines
         const emergeP = p / 0.2;
         this.root.scale.setScalar(0.7 + emergeP * 0.45);
         this.root.position.set(0.5, 0.4, -32.0 + emergeP * 8.0);
@@ -386,12 +386,12 @@ export class HeroModelController {
           this.thrusterParticles.material.opacity = (1 - smoothExit);
         }
       }
-    } else if (progress >= 0.58 && progress < 0.70) {
+    } else if (progress >= 0.68 && progress < 0.77) {
       // -----------------------------------------------------------
-      // 5. HERO VS VILLAIN CONFRONTATION (58% - 70%)
+      // 5. HERO VS VILLAIN CONFRONTATION (68% - 77%)
       // -----------------------------------------------------------
       isVisible = true;
-      const p = (progress - 0.58) / 0.12;
+      const p = (progress - 0.68) / 0.09;
 
       // Positioned on the left flank facing center-right toward villain
       this.root.scale.setScalar(1.15);
@@ -404,12 +404,12 @@ export class HeroModelController {
         this.thrusterParticles.visible = true;
         this.thrusterParticles.material.opacity = 0.75;
       }
-    } else if (progress >= 0.82 && progress < 0.94) {
+    } else if (progress >= 0.86 && progress < 0.94) {
       // -----------------------------------------------------------
-      // 7. SUPERHERO TEAM ASSEMBLY POSTER TRIAD (82% - 94%)
+      // 7. SUPERHERO TEAM ASSEMBLY POSTER TRIAD (86% - 94%)
       // -----------------------------------------------------------
       isVisible = true;
-      const p = (progress - 0.82) / 0.12;
+      const p = (progress - 0.86) / 0.08;
 
       // Positioned on the left flank of the team composition
       this.root.scale.setScalar(1.15);

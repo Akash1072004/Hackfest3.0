@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CyberNoiseBackground from './components/ui/CyberNoiseBackground';
 import ComicHalftoneOverlay from './components/ui/ComicHalftoneOverlay';
+import CursorTrail from './components/cinematic/CursorTrail';
 
 // Existing Pages
 import HomePage from './pages/HomePage';
@@ -50,6 +51,7 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <div className="site-wrapper">
+          <CursorTrail />
           <CyberNoiseBackground />
           <ComicHalftoneOverlay />
           <Navbar />

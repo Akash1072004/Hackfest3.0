@@ -129,7 +129,7 @@ export class MultiversePortalController {
   }
 
   update(progress, time) {
-    if (progress < 0.84) {
+    if (progress < 0.88) {
       this.root.visible = false;
       this.outerTorus.material.opacity = 0;
       this.innerTorus.material.opacity = 0;
@@ -142,8 +142,8 @@ export class MultiversePortalController {
 
     this.root.visible = true;
 
-    const appearance = Math.min(1, Math.max(0, (progress - 0.84) / 0.10));
-    const targetScale = THREE.MathUtils.lerp(0.12, 1.8, Math.pow(appearance, 1.5));
+    const appearance = Math.min(1, Math.max(0, (progress - 0.88) / 0.08));
+    const targetScale = THREE.MathUtils.lerp(0.12, 1.9, Math.pow(appearance, 1.5));
     this.root.scale.set(targetScale, targetScale, targetScale);
 
     this.outerTorus.material.opacity = appearance * 0.95;

@@ -155,8 +155,8 @@ export class CosmicConfrontationController {
   }
 
   update(progress, time) {
-    // Active during 58% - 70%
-    if (progress < 0.58 || progress > 0.70) {
+    // Active during 68% - 77%
+    if (progress < 0.68 || progress > 0.77) {
       this.root.visible = false;
       this.materials.beamHero.opacity = 0;
       this.materials.beamVillain.opacity = 0;
@@ -170,7 +170,7 @@ export class CosmicConfrontationController {
     this.root.visible = true;
 
     // Timeline inside stage (0 to 1)
-    const p = (progress - 0.58) / 0.12;
+    const p = (progress - 0.68) / 0.09;
 
     // Ramping in and out
     let intensity = 0;

@@ -12,6 +12,7 @@ import VillainModelController from './VillainModel';
 import LightningWarriorController from './LightningWarrior';
 import LightningEffectController from './LightningEffect';
 import CosmicConfrontationController from './CosmicConfrontation';
+import PlanetIncursionController from './PlanetIncursion';
 import { createCinematicCamera } from './CinematicCamera';
 
 /**
@@ -153,6 +154,10 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
     const cosmicConfrontation = new CosmicConfrontationController(isMobile);
     scene.add(cosmicConfrontation.root);
 
+    // Multiverse Planet Incursion & Gravitational Collapse
+    const planetIncursion = new PlanetIncursionController(isMobile);
+    scene.add(planetIncursion.root);
+
     // Load Hero Model (GLB with procedural fallback)
     hero
       .load((percent) => {
@@ -186,6 +191,7 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
 
       // Superhero Action & Timeline Characters
       hero.update(currentProg, elapsedTime);
+      planetIncursion.update(currentProg, elapsedTime);
       villain.update(currentProg, elapsedTime);
       lightningWarrior.update(currentProg, elapsedTime);
       lightningEffect.update(currentProg, elapsedTime);
@@ -237,6 +243,7 @@ export default function CinematicScene({ progress = 0, onAssetLoaded = () => {} 
       lightningWarrior.dispose();
       lightningEffect.dispose();
       cosmicConfrontation.dispose();
+      planetIncursion.dispose();
 
       if (renderer.domElement && renderer.domElement.parentNode) {
         renderer.domElement.parentNode.removeChild(renderer.domElement);

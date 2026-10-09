@@ -2,15 +2,16 @@ import * as THREE from 'three';
 
 /**
  * CinematicCamera controller:
- * Master timeline camera choreography across all 8 cinematic superhero phases:
- * 0.00 - 0.15: Establishing hero awakening shot in deep darkness
- * 0.15 - 0.32: Interstellar universe travel, warp jump, orbiting Black Hole & Galaxy
- * 0.32 - 0.46: Iron-Man-inspired flight tracking (hero accelerates, passes camera, camera turns & follows)
- * 0.46 - 0.58: Doom-inspired villain entrance (menacing low-angle, emerald energy blast shockwave)
- * 0.58 - 0.70: Cosmic confrontation (dynamic face-off angle framing Hero left vs Villain right)
- * 0.70 - 0.82: Thor-inspired lightning entry (lightning strike shake, crane up to reveal warrior)
- * 0.82 - 0.92: Superhero team assembly (wide cinematic poster triad with rotating galaxy backdrop)
- * 0.92 - 1.00: Cosmic portal breach accelerating into HackFest 3.0 reveal
+ * Master timeline camera choreography across all cinematic superhero phases:
+ * 0.00 - 0.12: Establishing hero awakening shot in deep darkness
+ * 0.12 - 0.24: Interstellar universe travel, warp jump, Black Hole & Galaxy
+ * 0.24 - 0.45: Planet approach & Multiverse Incursion (Atmosphere entry, surface spires, reality cracks, incursion overlap, gravitational collapse, blackout)
+ * 0.45 - 0.58: Iron-Man-inspired flight tracking (hero accelerates, passes camera, camera turns & follows)
+ * 0.58 - 0.68: Doom-inspired villain entrance (menacing low-angle, emerald energy blast shockwave)
+ * 0.68 - 0.77: Cosmic confrontation (dynamic face-off angle framing Hero left vs Villain right)
+ * 0.77 - 0.86: Thor-inspired lightning entry (lightning strike shake, crane up to reveal warrior)
+ * 0.86 - 0.94: Superhero team assembly (wide cinematic poster triad with rotating galaxy backdrop)
+ * 0.94 - 1.00: Cosmic portal breach accelerating into HackFest 3.0 reveal
  */
 export function createCinematicCamera(camera, initialAspect = 16 / 9) {
   camera.fov = 50;
@@ -46,11 +47,11 @@ export function createCinematicCamera(camera, initialAspect = 16 / 9) {
 
       const heroPos = heroGroup ? heroGroup.position : new THREE.Vector3(0, 0, 0);
 
-      if (progress < 0.15) {
+      if (progress < 0.12) {
         // -----------------------------------------------------------
-        // 1. HERO AWAKENING (0.00 - 0.15)
+        // 1. HERO AWAKENING (0.00 - 0.12)
         // -----------------------------------------------------------
-        const t = progress / 0.15;
+        const t = progress / 0.12;
         targetPos.set(
           THREE.MathUtils.lerp(0, 0.35, t),
           THREE.MathUtils.lerp(0.4, 0.45, t),
@@ -58,11 +59,11 @@ export function createCinematicCamera(camera, initialAspect = 16 / 9) {
         );
         targetLookAt.set(0, 0.35, 0);
         camera.fov = 50;
-      } else if (progress < 0.32) {
+      } else if (progress < 0.24) {
         // -----------------------------------------------------------
-        // 2. UNIVERSE TRAVEL & SINGULARITY (0.15 - 0.32)
+        // 2. UNIVERSE TRAVEL & SINGULARITY (0.12 - 0.24)
         // -----------------------------------------------------------
-        const t = (progress - 0.15) / (0.32 - 0.15);
+        const t = (progress - 0.12) / (0.24 - 0.12);
         const smoothT = t * t * (3 - 2 * t);
         targetPos.set(
           THREE.MathUtils.lerp(0.35, 1.8, smoothT),
@@ -76,19 +77,79 @@ export function createCinematicCamera(camera, initialAspect = 16 / 9) {
           THREE.MathUtils.lerp(0.0, -28.0, smoothT)
         );
         camera.fov = THREE.MathUtils.lerp(50, 62, smoothT);
-      } else if (progress < 0.46) {
+      } else if (progress < 0.45) {
         // -----------------------------------------------------------
-        // 3. IRON-MAN-INSPIRED FLIGHT SEQUENCE (0.32 - 0.46)
+        // 3. PLANET APPROACH & MULTIVERSE INCURSION (0.24 - 0.45)
         // -----------------------------------------------------------
-        const t = (progress - 0.32) / (0.46 - 0.32);
+        const incursionP = (progress - 0.24) / (0.45 - 0.24);
+
+        if (incursionP < 0.22) {
+          // Planet approach: camera glides slowly toward planet
+          const subT = incursionP / 0.22;
+          const smoothSub = subT * subT * (3 - 2 * subT);
+          targetPos.set(
+            THREE.MathUtils.lerp(1.8, 0.0, smoothSub),
+            THREE.MathUtils.lerp(0.7, 0.0, smoothSub),
+            THREE.MathUtils.lerp(-26.0, -12.0, smoothSub)
+          );
+          targetLookAt.set(0, 0, -42.0);
+          camera.fov = THREE.MathUtils.lerp(62, 52, smoothSub);
+        } else if (incursionP < 0.45) {
+          // Atmosphere entry: camera accelerates into the atmosphere
+          const subT = (incursionP - 0.22) / 0.23;
+          const smoothSub = Math.pow(subT, 1.3);
+          targetPos.set(
+            0,
+            THREE.MathUtils.lerp(0.0, -2.5, smoothSub),
+            THREE.MathUtils.lerp(-12.0, -6.0, smoothSub)
+          );
+          targetLookAt.set(0, -1.0, -22.0);
+          camera.fov = THREE.MathUtils.lerp(52, 60, smoothSub);
+        } else if (incursionP < 0.70) {
+          // Planet surface spires & reality cracks
+          const subT = (incursionP - 0.45) / 0.25;
+          targetPos.set(
+            THREE.MathUtils.lerp(0.0, 0.4, subT),
+            THREE.MathUtils.lerp(-2.5, -1.8, subT),
+            THREE.MathUtils.lerp(-6.0, -8.0, subT)
+          );
+          targetLookAt.set(0, 1.5, -20.0);
+          // Subtle dimensional jitter
+          targetPos.x += Math.sin(subT * 20) * 0.04;
+          camera.fov = 54;
+        } else if (incursionP < 0.90) {
+          // Incursion collision & gravitational collapse: camera drawn inward
+          const subT = (incursionP - 0.70) / 0.20;
+          const smoothSub = Math.pow(subT, 1.4);
+          targetPos.set(
+            THREE.MathUtils.lerp(0.4, 0.0, smoothSub),
+            THREE.MathUtils.lerp(-1.8, 0.0, smoothSub),
+            THREE.MathUtils.lerp(-8.0, -13.5, smoothSub)
+          );
+          targetLookAt.set(0, 0, -16.0);
+          // High gravitational instability
+          targetPos.x += (Math.random() - 0.5) * 0.06;
+          targetPos.y += (Math.random() - 0.5) * 0.06;
+          camera.fov = THREE.MathUtils.lerp(54, 46, smoothSub);
+        } else {
+          // Blackout moment: camera stops at singularity threshold
+          targetPos.set(0, 0, -14.0);
+          targetLookAt.set(0, 0, -16.0);
+          camera.fov = 48;
+        }
+      } else if (progress < 0.58) {
+        // -----------------------------------------------------------
+        // 4. IRON-MAN-INSPIRED FLIGHT SEQUENCE (0.45 - 0.58)
+        // -----------------------------------------------------------
+        const t = (progress - 0.45) / (0.58 - 0.45);
 
         if (t < 0.45) {
           // Camera placed in front of approaching hero
           const subT = t / 0.45;
           targetPos.set(
-            THREE.MathUtils.lerp(1.8, 0.5, subT),
-            THREE.MathUtils.lerp(0.7, 0.3, subT),
-            THREE.MathUtils.lerp(-26.0, 5.0, subT)
+            THREE.MathUtils.lerp(0.0, 0.5, subT),
+            THREE.MathUtils.lerp(0.0, 0.3, subT),
+            THREE.MathUtils.lerp(-14.0, 5.0, subT)
           );
           targetLookAt.set(heroPos.x, heroPos.y + 0.4, heroPos.z);
           camera.fov = 54;
@@ -114,11 +175,11 @@ export function createCinematicCamera(camera, initialAspect = 16 / 9) {
           targetLookAt.set(0, 0.2, -18.0);
           camera.fov = THREE.MathUtils.lerp(65, 52, subT);
         }
-      } else if (progress < 0.58) {
+      } else if (progress < 0.68) {
         // -----------------------------------------------------------
-        // 4. DOOM-INSPIRED VILLAIN ENTRANCE & ENERGY BLAST (0.46 - 0.58)
+        // 5. DOOM-INSPIRED VILLAIN ENTRANCE & ENERGY BLAST (0.58 - 0.68)
         // -----------------------------------------------------------
-        const t = (progress - 0.46) / (0.58 - 0.46);
+        const t = (progress - 0.58) / (0.68 - 0.58);
         const smoothT = t * t * (3 - 2 * t);
 
         // Low-angle menacing shot looking up at stepping villain
@@ -135,11 +196,11 @@ export function createCinematicCamera(camera, initialAspect = 16 / 9) {
           targetPos.x += (Math.random() - 0.5) * 0.08;
           targetPos.y += (Math.random() - 0.5) * 0.08;
         }
-      } else if (progress < 0.70) {
+      } else if (progress < 0.77) {
         // -----------------------------------------------------------
-        // 5. COSMIC CONFRONTATION (HERO VS VILLAIN) (0.58 - 0.70)
+        // 6. COSMIC CONFRONTATION (HERO VS VILLAIN) (0.68 - 0.77)
         // -----------------------------------------------------------
-        const t = (progress - 0.58) / (0.70 - 0.58);
+        const t = (progress - 0.68) / (0.77 - 0.68);
         const smoothT = t * t * (3 - 2 * t);
 
         // Sweeping arc camera showing both titans: Hero Left vs Villain Right
@@ -151,11 +212,11 @@ export function createCinematicCamera(camera, initialAspect = 16 / 9) {
         // Look directly at the central clash vortex at (0, 1.8, -13)
         targetLookAt.set(0, 1.8, -13.0);
         camera.fov = 56;
-      } else if (progress < 0.82) {
+      } else if (progress < 0.86) {
         // -----------------------------------------------------------
-        // 6. THOR-INSPIRED LIGHTNING ENTRY (0.70 - 0.82)
+        // 7. THOR-INSPIRED LIGHTNING ENTRY (0.77 - 0.86)
         // -----------------------------------------------------------
-        const t = (progress - 0.70) / (0.82 - 0.70);
+        const t = (progress - 0.77) / (0.86 - 0.77);
 
         if (t < 0.35) {
           // Lightning strike impact & shake
@@ -177,11 +238,11 @@ export function createCinematicCamera(camera, initialAspect = 16 / 9) {
           targetLookAt.set(0, THREE.MathUtils.lerp(1.2, 2.2, smoothSub), -11.0);
           camera.fov = 50;
         }
-      } else if (progress < 0.92) {
+      } else if (progress < 0.94) {
         // -----------------------------------------------------------
-        // 7. SUPERHERO TEAM ASSEMBLY POSTER SHOT (0.82 - 0.92)
+        // 8. SUPERHERO TEAM ASSEMBLY POSTER SHOT (0.86 - 0.94)
         // -----------------------------------------------------------
-        const t = (progress - 0.82) / (0.92 - 0.82);
+        const t = (progress - 0.86) / (0.94 - 0.86);
         const smoothT = t * t * (3 - 2 * t);
 
         // Pull back into grand wide cinematic poster angle
@@ -194,9 +255,9 @@ export function createCinematicCamera(camera, initialAspect = 16 / 9) {
         camera.fov = 50;
       } else {
         // -----------------------------------------------------------
-        // 8. COSMIC PORTAL BREACH & HACKFEST REVEAL (0.92 - 1.00)
+        // 9. COSMIC PORTAL BREACH & HACKFEST REVEAL (0.94 - 1.00)
         // -----------------------------------------------------------
-        const t = (progress - 0.92) / (1.0 - 0.92);
+        const t = (progress - 0.94) / (1.0 - 0.94);
         const smoothT = Math.pow(t, 1.4);
 
         // Accelerated dive through portal core

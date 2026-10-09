@@ -268,12 +268,12 @@ export class LightningWarriorController {
     // Stage 2: Team Assembly Triad (82% - 94%)
     let isVisible = false;
 
-    if (progress >= 0.70 && progress < 0.82) {
+    if (progress >= 0.77 && progress < 0.86) {
       isVisible = true;
-      const p = (progress - 0.70) / 0.12; // 0 to 1
+      const p = (progress - 0.77) / 0.09; // 0 to 1
 
-      // 70% - 74%: Descends swiftly out of lightning strike onto scene
-      // 74% - 82%: Raises hammer to sky, lightning intensifies
+      // 77% - 80%: Descends swiftly out of lightning strike onto scene
+      // 80% - 86%: Raises hammer to sky, lightning intensifies
       if (p < 0.35) {
         // Impact landing crouch
         const landP = p / 0.35;
@@ -299,10 +299,10 @@ export class LightningWarriorController {
         this.lightningLight.intensity = pulse + raiseP * 4;
         this.materials.hammerCore.opacity = 0.8 + Math.sin(time * 15) * 0.2;
       }
-    } else if (progress >= 0.82 && progress < 0.94) {
+    } else if (progress >= 0.86 && progress < 0.94) {
       // Stage 2: Team Assembly Triad Position (Center-Ground Hero)
       isVisible = true;
-      const p = (progress - 0.82) / 0.12;
+      const p = (progress - 0.86) / 0.08;
 
       this.root.position.set(
         0,

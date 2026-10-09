@@ -207,12 +207,12 @@ export class VillainModelController {
     // Stage C: Final Team Assembly (82% - 95%)
     let isVisible = false;
 
-    if (progress >= 0.46 && progress < 0.58) {
+    if (progress >= 0.58 && progress < 0.68) {
       // -----------------------------------------------------------
-      // STAGE A: VILLAIN ENTRANCE & ENERGY BLAST (46% - 58%)
+      // STAGE A: VILLAIN ENTRANCE & ENERGY BLAST (58% - 68%)
       // -----------------------------------------------------------
       isVisible = true;
-      const p = (progress - 0.46) / 0.12; // 0 to 1
+      const p = (progress - 0.58) / 0.10; // 0 to 1
 
       // Villain steps forward out of dark space
       this.root.position.set(
@@ -239,12 +239,12 @@ export class VillainModelController {
         this.energyWaveMesh.visible = false;
         this.materials.energyWave.opacity = 0;
       }
-    } else if (progress >= 0.58 && progress < 0.70) {
+    } else if (progress >= 0.68 && progress < 0.77) {
       // -----------------------------------------------------------
-      // STAGE B: HERO VS VILLAIN FACE-OFF (58% - 70%)
+      // STAGE B: HERO VS VILLAIN FACE-OFF (68% - 77%)
       // -----------------------------------------------------------
       isVisible = true;
-      const p = (progress - 0.58) / 0.12;
+      const p = (progress - 0.68) / 0.09;
 
       // Positioned on the right flank facing center
       this.root.position.set(3.4, 0.2, -13.5);
@@ -254,12 +254,12 @@ export class VillainModelController {
       this.energySphere.scale.set(sphereScale, sphereScale, sphereScale);
       this.greenLight.intensity = 4.2;
       this.energyWaveMesh.visible = false;
-    } else if (progress >= 0.82 && progress < 0.94) {
+    } else if (progress >= 0.86 && progress < 0.94) {
       // -----------------------------------------------------------
-      // STAGE C: TEAM ASSEMBLY POSTER FORMATION (82% - 94%)
+      // STAGE C: TEAM ASSEMBLY POSTER FORMATION (86% - 94%)
       // -----------------------------------------------------------
       isVisible = true;
-      const p = (progress - 0.82) / 0.12;
+      const p = (progress - 0.86) / 0.08;
 
       // Positioned in the team poster triad (center-right flank)
       this.root.position.set(
