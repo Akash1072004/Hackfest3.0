@@ -177,17 +177,17 @@ export default function RegisterPage() {
         </p>
 
         {submitted ? (
-          <div style={{ background: 'rgba(37, 42, 49, 0.85)', border: '1px solid var(--border-accent-amber)', borderRadius: 'var(--radius-lg)', padding: '3rem', textAlign: 'center' }}>
-            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(185, 133, 69, 0.15)', border: '1px solid var(--color-warm-amber)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto', color: 'var(--color-warm-amber)' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.35)', borderRadius: 'var(--radius-lg)', padding: '3rem', textAlign: 'center', boxShadow: '0 12px 35px rgba(0, 0, 0, 0.7)' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(0, 217, 255, 0.15)', border: '1px solid var(--color-arc-cyan)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto', color: 'var(--color-arc-cyan)' }}>
               <CheckCircle2 size={36} />
             </div>
-            <h2 className="heading-display" style={{ fontSize: '2rem', marginBottom: '0.8rem' }}>
+            <h2 className="heading-display" style={{ fontSize: '2rem', marginBottom: '0.8rem', color: 'var(--color-text-primary)' }}>
               REGISTRATION RECEIVED
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '1.02rem', maxWidth: '540px', margin: '0 auto 1.5rem auto', lineHeight: '1.6' }}>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: '1.02rem', maxWidth: '540px', margin: '0 auto 1.5rem auto', lineHeight: '1.6' }}>
               Welcome, <strong>{formData.fullName || 'Participant'}</strong>! A confirmation email and event details have been sent to <strong>{formData.email}</strong>.
             </p>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--color-warm-amber)', marginBottom: '2rem' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--color-arc-cyan)', marginBottom: '2rem' }}>
               EVENT: {formData.arena.toUpperCase()} • TEAM: {formData.teamName || (formData.teamCode ? `CODE: ${formData.teamCode}` : 'INDIVIDUAL')}
             </div>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -201,7 +201,7 @@ export default function RegisterPage() {
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: 'clamp(1.8rem, 3.5vw, 2.8rem)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <form onSubmit={handleSubmit} style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-lg)', padding: 'clamp(1.8rem, 3.5vw, 2.8rem)', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxShadow: '0 12px 35px rgba(0, 0, 0, 0.7)' }}>
             {isRegistrationClosed && (
               <div style={{
                 background: 'rgba(143, 48, 53, 0.25)',

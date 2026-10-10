@@ -151,13 +151,13 @@ export default function DashboardTeamPage() {
 
         {/* Create Team Form Modal */}
         {showCreate && (
-          <div style={{ background: 'rgba(37, 42, 49, 0.95)', border: '1px solid var(--border-accent-amber)', borderRadius: 'var(--radius-md)', padding: '1.8rem', marginBottom: '2rem' }}>
-            <h3 className="heading-display" style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid var(--color-infinity-gold)', borderRadius: 'var(--radius-md)', padding: '1.8rem', marginBottom: '2rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.7)' }}>
+            <h3 className="heading-display" style={{ fontSize: '1.3rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>
               CREATE NEW TEAM
             </h3>
             <form onSubmit={handleCreateTeam} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem' }}>
                   TEAM NAME *
                 </label>
                 <input
@@ -166,18 +166,18 @@ export default function DashboardTeamPage() {
                   onChange={(e) => setNewTeamName(e.target.value)}
                   placeholder="e.g. Code Warriors"
                   required
-                  style={{ width: '100%', padding: '0.75rem 1rem', background: '#111827', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--color-warm-off-white)', fontSize: '0.92rem' }}
+                  style={{ width: '100%', padding: '0.75rem 1rem', background: 'var(--color-surface-secondary)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-sm)', color: 'var(--color-text-primary)', fontSize: '0.92rem' }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem' }}>
                   COMPETITION *
                 </label>
                 <select
                   value={newCompId}
                   onChange={(e) => setNewCompId(e.target.value)}
-                  style={{ width: '100%', padding: '0.75rem 1rem', background: '#111827', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--color-warm-off-white)', fontSize: '0.92rem' }}
+                  style={{ width: '100%', padding: '0.75rem 1rem', background: 'var(--color-surface-secondary)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-sm)', color: 'var(--color-text-primary)', fontSize: '0.92rem' }}
                 >
                   <option value="hackathon">Flagship Hackathon (Team 2-4)</option>
                   <option value="ideathon">Ideathon (Team 1-3)</option>
@@ -196,15 +196,14 @@ export default function DashboardTeamPage() {
           </div>
         )}
 
-        {/* Join Team Form Modal */}
         {showJoin && (
-          <div style={{ background: 'rgba(37, 42, 49, 0.95)', border: '1px solid var(--border-accent-steel)', borderRadius: 'var(--radius-md)', padding: '1.8rem', marginBottom: '2rem' }}>
-            <h3 className="heading-display" style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid var(--color-arc-cyan)', borderRadius: 'var(--radius-md)', padding: '1.8rem', marginBottom: '2rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.7)' }}>
+            <h3 className="heading-display" style={{ fontSize: '1.3rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>
               JOIN EXISTING TEAM
             </h3>
             <form onSubmit={handleJoinTeam} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem' }}>
                   ENTER INVITE CODE *
                 </label>
                 <input
@@ -213,7 +212,7 @@ export default function DashboardTeamPage() {
                   onChange={(e) => setJoinCode(e.target.value)}
                   placeholder="e.g. HF3-XXXXXX"
                   required
-                  style={{ width: '100%', padding: '0.75rem 1rem', background: '#111827', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--color-warm-off-white)', fontSize: '0.92rem', textTransform: 'uppercase' }}
+                  style={{ width: '100%', padding: '0.75rem 1rem', background: 'var(--color-surface-secondary)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-sm)', color: 'var(--color-text-primary)', fontSize: '0.92rem', textTransform: 'uppercase' }}
                 />
               </div>
 
@@ -231,60 +230,60 @@ export default function DashboardTeamPage() {
 
         {/* Teams List */}
         {teams.length === 0 ? (
-          <div style={{ background: 'rgba(37, 42, 49, 0.6)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '3rem 1.5rem', textAlign: 'center' }}>
-            <Users size={48} color="var(--color-steel-blue)" style={{ margin: '0 auto 1.2rem auto' }} />
-            <h3 className="heading-display" style={{ fontSize: '1.4rem', marginBottom: '0.6rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.2)', borderRadius: 'var(--radius-md)', padding: '3rem 1.5rem', textAlign: 'center', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
+            <Users size={48} color="var(--color-arc-cyan)" style={{ margin: '0 auto 1.2rem auto' }} />
+            <h3 className="heading-display" style={{ fontSize: '1.4rem', marginBottom: '0.6rem', color: 'var(--color-text-primary)' }}>
               NO TEAMS JOINED YET
             </h3>
-            <p style={{ color: 'var(--text-secondary)', maxWidth: '480px', margin: '0 auto 1.5rem auto', lineHeight: '1.6' }}>
+            <p style={{ color: 'var(--color-text-secondary)', maxWidth: '480px', margin: '0 auto 1.5rem auto', lineHeight: '1.6' }}>
               You are not currently in a team. Create a new team or enter an invite code from your teammates to collaborate.
             </p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {teams.map((tm) => (
-              <div key={tm.id} style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '1.8rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.2rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+              <div key={tm.id} style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-md)', padding: '1.8rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.2rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(0, 217, 255, 0.15)' }}>
                   <div>
                     <span className="chapter-badge" style={{ margin: '0 0 0.4rem 0' }}>
                       {tm.competition?.name || 'HACKATHON'}
                     </span>
-                    <h3 className="heading-display" style={{ fontSize: '1.5rem', color: 'var(--color-warm-off-white)' }}>
+                    <h3 className="heading-display" style={{ fontSize: '1.5rem', color: 'var(--color-text-primary)' }}>
                       {tm.name}
                     </h3>
                   </div>
 
                   {/* Team Code Pill */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#111827', border: '1px solid var(--border-accent-amber)', borderRadius: 'var(--radius-sm)', padding: '0.4rem 0.8rem' }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.84rem', color: 'var(--color-warm-amber)', fontWeight: 700 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--color-surface-secondary)', border: '1px solid var(--color-infinity-gold)', borderRadius: 'var(--radius-sm)', padding: '0.4rem 0.8rem' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.84rem', color: 'var(--color-infinity-gold)', fontWeight: 700 }}>
                       {tm.code}
                     </span>
                     <button
                       onClick={() => handleCopyCode(tm.code)}
-                      style={{ background: 'none', border: 'none', color: 'var(--color-soft-gray)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                      style={{ background: 'none', border: 'none', color: 'var(--color-text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                       title="Copy team code"
                     >
-                      {copiedCode === tm.code ? <Check size={16} color="var(--color-warm-amber)" /> : <Copy size={16} />}
+                      {copiedCode === tm.code ? <Check size={16} color="var(--color-infinity-gold)" /> : <Copy size={16} />}
                     </button>
                   </div>
                 </div>
 
                 {/* Team Members List */}
-                <h4 style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.8rem', letterSpacing: '0.08em' }}>
+                <h4 style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-text-secondary)', marginBottom: '0.8rem', letterSpacing: '0.08em' }}>
                   TEAM MEMBERS ({tm.members?.length || 1} / {tm.competition?.max_team_size || 4})
                 </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.8rem', marginBottom: '1.4rem' }}>
                   {(tm.members || []).map((m) => (
-                    <div key={m.id} style={{ background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div key={m.id} style={{ background: 'var(--color-surface-secondary)', border: '1px solid rgba(0, 217, 255, 0.15)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <div>
-                        <div style={{ fontWeight: 600, fontSize: '0.92rem', color: 'var(--color-warm-off-white)' }}>
+                        <div style={{ fontWeight: 600, fontSize: '0.92rem', color: 'var(--color-text-primary)' }}>
                           {m.profile?.full_name || 'Member'}
                         </div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
                           {m.profile?.college || 'REC Banda'}
                         </div>
                       </div>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: m.role === 'leader' ? 'var(--color-warm-amber)' : 'var(--color-soft-gray)' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: m.role === 'leader' ? 'var(--color-infinity-gold)' : 'var(--color-text-secondary)' }}>
                         {m.role?.toUpperCase()}
                       </span>
                     </div>

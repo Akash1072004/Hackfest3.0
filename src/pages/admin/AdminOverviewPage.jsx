@@ -231,11 +231,11 @@ export default function AdminOverviewPage() {
           {/* Card 1: Total Registrations */}
           <div
             style={{
-              background: 'rgba(37, 42, 49, 0.85)',
-              border: '1px solid var(--border-accent-crimson)',
+              background: 'var(--color-surface-elevated)',
+              border: '1px solid rgba(230, 36, 41, 0.45)',
               borderRadius: 'var(--radius-md)',
               padding: '1.5rem',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.65), 0 0 15px rgba(230, 36, 41, 0.1)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -243,10 +243,10 @@ export default function AdminOverviewPage() {
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-stark-gold)', letterSpacing: '0.08em' }}>
                   TOTAL REGISTRATIONS
                 </div>
-                <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.4rem', color: 'var(--color-warm-off-white)', margin: '0.25rem 0' }}>
+                <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.4rem', color: 'var(--color-text-primary)', margin: '0.25rem 0' }}>
                   {stats.registrationsCount}
                 </div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Total Event Passes</div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>Total Event Passes</div>
               </div>
               <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'rgba(245, 182, 66, 0.15)', border: '1px solid var(--color-stark-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-stark-gold)' }}>
                 <Trophy size={20} />
@@ -262,11 +262,11 @@ export default function AdminOverviewPage() {
           {/* Card 2: Registrations by Event / Category */}
           <div
             style={{
-              background: 'rgba(37, 42, 49, 0.85)',
-              border: '1px solid var(--border-medium)',
+              background: 'var(--color-surface-elevated)',
+              border: '1px solid rgba(0, 217, 255, 0.25)',
               borderRadius: 'var(--radius-md)',
               padding: '1.5rem',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.65)',
             }}
           >
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-arc-blue)', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>
@@ -287,18 +287,18 @@ export default function AdminOverviewPage() {
               </div>
             </div>
             <div style={{ marginTop: '0.85rem', paddingTop: '0.65rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-              <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>Verified against competitions</span>
+              <span style={{ fontSize: '0.74rem', color: 'var(--color-text-muted)' }}>Verified against competitions</span>
             </div>
           </div>
 
           {/* Card 3: Total SDC Members */}
           <div
             style={{
-              background: 'rgba(37, 42, 49, 0.85)',
-              border: '1px solid var(--border-medium)',
+              background: 'var(--color-surface-elevated)',
+              border: '1px solid rgba(0, 217, 255, 0.25)',
               borderRadius: 'var(--radius-md)',
               padding: '1.5rem',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.65)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -309,7 +309,7 @@ export default function AdminOverviewPage() {
                 <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.4rem', color: 'var(--color-arc-blue)', margin: '0.25rem 0' }}>
                   {stats.sdcMembersCount}
                 </div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Leaders & Coordinators</div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>Leaders & Coordinators</div>
               </div>
               <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'rgba(0, 191, 255, 0.15)', border: '1px solid var(--color-arc-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-arc-blue)' }}>
                 <Users2 size={20} />
@@ -325,11 +325,11 @@ export default function AdminOverviewPage() {
           {/* Card 4: Current Event Configuration */}
           <div
             style={{
-              background: 'rgba(37, 42, 49, 0.85)',
-              border: '1px solid var(--border-medium)',
+              background: 'var(--color-surface-elevated)',
+              border: '1px solid rgba(245, 196, 81, 0.35)',
               borderRadius: 'var(--radius-md)',
               padding: '1.5rem',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.65)',
             }}
           >
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-stark-gold)', letterSpacing: '0.08em', marginBottom: '0.4rem' }}>
@@ -338,7 +338,7 @@ export default function AdminOverviewPage() {
             <div style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 600, marginBottom: '0.2rem' }}>
               {settings.eventDate}
             </div>
-            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
+            <div style={{ fontSize: '0.76rem', color: 'var(--color-text-muted)', marginBottom: '0.4rem' }}>
               📍 {settings.venue}
             </div>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)' }}>
@@ -355,17 +355,17 @@ export default function AdminOverviewPage() {
         {/* ============================================================== */}
         {/* GLOBAL EVENT PROTOCOL CONTROLLER                               */}
         {/* ============================================================== */}
-        <div style={{ background: 'rgba(37, 42, 49, 0.85)', border: '1px solid var(--border-accent-crimson)', borderRadius: 'var(--radius-md)', padding: '1.8rem', marginBottom: '2.5rem' }}>
+        <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(230, 36, 41, 0.45)', borderRadius: 'var(--radius-md)', padding: '1.8rem', marginBottom: '2.5rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.2rem' }}>
             <div>
               <span className="chapter-badge" style={{ margin: '0 0 0.3rem 0' }}>SYSTEM PROTOCOL STATE</span>
-              <h3 className="heading-display" style={{ fontSize: '1.4rem', margin: 0 }}>
-                CURRENT EVENT PHASE: <span style={{ color: 'var(--color-warm-amber)' }}>{settings.liveModeStatus}</span>
+              <h3 className="heading-display" style={{ fontSize: '1.4rem', margin: 0, color: 'var(--color-text-primary)' }}>
+                CURRENT EVENT PHASE: <span style={{ color: 'var(--color-arc-cyan)' }}>{settings.liveModeStatus}</span>
               </h3>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--color-soft-gray)', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--color-text-secondary)', cursor: 'pointer' }}>
                 <input
                   type="checkbox"
                   checked={settings.leaderboardPublished}
@@ -390,9 +390,10 @@ export default function AdminOverviewPage() {
                   fontFamily: 'var(--font-mono)',
                   fontSize: '0.78rem',
                   cursor: 'pointer',
-                  border: settings.liveModeStatus === m ? '1px solid var(--color-warm-amber)' : '1px solid var(--border-subtle)',
-                  background: settings.liveModeStatus === m ? 'rgba(185, 133, 69, 0.25)' : '#111827',
-                  color: settings.liveModeStatus === m ? 'var(--color-warm-amber)' : 'var(--color-soft-gray)',
+                  border: settings.liveModeStatus === m ? '1px solid var(--color-arc-cyan)' : '1px solid rgba(0, 217, 255, 0.2)',
+                  background: settings.liveModeStatus === m ? 'rgba(0, 217, 255, 0.18)' : 'var(--color-surface-secondary)',
+                  color: settings.liveModeStatus === m ? 'var(--color-arc-cyan)' : 'var(--color-text-secondary)',
+                  boxShadow: settings.liveModeStatus === m ? '0 0 12px rgba(0, 217, 255, 0.25)' : 'none',
                   transition: 'var(--transition-fast)',
                 }}
               >
@@ -407,12 +408,12 @@ export default function AdminOverviewPage() {
         {/* ============================================================== */}
         <div
           style={{
-            background: 'rgba(28, 32, 38, 0.95)',
-            border: '1px solid var(--border-medium)',
+            background: 'var(--color-surface-elevated)',
+            border: '1px solid rgba(0, 217, 255, 0.22)',
             borderRadius: 'var(--radius-md)',
             padding: '1.5rem',
             marginBottom: '2.5rem',
-            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.3)',
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.65)',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '0.75rem' }}>
@@ -420,7 +421,7 @@ export default function AdminOverviewPage() {
               <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: '#fff', margin: 0 }}>
                 RECENT REGISTRATION ENTRIES
               </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: '0.2rem 0 0 0' }}>
+              <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem', margin: '0.2rem 0 0 0' }}>
                 Latest participant submissions requiring organizer verification.
               </p>
             </div>
@@ -437,7 +438,7 @@ export default function AdminOverviewPage() {
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
               <thead>
-                <tr style={{ background: '#111827', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-stark-gold)' }}>
+                <tr style={{ background: 'rgba(8, 10, 16, 0.95)', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-arc-cyan)' }}>
                   <th style={{ padding: '0.8rem 1rem' }}>PARTICIPANT</th>
                   <th style={{ padding: '0.8rem 1rem' }}>COMPETITION</th>
                   <th style={{ padding: '0.8rem 1rem' }}>TEAM</th>

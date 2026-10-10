@@ -38,13 +38,13 @@ export default function ForgotPasswordPage() {
           BACK TO LOGIN
         </Link>
 
-        <div style={{ background: 'rgba(37, 42, 49, 0.85)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: 'clamp(2rem, 5vw, 2.8rem)', boxShadow: 'var(--shadow-card)' }}>
+        <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-lg)', padding: 'clamp(2rem, 5vw, 2.8rem)', boxShadow: '0 12px 35px rgba(0, 0, 0, 0.7)' }}>
           <div style={{ marginBottom: '1.8rem' }}>
             <span className="chapter-badge">PASSWORD RECOVERY</span>
-            <h1 className="heading-display" style={{ fontSize: '2rem', marginBottom: '0.4rem' }}>
+            <h1 className="heading-display" style={{ fontSize: '2rem', marginBottom: '0.4rem', color: 'var(--color-text-primary)' }}>
               FORGOT PASSWORD
             </h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.92rem' }}>
               Enter your registered email address to receive a password reset link.
             </p>
           </div>

@@ -120,11 +120,11 @@ export default function SignupPage() {
           ) : (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>
               <div>
-                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
+                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
                   FULL NAME *
                 </label>
                 <div style={{ position: 'relative' }}>
-                  <User size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                  <User size={18} color="var(--color-stark-crimson)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                   <input
                     type="text"
                     name="fullName"
@@ -132,17 +132,17 @@ export default function SignupPage() {
                     onChange={handleChange}
                     placeholder="Arjun Verma"
                     required
-                    style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(230, 36, 41, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
+                    style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'var(--color-surface-elevated)', border: '1px solid rgba(230, 36, 41, 0.3)', borderRadius: '4px', color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
                   />
                 </div>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
+                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
                   EMAIL ADDRESS *
                 </label>
                 <div style={{ position: 'relative' }}>
-                  <Mail size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                  <Mail size={18} color="var(--color-stark-crimson)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                   <input
                     type="email"
                     name="email"
@@ -150,42 +150,42 @@ export default function SignupPage() {
                     onChange={handleChange}
                     placeholder="student@institution.ac.in"
                     required
-                    style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(230, 36, 41, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
+                    style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'var(--color-surface-elevated)', border: '1px solid rgba(230, 36, 41, 0.3)', borderRadius: '4px', color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
                   />
                 </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
+                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
                     PHONE NUMBER
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <Phone size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                    <Phone size={18} color="var(--color-stark-crimson)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="+91 98765 43210"
-                      style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(230, 36, 41, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
+                      style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'var(--color-surface-elevated)', border: '1px solid rgba(230, 36, 41, 0.3)', borderRadius: '4px', color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
+                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
                     COLLEGE / UNIVERSITY
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <School size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                    <School size={18} color="var(--color-stark-crimson)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                     <input
                       type="text"
                       name="college"
                       value={formData.college}
                       onChange={handleChange}
                       placeholder="REC Banda"
-                      style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(230, 36, 41, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
+                      style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'var(--color-surface-elevated)', border: '1px solid rgba(230, 36, 41, 0.3)', borderRadius: '4px', color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
                     />
                   </div>
                 </div>
@@ -193,11 +193,11 @@ export default function SignupPage() {
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
+                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
                     PASSWORD *
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <Lock size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                    <Lock size={18} color="var(--color-stark-crimson)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                     <input
                       type="password"
                       name="password"
@@ -205,17 +205,17 @@ export default function SignupPage() {
                       onChange={handleChange}
                       placeholder="Min 6 characters"
                       required
-                      style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(230, 36, 41, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
+                      style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'var(--color-surface-elevated)', border: '1px solid rgba(230, 36, 41, 0.3)', borderRadius: '4px', color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
+                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-text-secondary)', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
                     CONFIRM PASSWORD *
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <Lock size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                    <Lock size={18} color="var(--color-stark-crimson)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                     <input
                       type="password"
                       name="confirmPassword"
@@ -223,7 +223,7 @@ export default function SignupPage() {
                       onChange={handleChange}
                       placeholder="Re-enter password"
                       required
-                      style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(230, 36, 41, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
+                      style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'var(--color-surface-elevated)', border: '1px solid rgba(230, 36, 41, 0.3)', borderRadius: '4px', color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
                     />
                   </div>
                 </div>
@@ -231,7 +231,7 @@ export default function SignupPage() {
 
               <button
                 type="submit"
-                className="btn btn-avenger"
+                className="btn btn-primary"
                 disabled={loading}
                 style={{ width: '100%', marginTop: '0.6rem', justifyContent: 'center' }}
               >
@@ -251,9 +251,9 @@ export default function SignupPage() {
             </form>
           )}
 
-          <div style={{ marginTop: '1.8rem', textAlign: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1.2rem', fontSize: '0.88rem', color: '#94A3B8' }}>
+          <div style={{ marginTop: '1.8rem', textAlign: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1.2rem', fontSize: '0.88rem', color: 'var(--color-text-secondary)' }}>
             Already have an account?{' '}
-            <Link to="/login" style={{ color: 'var(--color-arc-blue)', fontWeight: 600 }}>
+            <Link to="/login" style={{ color: 'var(--color-arc-cyan)', fontWeight: 600 }}>
               Sign In
             </Link>
           </div>

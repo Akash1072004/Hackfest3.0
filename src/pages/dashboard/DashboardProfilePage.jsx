@@ -65,13 +65,13 @@ export default function DashboardProfilePage() {
       <div className="container" style={{ maxWidth: '860px' }}>
         <DashboardNav />
 
-        <div style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: 'clamp(1.8rem, 4vw, 2.5rem)' }}>
+        <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-lg)', padding: 'clamp(1.8rem, 4vw, 2.5rem)', boxShadow: '0 12px 35px rgba(0, 0, 0, 0.7)' }}>
           <div style={{ marginBottom: '1.8rem' }}>
             <span className="chapter-badge">IDENTIFICATION</span>
-            <h2 className="heading-display" style={{ fontSize: '1.8rem', marginBottom: '0.4rem' }}>
+            <h2 className="heading-display" style={{ fontSize: '1.8rem', marginBottom: '0.4rem', color: 'var(--color-text-primary)' }}>
               OPERATOR PROFILE
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.92rem' }}>
               Update your identity details, academic affiliation, and communication coordinates.
             </p>
           </div>

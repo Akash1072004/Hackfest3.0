@@ -228,25 +228,25 @@ export default function DashboardSubmissionPage() {
 
         {/* Existing Scores & Evaluation if evaluated */}
         {currentSubmission?.scores?.length > 0 && (
-          <div style={{ background: 'rgba(37, 42, 49, 0.85)', border: '1px solid var(--border-accent-amber)', borderRadius: 'var(--radius-md)', padding: '1.5rem', marginBottom: '2rem' }}>
-            <h3 className="heading-display" style={{ fontSize: '1.3rem', color: 'var(--color-warm-amber)', marginBottom: '0.8rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid var(--color-infinity-gold)', borderRadius: 'var(--radius-md)', padding: '1.5rem', marginBottom: '2rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
+            <h3 className="heading-display" style={{ fontSize: '1.3rem', color: 'var(--color-infinity-gold)', marginBottom: '0.8rem' }}>
               JURY EVALUATION VERDICT
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
               {currentSubmission.scores.map((sc) => (
-                <div key={sc.id} style={{ background: '#111827', padding: '0.8rem', borderRadius: 'var(--radius-sm)' }}>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{sc.criterion?.title || 'Criterion'}</div>
-                  <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: 'var(--color-warm-off-white)' }}>{sc.score} / 100</div>
-                  {sc.comments && <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.3rem' }}>"{sc.comments}"</div>}
+                <div key={sc.id} style={{ background: 'var(--color-surface-secondary)', border: '1px solid rgba(245, 196, 81, 0.2)', padding: '0.8rem', borderRadius: 'var(--radius-sm)' }}>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>{sc.criterion?.title || 'Criterion'}</div>
+                  <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: 'var(--color-text-primary)' }}>{sc.score} / 100</div>
+                  {sc.comments && <div style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginTop: '0.3rem' }}>"{sc.comments}"</div>}
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        <div style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: 'clamp(1.8rem, 4vw, 2.5rem)' }}>
+        <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-lg)', padding: 'clamp(1.8rem, 4vw, 2.5rem)', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
           {isLocked && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(185, 133, 69, 0.12)', border: '1px solid var(--border-accent-amber)', padding: '0.8rem 1rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem', color: 'var(--color-warm-amber)', fontSize: '0.85rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(245, 196, 81, 0.12)', border: '1px solid var(--color-infinity-gold)', padding: '0.8rem 1rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem', color: 'var(--color-infinity-gold)', fontSize: '0.85rem' }}>
               <Lock size={16} />
               <span>Project has been locked for jury evaluation. Updates can only be requested through organizers.</span>
             </div>

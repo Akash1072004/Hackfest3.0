@@ -47,12 +47,14 @@ export default function AdminNav() {
   return (
     <div
       style={{
-        background: 'rgba(28, 32, 38, 0.9)',
-        border: '1px solid var(--border-accent-crimson)',
+        background: 'var(--color-surface-elevated)',
+        border: '1px solid rgba(230, 36, 41, 0.45)',
         borderRadius: 'var(--radius-lg)',
         padding: 'clamp(0.75rem, 2.5vw, 1.25rem)',
         marginBottom: '2.5rem',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+        boxShadow: '0 12px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(230, 36, 41, 0.15)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
       }}
     >
       <div

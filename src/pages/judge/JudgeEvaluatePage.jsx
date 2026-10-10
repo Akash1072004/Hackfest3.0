@@ -124,16 +124,16 @@ export default function JudgeEvaluatePage() {
         </Link>
 
         {submission && (
-          <div style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: '2rem', marginBottom: '2.5rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-lg)', padding: '2rem', marginBottom: '2.5rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
             <span className="chapter-badge">PROJECT UNDER REVIEW</span>
-            <h1 className="heading-display" style={{ fontSize: '2.2rem', marginBottom: '0.4rem' }}>
+            <h1 className="heading-display" style={{ fontSize: '2.2rem', marginBottom: '0.4rem', color: 'var(--color-text-primary)' }}>
               {submission.title}
             </h1>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.86rem', color: 'var(--color-warm-amber)', marginBottom: '1.2rem' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.86rem', color: 'var(--color-arc-cyan)', marginBottom: '1.2rem' }}>
               TEAM: {submission.team?.name || 'Individual'} • TRACK: {submission.problem_category?.theme || 'General'}
             </div>
 
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>
               {submission.description || 'No project description provided.'}
             </p>
 
@@ -161,32 +161,32 @@ export default function JudgeEvaluatePage() {
         )}
 
         {/* Evaluation Rubric Grid */}
-        <div style={{ background: 'rgba(37, 42, 49, 0.85)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: 'clamp(1.8rem, 4vw, 2.5rem)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+        <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-lg)', padding: 'clamp(1.8rem, 4vw, 2.5rem)', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(0, 217, 255, 0.15)' }}>
             <div>
               <span className="chapter-badge">WEIGHTED RUBRIC</span>
-              <h2 className="heading-display" style={{ fontSize: '1.6rem' }}>
+              <h2 className="heading-display" style={{ fontSize: '1.6rem', color: 'var(--color-text-primary)' }}>
                 SCORECARD (9 DIMENSIONS)
               </h2>
             </div>
 
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--text-muted)' }}>WEIGHTED COMPOSITE</div>
-              <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.4rem', color: 'var(--color-warm-amber)' }}>
-                {weightedScore.toFixed(1)} <span style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>/ 100</span>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>WEIGHTED COMPOSITE</div>
+              <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.4rem', color: 'var(--color-infinity-gold)' }}>
+                {weightedScore.toFixed(1)} <span style={{ fontSize: '1.1rem', color: 'var(--color-text-muted)' }}>/ 100</span>
               </div>
             </div>
           </div>
 
           {error && (
-            <div style={{ background: 'rgba(143, 48, 53, 0.2)', border: '1px solid var(--border-accent-crimson)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1rem', display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#ffb4b7', fontSize: '0.88rem', marginBottom: '1.5rem' }}>
+            <div style={{ background: 'rgba(230, 36, 41, 0.15)', border: '1px solid var(--color-stark-crimson)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1rem', display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#ffb4b7', fontSize: '0.88rem', marginBottom: '1.5rem' }}>
               <AlertCircle size={18} />
               <span>{error}</span>
             </div>
           )}
 
           {success && (
-            <div style={{ background: 'rgba(185, 133, 69, 0.15)', border: '1px solid var(--border-accent-amber)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1rem', display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--color-warm-amber)', fontSize: '0.88rem', marginBottom: '1.5rem' }}>
+            <div style={{ background: 'rgba(0, 217, 255, 0.12)', border: '1px solid var(--color-arc-cyan)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1rem', display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--color-arc-cyan)', fontSize: '0.88rem', marginBottom: '1.5rem' }}>
               <CheckCircle2 size={18} />
               <span>Verdict recorded successfully. Redirecting to chambers...</span>
             </div>
@@ -194,17 +194,17 @@ export default function JudgeEvaluatePage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginBottom: '2rem' }}>
             {criteria.map((c, idx) => (
-              <div key={c.id} style={{ background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', padding: '1.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+              <div key={c.id} style={{ background: 'var(--color-surface-secondary)', border: '1px solid rgba(0, 217, 255, 0.15)', borderRadius: 'var(--radius-sm)', padding: '1.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <div style={{ flex: '1', minWidth: '240px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-warm-amber)' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-arc-cyan)' }}>
                       0{idx + 1} • {c.weight}% WEIGHT
                     </span>
                   </div>
-                  <h4 style={{ fontWeight: 700, color: 'var(--color-warm-off-white)', fontSize: '1.05rem', margin: '0.2rem 0' }}>
+                  <h4 style={{ fontWeight: 700, color: 'var(--color-text-primary)', fontSize: '1.05rem', margin: '0.2rem 0' }}>
                     {c.title}
                   </h4>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{c.description}</p>
+                  <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.85rem' }}>{c.description}</p>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>

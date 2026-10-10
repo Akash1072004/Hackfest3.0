@@ -38,18 +38,18 @@ export default function JudgeDashboardPage() {
             </p>
           </div>
 
-          <div style={{ background: 'rgba(37, 42, 49, 0.7)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1.2rem', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--color-warm-amber)' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.35)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1.2rem', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--color-arc-cyan)', boxShadow: '0 0 15px rgba(0, 217, 255, 0.1)' }}>
             ASSIGNED PROJECTS: {submissions.length}
           </div>
         </div>
 
         {submissions.length === 0 ? (
-          <div style={{ background: 'rgba(37, 42, 49, 0.6)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '3.5rem 1.5rem', textAlign: 'center' }}>
-            <Clock size={48} color="var(--color-steel-blue)" style={{ margin: '0 auto 1.2rem auto' }} />
-            <h3 className="heading-display" style={{ fontSize: '1.4rem', marginBottom: '0.6rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.2)', borderRadius: 'var(--radius-md)', padding: '3.5rem 1.5rem', textAlign: 'center', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.6)' }}>
+            <Clock size={48} color="var(--color-arc-cyan)" style={{ margin: '0 auto 1.2rem auto' }} />
+            <h3 className="heading-display" style={{ fontSize: '1.4rem', marginBottom: '0.6rem', color: 'var(--color-text-primary)' }}>
               NO SUBMISSIONS QUEUED FOR EVALUATION
             </h3>
-            <p style={{ color: 'var(--text-secondary)', maxWidth: '480px', margin: '0 auto', lineHeight: '1.6' }}>
+            <p style={{ color: 'var(--color-text-secondary)', maxWidth: '480px', margin: '0 auto', lineHeight: '1.6' }}>
               Projects submitted by participant teams on Day 2 will appear here in real-time.
             </p>
           </div>
@@ -58,7 +58,7 @@ export default function JudgeDashboardPage() {
             {submissions.map((sub) => {
               const isEvaluated = sub.status === 'evaluated';
               return (
-                <div key={sub.id} style={{ background: 'rgba(37, 42, 49, 0.75)', border: `1px solid ${isEvaluated ? 'var(--border-accent-amber)' : 'var(--border-medium)'}`, borderRadius: 'var(--radius-md)', padding: '1.8rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div key={sub.id} style={{ background: 'var(--color-surface-elevated)', border: `1px solid ${isEvaluated ? 'var(--color-infinity-gold)' : 'rgba(0, 217, 255, 0.25)'}`, borderRadius: 'var(--radius-md)', padding: '1.8rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.6)' }}>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
                       <span className="chapter-badge" style={{ margin: 0 }}>

@@ -97,26 +97,26 @@ export default function CompetitionDetailPage({ competitionId }) {
               </p>
             </div>
 
-            <div style={{ background: 'rgba(37, 42, 49, 0.7)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '2rem' }}>
-              <h3 className="heading-display" style={{ fontSize: '1.3rem', marginBottom: '1.2rem' }}>
+            <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-md)', padding: '2rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
+              <h3 className="heading-display" style={{ fontSize: '1.3rem', marginBottom: '1.2rem', color: 'var(--color-text-primary)' }}>
                 EVENT FORMAT & LOGISTICS
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
                 <div>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-warm-amber)' }}>DURATION</span>
-                  <div style={{ fontWeight: 700, color: 'var(--color-warm-off-white)' }}>{comp.duration}</div>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-arc-cyan)' }}>DURATION</span>
+                  <div style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>{comp.duration}</div>
                 </div>
                 <div>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-warm-amber)' }}>TEAM FORMAT</span>
-                  <div style={{ fontWeight: 700, color: 'var(--color-warm-off-white)' }}>{comp.format}</div>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-arc-cyan)' }}>TEAM FORMAT</span>
+                  <div style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>{comp.format}</div>
                 </div>
                 <div>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-warm-amber)' }}>EVALUATION METHOD</span>
-                  <div style={{ fontWeight: 700, color: 'var(--color-warm-off-white)' }}>{comp.evaluation}</div>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-arc-cyan)' }}>EVALUATION METHOD</span>
+                  <div style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>{comp.evaluation}</div>
                 </div>
                 <div>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-warm-amber)' }}>VENUE LOCATION</span>
-                  <div style={{ fontWeight: 700, color: 'var(--color-warm-off-white)' }}>{meta.venueShort}</div>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-arc-cyan)' }}>VENUE LOCATION</span>
+                  <div style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>{meta.venueShort}</div>
                 </div>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function CompetitionDetailPage({ competitionId }) {
       </section>
 
       {/* 3. TIMELINE */}
-      <section className="section" style={{ background: '#1C2026', padding: '4rem 0' }}>
+      <section className="section" style={{ background: 'var(--color-surface-elevated)', padding: '4rem 0' }}>
         <div className="container">
           <div className="section-header">
             <span className="chapter-badge">CHRONOLOGY</span>
@@ -134,11 +134,11 @@ export default function CompetitionDetailPage({ competitionId }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
             {comp.timeline.map((item, idx) => (
-              <div key={idx} style={{ background: 'rgba(37, 42, 49, 0.6)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', padding: '1.5rem' }}>
-                <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-warm-amber)', fontSize: '0.8rem', marginBottom: '0.5rem' }}>
+              <div key={idx} style={{ background: 'var(--color-surface-secondary)', border: '1px solid rgba(0, 217, 255, 0.2)', borderRadius: 'var(--radius-sm)', padding: '1.5rem', boxShadow: '0 8px 25px rgba(0, 0, 0, 0.5)' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-arc-cyan)', fontSize: '0.8rem', marginBottom: '0.5rem' }}>
                   STEP {item.step}
                 </div>
-                <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', color: 'var(--color-warm-off-white)', marginBottom: '0.4rem' }}>
+                <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', color: 'var(--color-text-primary)', marginBottom: '0.4rem' }}>
                   {item.name}
                 </h4>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
@@ -158,11 +158,11 @@ export default function CompetitionDetailPage({ competitionId }) {
             <h2 className="heading-section" style={{ fontSize: '2rem' }}>RULES & CODE OF CONDUCT</h2>
           </div>
 
-          <div style={{ background: 'rgba(37, 42, 49, 0.5)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '2rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.2)', borderRadius: 'var(--radius-md)', padding: '2rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {comp.rules.map((rule, idx) => (
                 <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.8rem', color: 'var(--text-secondary)', fontSize: '0.96rem', lineHeight: '1.65' }}>
-                  <CheckCircle2 size={18} color="var(--color-warm-amber)" style={{ marginTop: '3px', flexShrink: 0 }} />
+                  <CheckCircle2 size={18} color="var(--color-arc-cyan)" style={{ marginTop: '3px', flexShrink: 0 }} />
                   <span>{rule}</span>
                 </li>
               ))}
@@ -172,7 +172,7 @@ export default function CompetitionDetailPage({ competitionId }) {
       </section>
 
       {/* 5. JUDGING CRITERIA / RESULT MECHANISM */}
-      <section className="section" style={{ background: '#1C2026', padding: '4rem 0' }}>
+      <section className="section" style={{ background: 'var(--color-surface-elevated)', padding: '4rem 0' }}>
         <div className="container">
           <div className="section-header">
             <span className="chapter-badge">EVALUATION</span>

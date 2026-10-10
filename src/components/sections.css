@@ -159,7 +159,7 @@
    02. ABOUT SECTION
    -------------------------------------------------------------------------- */
 .about-section {
-  background: linear-gradient(180deg, #111827 0%, #1C2026 50%, #252A31 100%);
+  background: linear-gradient(180deg, var(--color-obsidian) 0%, var(--color-surface-elevated) 50%, var(--color-obsidian) 100%);
   position: relative;
 }
 
@@ -365,7 +365,7 @@
    04. COMPETITIONS (THE THREE ARENAS)
    -------------------------------------------------------------------------- */
 .competitions-section {
-  background: linear-gradient(180deg, #1C2026 0%, #111827 50%, #252A31 100%);
+  background: linear-gradient(180deg, var(--color-obsidian) 0%, var(--color-surface-secondary) 50%, var(--color-obsidian) 100%);
   position: relative;
 }
 
@@ -707,7 +707,7 @@
    07. HOW THE EVENT WORKS
    -------------------------------------------------------------------------- */
 .how-it-works-section {
-  background: #111827;
+  background: linear-gradient(180deg, var(--color-obsidian) 0%, var(--color-surface-elevated) 50%, var(--color-obsidian) 100%);
   position: relative;
 }
 
@@ -857,7 +857,7 @@
    09. PRIZES SECTION (THE FINAL VERDICT)
    -------------------------------------------------------------------------- */
 .prizes-section {
-  background: linear-gradient(180deg, #1C2026 0%, #111827 50%, #252A31 100%);
+  background: linear-gradient(180deg, var(--color-obsidian) 0%, var(--color-surface-secondary) 50%, var(--color-obsidian) 100%);
   position: relative;
 }
 
@@ -1025,7 +1025,7 @@
    11. SPONSORS & PARTNERS
    -------------------------------------------------------------------------- */
 .sponsors-section {
-  background: linear-gradient(180deg, #1C2026 0%, #111827 100%);
+  background: linear-gradient(180deg, var(--color-obsidian) 0%, var(--color-surface-elevated) 100%);
   position: relative;
 }
 

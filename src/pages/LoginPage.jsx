@@ -71,47 +71,47 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
-              <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.4rem', letterSpacing: '0.08em' }}>
+              <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-text-secondary)', marginBottom: '0.4rem', letterSpacing: '0.08em' }}>
                 EMAIL ADDRESS
               </label>
               <div style={{ position: 'relative' }}>
-                <Mail size={18} color="var(--color-arc-blue)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                <Mail size={18} color="var(--color-arc-cyan)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="student@institution.ac.in"
                   required
-                  style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(0, 191, 255, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.94rem' }}
+                  style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 2.8rem', background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.28)', borderRadius: '4px', color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.94rem' }}
                 />
               </div>
             </div>
 
             <div>
               <div style={{ display: 'flex', borderBottom: 'none', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                <label style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', letterSpacing: '0.08em' }}>
+                <label style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-text-secondary)', letterSpacing: '0.08em' }}>
                   PASSWORD
                 </label>
-                <Link to="/forgot-password" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)' }}>
+                <Link to="/forgot-password" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-infinity-gold)' }}>
                   FORGOT PASSWORD?
                 </Link>
               </div>
               <div style={{ position: 'relative' }}>
-                <Lock size={18} color="var(--color-arc-blue)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                <Lock size={18} color="var(--color-arc-cyan)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   required
-                  style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(0, 191, 255, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.94rem' }}
+                  style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 2.8rem', background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.28)', borderRadius: '4px', color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.94rem' }}
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="btn btn-reactor"
+              className="btn btn-primary"
               disabled={loading}
               style={{ width: '100%', marginTop: '0.6rem', justifyContent: 'center' }}
             >
@@ -130,9 +130,9 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div style={{ marginTop: '1.8rem', textAlign: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1.2rem', fontSize: '0.88rem', color: '#94A3B8' }}>
+          <div style={{ marginTop: '1.8rem', textAlign: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1.2rem', fontSize: '0.88rem', color: 'var(--color-text-secondary)' }}>
             Don't have an account?{' '}
-            <Link to="/signup" style={{ color: 'var(--color-stark-gold)', fontWeight: 600 }}>
+            <Link to="/signup" style={{ color: 'var(--color-infinity-gold)', fontWeight: 600 }}>
               Create an Account
             </Link>
           </div>

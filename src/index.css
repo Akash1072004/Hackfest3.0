@@ -23,74 +23,92 @@
 
 :root {
   /* ------------------------------------------------------------------------
-     1. COLOR SYSTEM (Cinematic Superhero & Stark-Tech)
+     1. COLOR SYSTEM — MARVEL MULTIVERSE × STARK INDUSTRIES
      ------------------------------------------------------------------------ */
-  /* Primary Dark Base */
-  --color-abyss-black: #05070D;
-  --color-deep-space: #080B12;
-  --color-command-dark: #0D111A;
-  --color-stark-metal: #151A24;
-  --color-cyber-slate: #1D2430;
+  /* Primary Dark Obsidian Bases */
+  --color-obsidian: #080A10;
+  --color-surface-elevated: #101620;
+  --color-surface-secondary: #151D29;
+  --color-surface-tertiary: #1C2636;
+  --color-surface-glass: rgba(16, 22, 32, 0.85);
+  --color-surface-overlay: rgba(8, 10, 16, 0.88);
 
-  /* Superhero Energy Accents */
+  /* Signature Energy Accents */
+  --color-arc-cyan: #00D9FF;
+  --color-stark-crimson: #E62429;
+  --color-infinity-gold: #F5C451;
+  --color-nebula-violet: #8B5CF6;
+  
+  /* Text & Typography Colors */
+  --color-text-primary: #F4F7FB;
+  --color-text-secondary: #A5B0C0;
+  --color-text-muted: #64748B;
+  --color-text-dim: #475569;
+
+  /* Backward Compatibility Mapping */
+  --color-abyss-black: #080A10;
+  --color-deep-space: #080A10;
+  --color-command-dark: #101620;
+  --color-stark-metal: #151D29;
+  --color-cyber-slate: #1C2636;
+  --color-deep-navy: #080A10;
+  --color-graphite: #151D29;
+  --color-charcoal: #101620;
+  --color-steel-blue: #00D9FF;
+  --color-arc-blue: #00D9FF;
+  --color-holo-cyan: #00D9FF;
   --color-energy-red: #E62429;
-  --color-arc-blue: #00BFFF;
-  --color-stark-gold: #F5B642;
-  --color-holo-cyan: #00F0FF;
-  --color-tech-white: #F5F7FA;
-  --color-metallic-silver: #A7B0BE;
-
-  /* Backward Compatibility Tokens */
-  --color-deep-navy: #080B12;
-  --color-graphite: #151A24;
-  --color-charcoal: #0D111A;
-  --color-steel-blue: #00BFFF;
-  --color-dark-burgundy: #57151A;
   --color-muted-crimson: #E62429;
-  --color-warm-amber: #F5B642;
-  --color-muted-gold: #F5B642;
-  --color-warm-off-white: #F5F7FA;
-  --color-soft-gray: #A7B0BE;
+  --color-stark-gold: #F5C451;
+  --color-warm-amber: #F5C451;
+  --color-muted-gold: #F5C451;
+  --color-warm-off-white: #F4F7FB;
+  --color-tech-white: #F4F7FB;
+  --color-soft-gray: #A5B0C0;
+  --color-metallic-silver: #A5B0C0;
 
   /* Semantic Theme Tokens */
-  --bg-primary: #080B12;
-  --bg-secondary: #0D111A;
-  --bg-tertiary: #151A24;
+  --bg-primary: #080A10;
+  --bg-secondary: #101620;
+  --bg-tertiary: #151D29;
   
-  --surface-card: rgba(13, 17, 26, 0.82);
-  --surface-card-hover: rgba(21, 26, 36, 0.94);
-  --surface-glass: rgba(8, 11, 18, 0.88);
-  --surface-overlay: rgba(5, 7, 13, 0.85);
+  --surface-card: rgba(16, 22, 32, 0.82);
+  --surface-card-hover: rgba(21, 29, 41, 0.95);
+  --surface-glass: rgba(16, 22, 32, 0.85);
+  --surface-overlay: rgba(8, 10, 16, 0.92);
 
-  --text-primary: #F5F7FA;
-  --text-secondary: #A7B0BE;
-  --text-muted: #6B7280;
-  --text-inverse: #05070D;
+  --text-primary: #F4F7FB;
+  --text-secondary: #A5B0C0;
+  --text-muted: #64748B;
+  --text-inverse: #080A10;
 
-  --border-subtle: rgba(0, 191, 255, 0.14);
-  --border-medium: rgba(0, 191, 255, 0.28);
+  /* Stark Precision Translucent Borders */
+  --border-subtle: rgba(0, 217, 255, 0.15);
+  --border-medium: rgba(0, 217, 255, 0.32);
+  --border-strong: rgba(0, 217, 255, 0.55);
+  --border-glass: rgba(255, 255, 255, 0.08);
   --border-accent-crimson: rgba(230, 36, 41, 0.55);
-  --border-accent-steel: rgba(0, 191, 255, 0.5);
-  --border-accent-amber: rgba(245, 182, 66, 0.5);
+  --border-accent-steel: rgba(0, 217, 255, 0.45);
+  --border-accent-amber: rgba(245, 196, 81, 0.5);
+  --border-accent-violet: rgba(139, 92, 246, 0.45);
 
-  /* HUD Holographic Shadows & Glows */
-  --shadow-card: 0 16px 40px -10px rgba(0, 0, 0, 0.8), 0 0 1px 1px var(--border-subtle);
-  --shadow-hover: 0 24px 50px -10px rgba(0, 0, 0, 0.9), 0 0 16px rgba(0, 191, 255, 0.25);
-  --shadow-crimson: 0 8px 32px rgba(230, 36, 41, 0.35);
-  --shadow-arc-blue: 0 8px 32px rgba(0, 191, 255, 0.35);
-  --shadow-stark-gold: 0 8px 32px rgba(245, 182, 66, 0.35);
+  /* HUD Holographic Energy Glows */
+  --shadow-card: 0 16px 40px -10px rgba(0, 0, 0, 0.85), 0 0 1px 1px var(--border-subtle);
+  --shadow-hover: 0 24px 50px -10px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 217, 255, 0.28);
+  --shadow-arc-cyan: 0 0 20px rgba(0, 217, 255, 0.35);
+  --shadow-arc-blue: 0 0 20px rgba(0, 217, 255, 0.35);
+  --shadow-crimson: 0 8px 30px rgba(230, 36, 41, 0.38);
+  --shadow-stark-gold: 0 8px 30px rgba(245, 196, 81, 0.38);
+  --shadow-nebula-violet: 0 8px 30px rgba(139, 92, 246, 0.35);
 
   /* ------------------------------------------------------------------------
      2. TYPOGRAPHY SYSTEM
      ------------------------------------------------------------------------ */
-  /* Cinematic Display Headings */
   --font-heading: 'Orbitron', 'HackfestCustomFont', 'Syne', sans-serif;
   --font-display: 'Orbitron', 'HackfestCustomFont', 'Syne', sans-serif;
   --font-cinematic: 'Bebas Neue', 'Orbitron', sans-serif;
   --font-subheading: 'Rajdhani', -apple-system, sans-serif;
-  /* Subheadings & body text */
-  --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  /* Technical HUD telemetry, coordinates, chapters, timestamps */
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
 
   /* ------------------------------------------------------------------------
@@ -122,26 +140,26 @@
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
-  background-color: var(--color-deep-navy);
+  background-color: var(--color-obsidian);
 }
 
 body {
   font-family: var(--font-body);
   font-size: 16px;
   line-height: 1.65;
-  color: var(--text-primary);
-  background-color: var(--bg-primary);
+  color: var(--color-text-primary);
+  background-color: var(--color-obsidian);
   background-image: 
-    radial-gradient(ellipse at 50% 0%, rgba(60, 83, 107, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 40%, rgba(87, 36, 43, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 20% 80%, rgba(185, 133, 69, 0.06) 0%, transparent 50%);
+    radial-gradient(ellipse at 50% 0%, rgba(0, 217, 255, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 35%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 15% 75%, rgba(230, 36, 41, 0.05) 0%, transparent 50%);
   background-attachment: fixed;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Atmospheric Noise Texture Overlay */
+/* Atmospheric Cosmic Noise Texture Overlay */
 body::before {
   content: "";
   position: fixed;
@@ -152,10 +170,10 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* Custom Selection */
+/* Custom Selection in Arc Reactor Cyan */
 ::selection {
-  background-color: var(--color-muted-crimson);
-  color: var(--color-warm-off-white);
+  background-color: rgba(0, 217, 255, 0.35);
+  color: #FFFFFF;
 }
 
 /* Links & Buttons Reset */
@@ -345,12 +363,12 @@ img {
   white-space: normal;
 }
 
-/* Primary CTA: Dark Burgundy to Crimson with Muted Gold Edge */
+/* Primary CTA: Stark Crimson (#E62429) with Energy Sheen and Gold Hover Border */
 .btn-primary {
-  background: linear-gradient(135deg, #8F3035 0%, #57242B 100%);
-  color: var(--color-warm-off-white);
-  border: 1px solid rgba(236, 232, 223, 0.25);
-  box-shadow: 0 4px 18px rgba(143, 48, 53, 0.35);
+  background: linear-gradient(135deg, #E62429 0%, #A01519 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 20px rgba(230, 36, 41, 0.45);
 }
 
 .btn-primary::after {
@@ -360,62 +378,68 @@ img {
   left: -60%;
   width: 40%;
   height: 200%;
-  background: linear-gradient(90deg, transparent, rgba(236, 232, 223, 0.22), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
   transform: rotate(25deg);
   transition: transform 0.65s ease;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  background: linear-gradient(135deg, #9C363C 0%, #632931 100%);
-  border-color: rgba(185, 133, 69, 0.5);
-  box-shadow: 0 8px 24px rgba(143, 48, 53, 0.45);
+  background: linear-gradient(135deg, #FF2E34 0%, #B8191E 100%);
+  border-color: var(--color-infinity-gold);
+  box-shadow: 0 6px 30px rgba(230, 36, 41, 0.7);
+  color: #FFFFFF;
 }
 
 .btn-primary:hover::after {
   transform: translateX(350%) rotate(25deg);
 }
 
-/* Secondary CTA: Steel Blue & Charcoal with subtle metallic border */
+/* Secondary CTA: Elevated Obsidian Surface with Stark Cyan Border */
 .btn-secondary {
-  background: rgba(37, 42, 49, 0.7);
-  color: var(--color-warm-off-white);
-  border: 1px solid var(--border-medium);
+  background: rgba(16, 22, 32, 0.85);
+  color: var(--color-text-primary);
+  border: 1px solid rgba(0, 217, 255, 0.32);
   backdrop-filter: blur(8px);
 }
 
 .btn-secondary:hover {
-  background: rgba(60, 83, 107, 0.35);
-  border-color: var(--color-steel-blue);
+  background: rgba(21, 29, 41, 0.95);
+  border-color: var(--color-arc-cyan);
+  color: #FFFFFF;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 217, 255, 0.28);
 }
 
-/* Tertiary / Amber Accent CTA */
-.btn-amber {
-  background: linear-gradient(135deg, #B98545 0%, #A57B3B 100%);
-  color: #111827;
+/* Tertiary / Infinity Gold Accent CTA */
+.btn-amber,
+.btn-gold {
+  background: linear-gradient(135deg, #F5C451 0%, #D49E24 100%);
+  color: #080A10;
   font-weight: 800;
-  border: 1px solid rgba(236, 232, 223, 0.3);
-  box-shadow: 0 4px 18px rgba(185, 133, 69, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(245, 196, 81, 0.35);
 }
 
-.btn-amber:hover {
+.btn-amber:hover,
+.btn-gold:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(185, 133, 69, 0.4);
+  background: linear-gradient(135deg, #FFD268 0%, #E5AA2B 100%);
+  box-shadow: 0 8px 28px rgba(245, 196, 81, 0.55);
 }
 
 /* Outline CTA */
 .btn-outline {
   background: transparent;
-  color: var(--color-soft-gray);
-  border: 1px solid var(--border-subtle);
+  color: var(--color-text-secondary);
+  border: 1px solid rgba(0, 217, 255, 0.25);
 }
 
 .btn-outline:hover {
-  color: var(--color-warm-off-white);
-  border-color: var(--border-medium);
-  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-text-primary);
+  border-color: var(--color-arc-cyan);
+  background: rgba(0, 217, 255, 0.08);
+  box-shadow: 0 0 16px rgba(0, 217, 255, 0.15);
 }
 
 /* --------------------------------------------------------------------------
@@ -1577,5 +1601,217 @@ p, span, h1, h2, h3, h4, h5, h6, label {
   .hud-panel-frame {
     transition: none;
   }
+}
+
+/* ==========================================================================
+   STARK INDUSTRIES × MARVEL MULTIVERSE UI SYSTEM PRIMITIVES
+   ========================================================================== */
+
+/* 1. Sleek Stark Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-obsidian);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 217, 255, 0.25);
+  border-radius: 4px;
+  border: 1px solid rgba(0, 217, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 217, 255, 0.5);
+  box-shadow: 0 0 10px rgba(0, 217, 255, 0.4);
+}
+
+/* 2. Stark HUD Form Controls */
+.stark-input,
+.stark-select,
+.stark-textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+input[type="search"],
+select,
+textarea {
+  background: var(--color-surface-elevated) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid rgba(0, 217, 255, 0.22) !important;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.stark-input:focus,
+.stark-select:focus,
+.stark-textarea:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--color-arc-cyan) !important;
+  box-shadow: 0 0 12px rgba(0, 217, 255, 0.28), inset 0 0 8px rgba(0, 217, 255, 0.08) !important;
+}
+
+/* 3. Stark Status Indicators */
+.stark-status-open,
+.badge-status-open,
+.status-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 217, 255, 0.12);
+  border: 1px solid rgba(0, 217, 255, 0.4);
+  color: var(--color-arc-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stark-status-closed,
+.badge-status-closed,
+.status-closed {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: rgba(230, 36, 41, 0.12);
+  border: 1px solid rgba(230, 36, 41, 0.45);
+  color: #FFB4B7;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stark-status-draft,
+.badge-status-draft,
+.status-draft {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: rgba(100, 116, 139, 0.15);
+  border: 1px solid rgba(100, 116, 139, 0.35);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stark-status-published,
+.badge-status-published,
+.status-published {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 255, 119, 0.12);
+  border: 1px solid rgba(0, 255, 119, 0.45);
+  color: #70FFB0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* 4. Stark Data Tables (Admin & Leaderboards) */
+.stark-table,
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  background: var(--color-surface-elevated);
+  border: 1px solid rgba(0, 217, 255, 0.18);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.stark-table thead,
+.admin-table thead {
+  background: rgba(8, 10, 16, 0.95);
+  border-bottom: 1px solid rgba(0, 217, 255, 0.25);
+}
+
+.stark-table th,
+.admin-table th {
+  padding: 0.9rem 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--color-arc-cyan);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.stark-table td,
+.admin-table td {
+  padding: 0.95rem 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+  font-size: 0.88rem;
+  vertical-align: middle;
+}
+
+.stark-table tr:hover td,
+.admin-table tr:hover td {
+  background: rgba(0, 217, 255, 0.04);
+}
+
+/* 5. Stark HUD Telemetry Panels & Containers */
+.stark-hud-card {
+  background: var(--color-surface-elevated);
+  border: 1px solid rgba(0, 217, 255, 0.25);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), inset 0 0 20px rgba(0, 217, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all var(--transition-fast);
+}
+
+.stark-hud-card:hover {
+  border-color: rgba(0, 217, 255, 0.5);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 217, 255, 0.2);
+}
+
+.stark-header-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(0, 217, 255, 0.1);
+  border: 1px solid rgba(0, 217, 255, 0.35);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-arc-cyan);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  width: fit-content;
 }
 

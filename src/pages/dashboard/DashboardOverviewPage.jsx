@@ -70,12 +70,12 @@ export default function DashboardOverviewPage() {
 
         {/* Stats Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
-          <div style={{ background: 'rgba(37, 42, 49, 0.7)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '1.5rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-md)', padding: '1.5rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-warm-amber)' }}>REGISTERED EVENTS</span>
-              <Trophy size={20} color="var(--color-warm-amber)" />
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-arc-cyan)' }}>REGISTERED EVENTS</span>
+              <Trophy size={20} color="var(--color-arc-cyan)" />
             </div>
-            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', color: 'var(--color-warm-off-white)' }}>
+            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', color: 'var(--color-text-primary)' }}>
               {registrations.length}
             </div>
             <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
@@ -83,12 +83,12 @@ export default function DashboardOverviewPage() {
             </div>
           </div>
 
-          <div style={{ background: 'rgba(37, 42, 49, 0.7)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '1.5rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.25)', borderRadius: 'var(--radius-md)', padding: '1.5rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-steel-blue)' }}>AFFILIATED TEAMS</span>
-              <Users size={20} color="var(--color-steel-blue)" />
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-arc-cyan)' }}>AFFILIATED TEAMS</span>
+              <Users size={20} color="var(--color-arc-cyan)" />
             </div>
-            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', color: 'var(--color-warm-off-white)' }}>
+            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', color: 'var(--color-text-primary)' }}>
               {teams.length}
             </div>
             <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
@@ -96,12 +96,12 @@ export default function DashboardOverviewPage() {
             </div>
           </div>
 
-          <div style={{ background: 'rgba(37, 42, 49, 0.7)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '1.5rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(230, 36, 41, 0.35)', borderRadius: 'var(--radius-md)', padding: '1.5rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-muted-crimson)' }}>SUBMISSION STATUS</span>
-              <UploadCloud size={20} color="var(--color-muted-crimson)" />
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-stark-crimson)' }}>SUBMISSION STATUS</span>
+              <UploadCloud size={20} color="var(--color-stark-crimson)" />
             </div>
-            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', color: 'var(--color-warm-off-white)' }}>
+            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', color: 'var(--color-text-primary)' }}>
               {submissions.length > 0 ? submissions[0].status.toUpperCase() : 'PENDING'}
             </div>
             <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
@@ -113,16 +113,16 @@ export default function DashboardOverviewPage() {
         {/* Action Blocks */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}>
           {/* Active Registrations Card */}
-          <div style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '1.8rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.22)', borderRadius: 'var(--radius-md)', padding: '1.8rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
-              <h3 className="heading-display" style={{ fontSize: '1.25rem' }}>ACTIVE REGISTRATIONS</h3>
-              <Link to="/dashboard/registration" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--color-warm-amber)' }}>
+              <h3 className="heading-display" style={{ fontSize: '1.25rem', color: 'var(--color-text-primary)' }}>ACTIVE REGISTRATIONS</h3>
+              <Link to="/dashboard/registration" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--color-arc-cyan)' }}>
                 MANAGE
               </Link>
             </div>
 
             {registrations.length === 0 ? (
-              <div style={{ padding: '2rem 1rem', textAlign: 'center', background: 'rgba(17, 24, 39, 0.5)', borderRadius: 'var(--radius-sm)' }}>
+              <div style={{ padding: '2rem 1rem', textAlign: 'center', background: 'var(--color-surface-secondary)', borderRadius: 'var(--radius-sm)' }}>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', marginBottom: '1rem' }}>
                   You have not registered for any competition yet.
                 </p>
@@ -133,16 +133,16 @@ export default function DashboardOverviewPage() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                 {registrations.map((reg) => (
-                  <div key={reg.id} style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div key={reg.id} style={{ background: 'var(--color-surface-secondary)', border: '1px solid rgba(0, 217, 255, 0.15)', borderRadius: 'var(--radius-sm)', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                      <div style={{ fontWeight: 700, color: 'var(--color-warm-off-white)' }}>
+                      <div style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>
                         {reg.competition?.name || 'COMPETITION'}
                       </div>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--color-soft-gray)', marginTop: '0.2rem' }}>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--color-text-secondary)', marginTop: '0.2rem' }}>
                         STATUS: {reg.registration_status?.toUpperCase()} • {reg.team?.name ? `TEAM: ${reg.team.name}` : 'INDIVIDUAL'}
                       </div>
                     </div>
-                    <span style={{ padding: '0.25rem 0.6rem', borderRadius: 'var(--radius-sm)', background: 'rgba(185, 133, 69, 0.15)', border: '1px solid var(--color-warm-amber)', color: 'var(--color-warm-amber)', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
+                    <span style={{ padding: '0.25rem 0.6rem', borderRadius: 'var(--radius-sm)', background: 'rgba(0, 217, 255, 0.12)', border: '1px solid rgba(0, 217, 255, 0.4)', color: 'var(--color-arc-cyan)', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
                       VERIFIED
                     </span>
                   </div>
@@ -152,15 +152,15 @@ export default function DashboardOverviewPage() {
           </div>
 
           {/* Quick Submission Shortcut */}
-          <div style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '1.8rem' }}>
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid rgba(0, 217, 255, 0.22)', borderRadius: 'var(--radius-md)', padding: '1.8rem', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.65)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
-              <h3 className="heading-display" style={{ fontSize: '1.25rem' }}>PROJECT PORTAL</h3>
-              <Link to="/dashboard/submission" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--color-warm-amber)' }}>
+              <h3 className="heading-display" style={{ fontSize: '1.25rem', color: 'var(--color-text-primary)' }}>PROJECT PORTAL</h3>
+              <Link to="/dashboard/submission" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--color-arc-cyan)' }}>
                 OPEN PORTAL
               </Link>
             </div>
 
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.92rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>
               Ready to submit your repository and demo links? You can save drafts or transmit final projects directly to the evaluation jury.
             </p>
 
