@@ -373,7 +373,14 @@ export const adminService = {
         .order('day_number', { ascending: true })
         .order('sort_order', { ascending: true });
       if (error) throw error;
-      return data || [];
+      return (data || []).map((s) => ({
+        ...s,
+        category: s.category || s.badge?.replace('[DRAFT]', '').trim() || 'General',
+        badge: s.badge?.replace('[DRAFT]', '').trim() || 'STAGE',
+        day_label: s.day_label || `DAY ${String(s.day_number || 1).padStart(2, '0')}`,
+        event_date: s.event_date || (s.day_number === 2 ? '2026-10-25' : '2026-10-24'),
+        is_published: s.is_published !== undefined ? s.is_published : !s.badge?.includes('[DRAFT]'),
+      }));
     } catch {
       return [];
     }
@@ -381,50 +388,100 @@ export const adminService = {
 
   async saveScheduleItem(item) {
     if (!isSupabaseConfigured) throw new Error('Supabase not configured');
+    
+    // Full payload for modern/migrated schema
+    const fullPayload = {
+      day_number: Number(item.day_number) || 1,
+      day_label: item.day_label || `DAY ${String(item.day_number || 1).padStart(2, '0')}`,
+      title: item.title,
+      description: item.description || '',
+      event_date: item.event_date || '2026-10-24',
+      start_time: item.start_time || '09:00 AM',
+      end_time: item.end_time || '10:00 AM',
+      location: item.location || 'Multipurpose Hall, REC Banda',
+      speaker: item.speaker || '',
+      badge: item.badge || item.category || 'STAGE',
+      category: item.category || 'General',
+      icon: item.icon || '',
+      is_highlight: Boolean(item.is_highlight),
+      sort_order: Number(item.sort_order) || 0,
+      is_published: item.is_published !== false,
+      updated_at: new Date().toISOString(),
+    };
+
+    // Safe compatibility payload if database has not yet received column migrations
+    const compatPayload = {
+      day_number: Math.max(1, Number(item.day_number) || 1),
+      title: item.title,
+      description: item.description || '',
+      start_time: item.start_time || '09:00 AM',
+      end_time: item.end_time || '10:00 AM',
+      location: item.location || 'Multipurpose Hall, REC Banda',
+      speaker: item.speaker || '',
+      badge: item.is_published === false
+        ? `${item.category || item.badge || 'STAGE'} [DRAFT]`
+        : (item.badge || item.category || 'STAGE'),
+      is_highlight: Boolean(item.is_highlight),
+      sort_order: Number(item.sort_order) || 0,
+    };
+
+    let resultData;
     if (item.id) {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('schedules')
-        .update({
-          day_number: item.day_number,
-          title: item.title,
-          description: item.description,
-          start_time: item.start_time,
-          end_time: item.end_time,
-          location: item.location,
-          speaker: item.speaker,
-          badge: item.badge,
-          is_highlight: item.is_highlight || false,
-          sort_order: item.sort_order || 0,
-        })
+        .update(fullPayload)
         .eq('id', item.id)
         .select()
         .single();
-      if (error) throw error;
+
+      if (error && (error.message?.includes('column') || error.message?.includes('schema cache') || error.code === '42703' || error.code === 'PGRST204')) {
+        console.warn('Falling back to compatibility schema for schedule update:', error.message);
+        const retry = await supabase
+          .from('schedules')
+          .update(compatPayload)
+          .eq('id', item.id)
+          .select()
+          .single();
+        if (retry.error) throw retry.error;
+        resultData = retry.data;
+      } else if (error) {
+        throw error;
+      } else {
+        resultData = data;
+      }
+
       await this.logAction('UPDATE_SCHEDULE', 'schedules', item.id, item).catch(() => {});
-      return data;
+      return resultData;
     } else {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('schedules')
-        .insert([
-          {
-            day_number: item.day_number || 1,
-            title: item.title,
-            description: item.description,
-            start_time: item.start_time,
-            end_time: item.end_time,
-            location: item.location || 'Multipurpose Hall, REC Banda',
-            speaker: item.speaker,
-            badge: item.badge,
-            is_highlight: item.is_highlight || false,
-            sort_order: item.sort_order || 0,
-            created_at: new Date().toISOString(),
-          },
-        ])
+        .insert([{
+          ...fullPayload,
+          created_at: new Date().toISOString(),
+        }])
         .select()
         .single();
-      if (error) throw error;
-      await this.logAction('CREATE_SCHEDULE', 'schedules', data.id, item).catch(() => {});
-      return data;
+
+      if (error && (error.message?.includes('column') || error.message?.includes('schema cache') || error.code === '42703' || error.code === 'PGRST204')) {
+        console.warn('Falling back to compatibility schema for schedule insert:', error.message);
+        const retry = await supabase
+          .from('schedules')
+          .insert([{
+            ...compatPayload,
+            created_at: new Date().toISOString(),
+          }])
+          .select()
+          .single();
+        if (retry.error) throw retry.error;
+        resultData = retry.data;
+      } else if (error) {
+        throw error;
+      } else {
+        resultData = data;
+      }
+
+      await this.logAction('CREATE_SCHEDULE', 'schedules', resultData.id, item).catch(() => {});
+      return resultData;
     }
   },
 
@@ -434,6 +491,191 @@ export const adminService = {
     if (error) throw error;
     await this.logAction('DELETE_SCHEDULE', 'schedules', id, {}).catch(() => {});
     return true;
+  },
+
+  async reorderSchedules(items) {
+    if (!isSupabaseConfigured || !Array.isArray(items)) return false;
+    try {
+      await Promise.all(
+        items.map((item, idx) =>
+          supabase
+            .from('schedules')
+            .update({ sort_order: idx + 1 })
+            .eq('id', item.id)
+        )
+      );
+      await this.logAction('REORDER_SCHEDULES', 'schedules', 'batch', { count: items.length }).catch(() => {});
+      return true;
+    } catch (err) {
+      console.error('Failed to reorder schedules:', err);
+      return false;
+    }
+  },
+
+  // Sponsors (Add, Edit, Delete, Reorder, Logo Upload)
+  async getSponsorsAdmin() {
+    if (!isSupabaseConfigured) return [];
+    try {
+      const { data, error } = await supabase
+        .from('sponsors')
+        .select('*')
+        .order('sort_order', { ascending: true })
+        .order('created_at', { ascending: true });
+      if (error) throw error;
+      return (data || []).map((s) => ({
+        ...s,
+        tier: s.tier || s.role || s.category || 'gold',
+        is_published: s.is_published !== undefined ? s.is_published : s.tag !== 'draft',
+      }));
+    } catch {
+      return [];
+    }
+  },
+
+  async saveSponsorItem(item) {
+    if (!isSupabaseConfigured) throw new Error('Supabase not configured');
+    
+    // Full payload for modern/migrated schema
+    const fullPayload = {
+      name: item.name,
+      tier: item.tier || 'gold',
+      category: item.category || item.tier || 'partner',
+      role: item.tier || 'gold',
+      tag: item.is_published === false ? 'draft' : 'published',
+      logo_url: item.logo_url || '',
+      website_url: item.website_url || '',
+      description: item.description || '',
+      sort_order: Number(item.sort_order) || 0,
+      is_published: item.is_published !== false,
+      updated_at: new Date().toISOString(),
+    };
+
+    // Safe compatibility payload if database has not yet received column migrations
+    const compatPayload = {
+      name: item.name,
+      category: item.tier || item.category || 'partner',
+      role: item.tier || 'gold',
+      tag: item.is_published === false ? 'draft' : 'published',
+      logo_url: item.logo_url || '',
+      website_url: item.website_url || '',
+      description: item.description || '',
+      sort_order: Number(item.sort_order) || 0,
+    };
+
+    let resultData;
+    if (item.id) {
+      let { data, error } = await supabase
+        .from('sponsors')
+        .update(fullPayload)
+        .eq('id', item.id)
+        .select()
+        .single();
+
+      if (error && (error.message?.includes('column') || error.message?.includes('schema cache') || error.code === '42703' || error.code === 'PGRST204')) {
+        console.warn('Falling back to compatibility schema for sponsor update:', error.message);
+        const retry = await supabase
+          .from('sponsors')
+          .update(compatPayload)
+          .eq('id', item.id)
+          .select()
+          .single();
+        if (retry.error) throw retry.error;
+        resultData = retry.data;
+      } else if (error) {
+        throw error;
+      } else {
+        resultData = data;
+      }
+
+      await this.logAction('UPDATE_SPONSOR', 'sponsors', item.id, item).catch(() => {});
+      return resultData;
+    } else {
+      let { data, error } = await supabase
+        .from('sponsors')
+        .insert([{
+          ...fullPayload,
+          created_at: new Date().toISOString(),
+        }])
+        .select()
+        .single();
+
+      if (error && (error.message?.includes('column') || error.message?.includes('schema cache') || error.code === '42703' || error.code === 'PGRST204')) {
+        console.warn('Falling back to compatibility schema for sponsor insert:', error.message);
+        const retry = await supabase
+          .from('sponsors')
+          .insert([{
+            ...compatPayload,
+            created_at: new Date().toISOString(),
+          }])
+          .select()
+          .single();
+        if (retry.error) throw retry.error;
+        resultData = retry.data;
+      } else if (error) {
+        throw error;
+      } else {
+        resultData = data;
+      }
+
+      await this.logAction('CREATE_SPONSOR', 'sponsors', resultData.id, item).catch(() => {});
+      return resultData;
+    }
+  },
+
+  async deleteSponsorItem(id) {
+    if (!isSupabaseConfigured) throw new Error('Supabase not configured');
+    const { error } = await supabase.from('sponsors').delete().eq('id', id);
+    if (error) throw error;
+    await this.logAction('DELETE_SPONSOR', 'sponsors', id, {}).catch(() => {});
+    return true;
+  },
+
+  async reorderSponsors(items) {
+    if (!isSupabaseConfigured || !Array.isArray(items)) return false;
+    try {
+      await Promise.all(
+        items.map((item, idx) =>
+          supabase
+            .from('sponsors')
+            .update({ sort_order: idx + 1 })
+            .eq('id', item.id)
+        )
+      );
+      await this.logAction('REORDER_SPONSORS', 'sponsors', 'batch', { count: items.length }).catch(() => {});
+      return true;
+    } catch (err) {
+      console.error('Failed to reorder sponsors:', err);
+      return false;
+    }
+  },
+
+  async uploadSponsorLogo(file) {
+    if (!isSupabaseConfigured) throw new Error('Supabase not configured');
+    const ext = file.name.split('.').pop() || 'png';
+    const cleanName = `sponsor-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${ext}`;
+    const filePath = `logos/${cleanName}`;
+
+    // Try primary 'sponsors' bucket, fallback to 'sdc-members' if storage bucket pending
+    let uploadBucket = 'sponsors';
+    let { error: uploadError } = await supabase.storage
+      .from(uploadBucket)
+      .upload(filePath, file, { cacheControl: '3600', upsert: false });
+
+    if (uploadError && uploadError.message?.toLowerCase().includes('bucket not found')) {
+      uploadBucket = 'sdc-members';
+      const fallbackResult = await supabase.storage
+        .from(uploadBucket)
+        .upload(filePath, file, { cacheControl: '3600', upsert: false });
+      uploadError = fallbackResult.error;
+    }
+
+    if (uploadError) throw uploadError;
+
+    const { data: publicUrlData } = supabase.storage
+      .from(uploadBucket)
+      .getPublicUrl(filePath);
+
+    return publicUrlData.publicUrl;
   },
 
   // Announcements (Add, Edit, Delete)

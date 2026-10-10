@@ -30,10 +30,24 @@ import {
   Check,
   ShieldAlert,
   Flame,
+  Handshake,
+  Upload,
+  ExternalLink,
+  Image as ImageIcon,
+  Sparkles,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react';
+import {
+  to24HourInput,
+  from24HourInput,
+  isEndTimeAfterStartTime,
+  formatTimeRange,
+  formatDateIST,
+} from '../../utils/dateTimeUtils';
 
 export default function AdminCmsPage() {
-  const [activeTab, setActiveTab] = useState('settings'); // 'settings' | 'problem_categories' | 'problem_statements' | 'schedules' | 'announcements' | 'faqs' | 'competitions'
+  const [activeTab, setActiveTab] = useState('settings'); // 'settings' | 'problem_categories' | 'problem_statements' | 'schedules' | 'sponsors' | 'announcements' | 'faqs' | 'competitions'
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [banner, setBanner] = useState({ text: '', type: 'success' });
@@ -113,18 +127,41 @@ export default function AdminCmsPage() {
   const [editingSchedule, setEditingSchedule] = useState(null);
   const [scheduleForm, setScheduleForm] = useState({
     day_number: 1,
+    day_label: 'DAY 01',
     title: '',
     description: '',
+    event_date: '2026-10-24',
     start_time: '09:00 AM',
-    end_time: '11:00 AM',
+    end_time: '10:00 AM',
     location: 'Auditorium, REC Banda',
     speaker: '',
+    category: 'Opening Ceremony',
     badge: 'STAGE',
     is_highlight: false,
     sort_order: 1,
+    is_published: true,
   });
 
-  // 5. Announcements State
+  // 5. Sponsors State
+  const [sponsors, setSponsors] = useState([]);
+  const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
+  const [editingSponsor, setEditingSponsor] = useState(null);
+  const [sponsorForm, setSponsorForm] = useState({
+    name: '',
+    tier: 'gold',
+    logo_url: '',
+    website_url: '',
+    description: '',
+    sort_order: 1,
+    is_published: true,
+  });
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [sponsorPreviewOpen, setSponsorPreviewOpen] = useState(false);
+  const [previewSponsor, setPreviewSponsor] = useState(null);
+  const [sponsorTierFilter, setSponsorTierFilter] = useState('all');
+  const [sponsorSearch, setSponsorSearch] = useState('');
+
+  // 6. Announcements State
   const [announcements, setAnnouncements] = useState([]);
   const [announcementModalOpen, setAnnouncementModalOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState(null);
@@ -135,7 +172,7 @@ export default function AdminCmsPage() {
     published: true,
   });
 
-  // 6. FAQs State
+  // 7. FAQs State
   const [faqs, setFaqs] = useState([]);
   const [faqModalOpen, setFaqModalOpen] = useState(false);
   const [editingFaq, setEditingFaq] = useState(null);
@@ -145,7 +182,7 @@ export default function AdminCmsPage() {
     answer: '',
   });
 
-  // 7. Competitions State
+  // 8. Competitions State
   const [competitions, setCompetitions] = useState([]);
   const [compModalOpen, setCompModalOpen] = useState(false);
   const [editingComp, setEditingComp] = useState(null);
@@ -164,7 +201,7 @@ export default function AdminCmsPage() {
   const loadAllCmsData = async () => {
     setLoading(true);
     try {
-      const [settingsData, schedData, annData, faqData, compData, catData, stmtData] = await Promise.all([
+      const [settingsData, schedData, annData, faqData, compData, catData, stmtData, sponsData] = await Promise.all([
         eventService.getSettings(),
         adminService.getSchedulesAdmin(),
         adminService.getAnnouncementsAdmin(),
@@ -172,6 +209,7 @@ export default function AdminCmsPage() {
         eventService.getCompetitions(),
         adminService.getProblemCategoriesAdmin(),
         adminService.getProblemStatementsAdmin(),
+        adminService.getSponsorsAdmin(),
       ]);
 
       if (settingsData) {
@@ -198,6 +236,7 @@ export default function AdminCmsPage() {
       setCompetitions(compData || []);
       setCategories(catData || []);
       setStatements(stmtData || []);
+      setSponsors(sponsData || []);
     } catch (err) {
       console.error('Failed to load CMS data:', err);
       notify('Failed to load some CMS records: ' + err.message, 'error');
@@ -472,6 +511,14 @@ export default function AdminCmsPage() {
         await adminService.deleteProblemStatement(deleteTarget.item.id);
         notify(`Deleted problem statement "${deleteTarget.item.title}"`);
         setStatements((prev) => prev.filter((s) => s.id !== deleteTarget.item.id));
+      } else if (deleteTarget.type === 'schedule') {
+        await adminService.deleteScheduleItem(deleteTarget.item.id);
+        notify(`Deleted schedule session "${deleteTarget.item.title}"`);
+        setSchedules((prev) => prev.filter((s) => s.id !== deleteTarget.item.id));
+      } else if (deleteTarget.type === 'sponsor') {
+        await adminService.deleteSponsorItem(deleteTarget.item.id);
+        notify(`Deleted sponsor "${deleteTarget.item.name}"`);
+        setSponsors((prev) => prev.filter((s) => s.id !== deleteTarget.item.id));
       }
       setDeleteConfirmOpen(false);
       setDeleteTarget(null);
@@ -519,36 +566,44 @@ export default function AdminCmsPage() {
   };
 
   // --------------------------------------------------------------------------
-  // Schedule Management
+  // Schedule Management (Multi-Day, IST Time Validation, Order & Publish)
   // --------------------------------------------------------------------------
   const handleOpenScheduleModal = (item = null) => {
     if (item) {
       setEditingSchedule(item);
       setScheduleForm({
-        day_number: item.day_number || 1,
+        day_number: Number(item.day_number) || 1,
+        day_label: item.day_label || `DAY ${String(item.day_number || 1).padStart(2, '0')}`,
         title: item.title || '',
         description: item.description || '',
+        event_date: item.event_date || '2026-10-24',
         start_time: item.start_time || '09:00 AM',
-        end_time: item.end_time || '11:00 AM',
+        end_time: item.end_time || '10:00 AM',
         location: item.location || 'Auditorium, REC Banda',
         speaker: item.speaker || '',
+        category: item.category || 'Opening Ceremony',
         badge: item.badge || 'STAGE',
         is_highlight: Boolean(item.is_highlight),
-        sort_order: item.sort_order || 1,
+        sort_order: Number(item.sort_order) || 1,
+        is_published: item.is_published !== false,
       });
     } else {
       setEditingSchedule(null);
       setScheduleForm({
         day_number: 1,
+        day_label: 'DAY 01',
         title: '',
         description: '',
+        event_date: '2026-10-24',
         start_time: '09:00 AM',
-        end_time: '11:00 AM',
+        end_time: '10:00 AM',
         location: 'Auditorium, REC Banda',
         speaker: '',
+        category: 'Opening Ceremony',
         badge: 'STAGE',
         is_highlight: false,
         sort_order: (schedules.length || 0) + 1,
+        is_published: true,
       });
     }
     setScheduleModalOpen(true);
@@ -557,9 +612,16 @@ export default function AdminCmsPage() {
   const handleSaveSchedule = async (e) => {
     e.preventDefault();
     if (!scheduleForm.title.trim()) {
-      notify('Schedule title is required', 'error');
+      notify('Schedule session title is required', 'error');
       return;
     }
+
+    // Validate that end time is after start time
+    if (!isEndTimeAfterStartTime(scheduleForm.start_time, scheduleForm.end_time)) {
+      notify('Session end time must be after the start time for the same day', 'error');
+      return;
+    }
+
     setSaving(true);
     try {
       const payload = {
@@ -567,7 +629,7 @@ export default function AdminCmsPage() {
         id: editingSchedule?.id,
       };
       await adminService.saveScheduleItem(payload);
-      notify(editingSchedule ? 'Schedule session updated' : 'New session added to schedule');
+      notify(editingSchedule ? 'Schedule session updated' : 'New session committed to schedule');
       setScheduleModalOpen(false);
       const updated = await adminService.getSchedulesAdmin();
       setSchedules(updated || []);
@@ -578,15 +640,194 @@ export default function AdminCmsPage() {
     }
   };
 
-  const handleDeleteSchedule = async (id, title) => {
-    if (!window.confirm(`Are you sure you want to delete session "${title}"?`)) return;
+  const handlePromptDeleteSchedule = (item) => {
+    setDeleteTarget({
+      type: 'schedule',
+      item,
+      canDelete: true,
+      message: `Are you sure you want to permanently delete session "${item.title}" from Day ${item.day_number}?`,
+    });
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleToggleSchedulePublish = async (item) => {
+    const nextState = !item.is_published;
     try {
-      await adminService.deleteScheduleItem(id);
-      notify(`Session "${title}" removed.`);
-      setSchedules(schedules.filter((s) => s.id !== id));
+      await adminService.saveScheduleItem({ ...item, is_published: nextState });
+      notify(`Session "${item.title}" is now ${nextState ? 'PUBLISHED' : 'SAVED AS DRAFT'}`);
+      setSchedules((prev) =>
+        prev.map((s) => (s.id === item.id ? { ...s, is_published: nextState } : s))
+      );
     } catch (err) {
-      notify('Failed to delete session: ' + err.message, 'error');
+      notify('Failed to update session status: ' + err.message, 'error');
     }
+  };
+
+  const handleReorderSchedule = async (item, direction) => {
+    const dayItems = schedules
+      .filter((s) => Number(s.day_number) === Number(item.day_number))
+      .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+
+    const currentIndex = dayItems.findIndex((s) => s.id === item.id);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= dayItems.length) return;
+
+    const reordered = [...dayItems];
+    const [moved] = reordered.splice(currentIndex, 1);
+    reordered.splice(targetIndex, 0, moved);
+
+    // Apply sort_order
+    const updated = reordered.map((s, idx) => ({ ...s, sort_order: idx + 1 }));
+
+    // Optimistic UI update
+    setSchedules((prev) =>
+      prev.map((s) => {
+        const found = updated.find((u) => u.id === s.id);
+        return found ? found : s;
+      })
+    );
+
+    await adminService.reorderSchedules(updated);
+    notify('Schedule sequence updated');
+  };
+
+  // --------------------------------------------------------------------------
+  // Sponsors Management (Tiers, Logo Upload, Preview, Order & Publish)
+  // --------------------------------------------------------------------------
+  const handleOpenSponsorModal = (item = null) => {
+    if (item) {
+      setEditingSponsor(item);
+      setSponsorForm({
+        name: item.name || '',
+        tier: item.tier || item.category || 'gold',
+        logo_url: item.logo_url || '',
+        website_url: item.website_url || '',
+        description: item.description || '',
+        sort_order: Number(item.sort_order) || 1,
+        is_published: item.is_published !== false,
+      });
+    } else {
+      setEditingSponsor(null);
+      setSponsorForm({
+        name: '',
+        tier: 'gold',
+        logo_url: '',
+        website_url: '',
+        description: '',
+        sort_order: (sponsors.length || 0) + 1,
+        is_published: true,
+      });
+    }
+    setSponsorModalOpen(true);
+  };
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      notify('Please select an image file (PNG, JPG, SVG, WebP)', 'error');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      notify('Image file must be under 5MB', 'error');
+      return;
+    }
+
+    setUploadingLogo(true);
+    try {
+      const publicUrl = await adminService.uploadSponsorLogo(file);
+      setSponsorForm((prev) => ({ ...prev, logo_url: publicUrl }));
+      notify('Sponsor logo uploaded to storage successfully');
+    } catch (err) {
+      notify('Failed to upload logo: ' + err.message, 'error');
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  const handleSaveSponsor = async (e) => {
+    e.preventDefault();
+    if (!sponsorForm.name.trim()) {
+      notify('Sponsor organization name is required', 'error');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const payload = {
+        ...sponsorForm,
+        id: editingSponsor?.id,
+      };
+      await adminService.saveSponsorItem(payload);
+      notify(editingSponsor ? 'Sponsor record updated' : 'New sponsor partner registered');
+      setSponsorModalOpen(false);
+      const updated = await adminService.getSponsorsAdmin();
+      setSponsors(updated || []);
+    } catch (err) {
+      notify('Failed to save sponsor: ' + err.message, 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handlePromptDeleteSponsor = (item) => {
+    setDeleteTarget({
+      type: 'sponsor',
+      item,
+      canDelete: true,
+      message: `Are you sure you want to permanently delete sponsor "${item.name}" from tier ${item.tier ? item.tier.toUpperCase() : 'PARTNER'}?`,
+    });
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleToggleSponsorPublish = async (item) => {
+    const nextState = !item.is_published;
+    try {
+      await adminService.saveSponsorItem({ ...item, is_published: nextState });
+      notify(`Sponsor "${item.name}" is now ${nextState ? 'PUBLISHED' : 'SAVED AS DRAFT'}`);
+      setSponsors((prev) =>
+        prev.map((s) => (s.id === item.id ? { ...s, is_published: nextState } : s))
+      );
+    } catch (err) {
+      notify('Failed to update sponsor publish state: ' + err.message, 'error');
+    }
+  };
+
+  const handleReorderSponsor = async (item, direction) => {
+    const tierItems = sponsors
+      .filter((s) => (s.tier || 'gold').toLowerCase() === (item.tier || 'gold').toLowerCase())
+      .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+
+    const currentIndex = tierItems.findIndex((s) => s.id === item.id);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= tierItems.length) return;
+
+    const reordered = [...tierItems];
+    const [moved] = reordered.splice(currentIndex, 1);
+    reordered.splice(targetIndex, 0, moved);
+
+    const updated = reordered.map((s, idx) => ({ ...s, sort_order: idx + 1 }));
+
+    setSponsors((prev) =>
+      prev.map((s) => {
+        const found = updated.find((u) => u.id === s.id);
+        return found ? found : s;
+      })
+    );
+
+    await adminService.reorderSponsors(updated);
+    notify('Sponsor tier display sequence updated');
+  };
+
+  const handlePreviewSponsor = (item) => {
+    setPreviewSponsor(item);
+    setSponsorPreviewOpen(true);
   };
 
   // --------------------------------------------------------------------------
@@ -799,7 +1040,8 @@ export default function AdminCmsPage() {
             { id: 'settings', label: 'EVENT & SUBMISSION SETTINGS', icon: Calendar },
             { id: 'problem_categories', label: `PROBLEM CATEGORIES (${categories.length})`, icon: Target },
             { id: 'problem_statements', label: `PROBLEM STATEMENTS (${statements.length})`, icon: Layers },
-            { id: 'schedules', label: `SCHEDULE SESSIONS (${schedules.length})`, icon: Clock },
+            { id: 'schedules', label: `EVENT SCHEDULE (${schedules.length})`, icon: Clock },
+            { id: 'sponsors', label: `SPONSORS & ALLIES (${sponsors.length})`, icon: Handshake },
             { id: 'announcements', label: `ANNOUNCEMENTS (${announcements.length})`, icon: Bell },
             { id: 'faqs', label: `FAQS (${faqs.length})`, icon: HelpCircle },
             { id: 'competitions', label: `COMPETITIONS & TRACKS (${competitions.length})`, icon: Trophy },
@@ -1631,7 +1873,7 @@ export default function AdminCmsPage() {
                   TIMELINE SESSIONS & AGENDAS
                 </h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: '0.2rem 0 0 0' }}>
-                  Define Day 1 and Day 2 chronological workshops, keynotes, hacking sprints, and evaluations.
+                  Manage multi-day chronological workshops, keynotes, hacking sprints, and evaluation rounds in Indian Standard Time (IST).
                 </p>
               </div>
               <button
@@ -1644,146 +1886,689 @@ export default function AdminCmsPage() {
               </button>
             </div>
 
-            {/* List by Day */}
-            {[1, 2].map((dayNum) => {
-              const dayItems = schedules.filter((s) => Number(s.day_number) === dayNum);
-              return (
-                <div
-                  key={dayNum}
-                  style={{
-                    background: 'rgba(28, 32, 38, 0.95)',
-                    border: '1px solid var(--border-medium)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '1.5rem',
-                    marginBottom: '2rem',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem', paddingBottom: '0.75rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <span
-                      style={{
-                        background: 'rgba(245, 182, 66, 0.2)',
-                        border: '1px solid var(--color-stark-gold)',
-                        color: 'var(--color-stark-gold)',
-                        padding: '0.2rem 0.6rem',
-                        borderRadius: '4px',
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                      }}
-                    >
-                      DAY 0{dayNum}
-                    </span>
-                    <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', color: '#fff', margin: 0 }}>
-                      {dayNum === 1 ? 'DAY 1: OPENING & COMMENCEMENT' : 'DAY 2: SPRINT, JUDGING & VALEDICTORY'}
-                    </h4>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginLeft: 'auto' }}>
-                      ({dayItems.length} sessions)
-                    </span>
-                  </div>
+            {/* Dynamic Multi-Day Iteration */}
+            {(() => {
+              const distinctDays = Array.from(new Set(schedules.map((s) => Number(s.day_number) || 1))).sort((a, b) => a - b);
+              const activeDays = distinctDays.length > 0 ? distinctDays : [1, 2];
 
-                  {dayItems.length === 0 ? (
-                    <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                      No sessions listed for Day {dayNum}. Click "Add Session" above to create one.
-                    </div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                      {dayItems.map((item) => (
-                        <div
-                          key={item.id}
+              return activeDays.map((dayNum) => {
+                const dayItems = schedules
+                  .filter((s) => Number(s.day_number) === dayNum)
+                  .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+
+                const firstItem = dayItems[0] || {};
+                const dayLabel = firstItem.day_label || `DAY 0${dayNum}`;
+                const eventDate = firstItem.event_date || (dayNum === 1 ? '2026-10-24' : '2026-10-25');
+
+                return (
+                  <div
+                    key={dayNum}
+                    style={{
+                      background: 'var(--color-surface-elevated)',
+                      border: '1px solid var(--border-medium)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '1.5rem',
+                      marginBottom: '2rem',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '1.25rem', paddingBottom: '0.75rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                        <span
                           style={{
-                            background: '#111827',
-                            border: item.is_highlight ? '1px solid var(--color-stark-gold)' : '1px solid var(--border-subtle)',
-                            borderRadius: '6px',
-                            padding: '1rem',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            flexWrap: 'wrap',
-                            gap: '1rem',
+                            background: dayNum === 1 ? 'rgba(0, 217, 255, 0.2)' : 'rgba(230, 36, 41, 0.2)',
+                            border: `1px solid ${dayNum === 1 ? 'var(--color-arc-cyan)' : 'var(--color-stark-crimson)'}`,
+                            color: dayNum === 1 ? 'var(--color-arc-cyan)' : '#ffb4b7',
+                            padding: '0.2rem 0.6rem',
+                            borderRadius: '4px',
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
                           }}
                         >
-                          <div style={{ flex: '1 1 300px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                              <span
-                                style={{
-                                  fontFamily: 'var(--font-mono)',
-                                  fontSize: '0.72rem',
-                                  color: 'var(--color-arc-blue)',
-                                  background: 'rgba(0, 191, 255, 0.1)',
-                                  padding: '0.15rem 0.45rem',
-                                  borderRadius: '3px',
-                                }}
-                              >
-                                {item.start_time} - {item.end_time}
-                              </span>
-                              {item.badge && (
+                          {dayLabel}
+                        </span>
+
+                        <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', color: '#fff', margin: 0 }}>
+                          {dayNum === 1 ? 'COMMENCEMENT, KEYNOTE & HACKING SPRINTS' : 'EVALUATION, DEMOS & VALEDICTORY'}
+                        </h4>
+
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-arc-cyan)', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                          <Calendar size={12} />
+                          {eventDate}
+                        </span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                          ({dayItems.length} sessions)
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingSchedule(null);
+                            setScheduleForm({
+                              day_number: dayNum,
+                              day_label: dayLabel,
+                              title: '',
+                              description: '',
+                              event_date: eventDate,
+                              start_time: '10:00 AM',
+                              end_time: '11:00 AM',
+                              location: 'Multipurpose Hall, REC Banda',
+                              speaker: '',
+                              category: 'Competition',
+                              badge: 'SPRINT',
+                              is_highlight: false,
+                              sort_order: dayItems.length + 1,
+                              is_published: true,
+                            });
+                            setScheduleModalOpen(true);
+                          }}
+                          className="btn btn-secondary"
+                          style={{ padding: '0.3rem 0.6rem', fontSize: '0.72rem' }}
+                        >
+                          + ADD TO {dayLabel}
+                        </button>
+                      </div>
+                    </div>
+
+                    {dayItems.length === 0 ? (
+                      <div style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.88rem' }}>
+                        No sessions listed for {dayLabel}. Click "Add to {dayLabel}" to schedule an agenda session.
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {dayItems.map((item, idx) => {
+                          const isPub = item.is_published !== false;
+                          const timeFormatted = formatTimeRange(item.start_time, item.end_time);
+
+                          return (
+                            <div
+                              key={item.id}
+                              style={{
+                                background: 'var(--color-surface-secondary)',
+                                border: item.is_highlight ? '1px solid var(--color-infinity-gold)' : '1px solid var(--border-subtle)',
+                                borderRadius: '6px',
+                                padding: '1rem 1.25rem',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                flexWrap: 'wrap',
+                                gap: '1rem',
+                                transition: 'all 0.2s ease',
+                              }}
+                            >
+                              <div style={{ flex: '1 1 340px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
+                                  {/* Sort index badge */}
+                                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--color-text-secondary)', background: 'rgba(255, 255, 255, 0.06)', padding: '0.15rem 0.4rem', borderRadius: '3px' }}>
+                                    #{item.sort_order || idx + 1}
+                                  </span>
+
+                                  {/* Time Range */}
+                                  <span
+                                    style={{
+                                      fontFamily: 'var(--font-mono)',
+                                      fontSize: '0.74rem',
+                                      color: 'var(--color-arc-cyan)',
+                                      background: 'rgba(0, 217, 255, 0.1)',
+                                      border: '1px solid rgba(0, 217, 255, 0.25)',
+                                      padding: '0.15rem 0.5rem',
+                                      borderRadius: '3px',
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {timeFormatted}
+                                  </span>
+
+                                  {/* Category */}
+                                  {item.category && (
+                                    <span
+                                      style={{
+                                        fontFamily: 'var(--font-mono)',
+                                        fontSize: '0.68rem',
+                                        color: '#F4F7FB',
+                                        background: 'rgba(255, 255, 255, 0.08)',
+                                        padding: '0.15rem 0.45rem',
+                                        borderRadius: '3px',
+                                      }}
+                                    >
+                                      {item.category}
+                                    </span>
+                                  )}
+
+                                  {/* Badge marker */}
+                                  {item.badge && item.badge !== item.category && (
+                                    <span
+                                      style={{
+                                        fontFamily: 'var(--font-mono)',
+                                        fontSize: '0.68rem',
+                                        color: 'var(--color-infinity-gold)',
+                                        background: 'rgba(245, 196, 81, 0.15)',
+                                        border: '1px solid rgba(245, 196, 81, 0.3)',
+                                        padding: '0.15rem 0.4rem',
+                                        borderRadius: '3px',
+                                      }}
+                                    >
+                                      {item.badge}
+                                    </span>
+                                  )}
+
+                                  {/* Highlight */}
+                                  {item.is_highlight && (
+                                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--color-infinity-gold)', fontWeight: 700 }}>
+                                      KEY EVENT
+                                    </span>
+                                  )}
+
+                                  {/* Publish Status */}
+                                  <span
+                                    style={{
+                                      fontFamily: 'var(--font-mono)',
+                                      fontSize: '0.65rem',
+                                      padding: '0.15rem 0.4rem',
+                                      borderRadius: '3px',
+                                      background: isPub ? 'rgba(0, 255, 119, 0.12)' : 'rgba(245, 196, 81, 0.12)',
+                                      color: isPub ? '#00ff77' : 'var(--color-infinity-gold)',
+                                      border: `1px solid ${isPub ? 'rgba(0, 255, 119, 0.3)' : 'rgba(245, 196, 81, 0.3)'}`,
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {isPub ? 'PUBLISHED' : 'DRAFT'}
+                                  </span>
+                                </div>
+
+                                <div style={{ fontWeight: 600, color: '#fff', fontSize: '1rem', marginBottom: '0.2rem' }}>
+                                  {item.title}
+                                </div>
+
+                                {item.description && (
+                                  <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.82rem', lineHeight: '1.4' }}>
+                                    {item.description}
+                                  </div>
+                                )}
+
+                                <div style={{ display: 'flex', gap: '1.2rem', marginTop: '0.4rem', fontSize: '0.75rem', color: '#94A3B8', flexWrap: 'wrap' }}>
+                                  {item.location && <span>📍 {item.location}</span>}
+                                  {item.speaker && <span>🎙️ {item.speaker}</span>}
+                                  {item.event_date && <span>📅 {item.event_date}</span>}
+                                </div>
+                              </div>
+
+                              {/* Controls */}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+                                {/* Reorder Arrows */}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleReorderSchedule(item, 'up')}
+                                    disabled={idx === 0}
+                                    style={{
+                                      padding: '0.2rem 0.35rem',
+                                      background: 'rgba(255, 255, 255, 0.05)',
+                                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                                      color: idx === 0 ? 'rgba(255, 255, 255, 0.2)' : '#fff',
+                                      borderRadius: '3px',
+                                      cursor: idx === 0 ? 'not-allowed' : 'pointer',
+                                    }}
+                                    title="Move Earlier"
+                                  >
+                                    <ChevronUp size={12} />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleReorderSchedule(item, 'down')}
+                                    disabled={idx === dayItems.length - 1}
+                                    style={{
+                                      padding: '0.2rem 0.35rem',
+                                      background: 'rgba(255, 255, 255, 0.05)',
+                                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                                      color: idx === dayItems.length - 1 ? 'rgba(255, 255, 255, 0.2)' : '#fff',
+                                      borderRadius: '3px',
+                                      cursor: idx === dayItems.length - 1 ? 'not-allowed' : 'pointer',
+                                    }}
+                                    title="Move Later"
+                                  >
+                                    <ChevronDown size={12} />
+                                  </button>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleSchedulePublish(item)}
+                                  style={{
+                                    padding: '0.35rem 0.65rem',
+                                    fontSize: '0.72rem',
+                                    borderRadius: '4px',
+                                    background: isPub ? 'rgba(245, 196, 81, 0.15)' : 'rgba(0, 255, 119, 0.15)',
+                                    border: `1px solid ${isPub ? 'rgba(245, 196, 81, 0.4)' : 'rgba(0, 255, 119, 0.4)'}`,
+                                    color: isPub ? 'var(--color-infinity-gold)' : '#00ff77',
+                                    cursor: 'pointer',
+                                    fontFamily: 'var(--font-mono)',
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  {isPub ? 'DRAFT' : 'PUBLISH'}
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenScheduleModal(item)}
+                                  className="btn btn-secondary"
+                                  style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem' }}
+                                  title="Edit Session"
+                                >
+                                  <Edit2 size={13} />
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handlePromptDeleteSchedule(item)}
+                                  style={{
+                                    padding: '0.35rem 0.55rem',
+                                    background: 'rgba(230, 36, 41, 0.12)',
+                                    border: '1px solid rgba(230, 36, 41, 0.35)',
+                                    color: '#ffb4b7',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                  }}
+                                  title="Delete Session"
+                                >
+                                  <Trash2 size={13} />
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              });
+            })()}
+          </div>
+        )}
+
+        {/* ============================================================== */}
+        {/* TAB 4: SPONSORS & PARTNERS ALLIANCES                            */}
+        {/* ============================================================== */}
+        {activeTab === 'sponsors' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', color: '#fff', margin: 0 }}>
+                  SPONSORS & PARTNER ALLIANCES
+                </h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: '0.2rem 0 0 0' }}>
+                  Manage corporate sponsors, tiers, brand logos, website redirects, and display rankings.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => handleOpenSponsorModal()}
+                  className="btn btn-primary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.82rem' }}
+                >
+                  <Plus size={16} />
+                  ADD SPONSOR
+                </button>
+              </div>
+            </div>
+
+            {/* Filter & Search Bar */}
+            <div
+              style={{
+                background: 'var(--color-surface-elevated)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 'var(--radius-md)',
+                padding: '1rem 1.25rem',
+                marginBottom: '1.5rem',
+                display: 'flex',
+                gap: '1rem',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+              }}
+            >
+              <div style={{ flex: '1 1 240px', position: 'relative' }}>
+                <Search size={16} color="var(--color-arc-cyan)" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
+                <input
+                  type="text"
+                  placeholder="Search sponsors by brand name..."
+                  value={sponsorSearch}
+                  onChange={(e) => setSponsorSearch(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.55rem 0.85rem 0.55rem 2.4rem',
+                    background: 'var(--color-surface-secondary)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: '4px',
+                    color: '#fff',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: '0.85rem',
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--text-muted)' }}>TIER:</span>
+                <select
+                  value={sponsorTierFilter}
+                  onChange={(e) => setSponsorTierFilter(e.target.value)}
+                  style={{
+                    padding: '0.55rem 0.85rem',
+                    background: 'var(--color-surface-secondary)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: '4px',
+                    color: '#fff',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.8rem',
+                  }}
+                >
+                  <option value="all">ALL TIERS</option>
+                  <option value="title">TITLE SPONSOR</option>
+                  <option value="powered_by">POWERED BY</option>
+                  <option value="gold">GOLD SPONSORS</option>
+                  <option value="silver">SILVER SPONSORS</option>
+                  <option value="bronze">BRONZE SPONSORS</option>
+                  <option value="community">COMMUNITY PARTNERS</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Grouped by Official Tier */}
+            {(() => {
+              const tierSpecs = [
+                { id: 'title', label: 'TITLE SPONSOR', badge: 'HERO TIER', variant: 'gold' },
+                { id: 'powered_by', label: 'POWERED BY', badge: 'INFRASTRUCTURE PARTNER', variant: 'cyan' },
+                { id: 'gold', label: 'GOLD SPONSORS', badge: 'GOLD ALLIANCE', variant: 'gold' },
+                { id: 'silver', label: 'SILVER SPONSORS', badge: 'SILVER ALLIANCE', variant: 'cyan' },
+                { id: 'bronze', label: 'BRONZE SPONSORS', badge: 'BRONZE ALLIANCE', variant: 'steel' },
+                { id: 'community', label: 'COMMUNITY PARTNERS', badge: 'COMMUNITY ECOSYSTEM', variant: 'violet' },
+              ];
+
+              const filtered = sponsors.filter((s) => {
+                if (sponsorSearch.trim()) {
+                  const q = sponsorSearch.toLowerCase().trim();
+                  if (!s.name?.toLowerCase().includes(q)) return false;
+                }
+                if (sponsorTierFilter !== 'all') {
+                  const t = (s.tier || s.category || '').toLowerCase();
+                  if (t !== sponsorTierFilter.toLowerCase()) return false;
+                }
+                return true;
+              });
+
+              if (filtered.length === 0) {
+                return (
+                  <div
+                    style={{
+                      background: 'var(--color-surface-elevated)',
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '3rem',
+                      textAlign: 'center',
+                    }}
+                  >
+                    <Handshake size={36} color="var(--color-arc-cyan)" style={{ margin: '0 auto 1rem auto', opacity: 0.6 }} />
+                    <h4 style={{ color: '#fff', fontFamily: 'var(--font-heading)', margin: '0 0 0.4rem 0' }}>
+                      NO SPONSORS FOUND
+                    </h4>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0 0 1.25rem 0' }}>
+                      {sponsorSearch || sponsorTierFilter !== 'all'
+                        ? 'No sponsors match the current filter or search criteria.'
+                        : 'No sponsors have been created yet. Click "Add Sponsor" above to create one.'}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenSponsorModal()}
+                      className="btn btn-primary"
+                    >
+                      <Plus size={14} />
+                      REGISTER FIRST SPONSOR
+                    </button>
+                  </div>
+                );
+              }
+
+              return tierSpecs.map((spec) => {
+                const tierItems = filtered
+                  .filter((s) => (s.tier || s.category || 'gold').toLowerCase() === spec.id.toLowerCase())
+                  .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+
+                if (tierItems.length === 0 && sponsorTierFilter !== 'all') return null;
+                if (tierItems.length === 0) return null;
+
+                return (
+                  <div
+                    key={spec.id}
+                    style={{
+                      background: 'var(--color-surface-elevated)',
+                      border: `1px solid ${spec.variant === 'gold' ? 'rgba(245, 196, 81, 0.3)' : 'var(--border-medium)'}`,
+                      borderRadius: 'var(--radius-md)',
+                      padding: '1.5rem',
+                      marginBottom: '2rem',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', paddingBottom: '0.75rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                        <span
+                          style={{
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: '0.72rem',
+                            color: spec.variant === 'gold' ? 'var(--color-infinity-gold)' : 'var(--color-arc-cyan)',
+                            background: spec.variant === 'gold' ? 'rgba(245, 196, 81, 0.15)' : 'rgba(0, 217, 255, 0.15)',
+                            padding: '0.2rem 0.5rem',
+                            borderRadius: '4px',
+                            fontWeight: 700,
+                          }}
+                        >
+                          {spec.label}
+                        </span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                          ({tierItems.length} sponsors)
+                        </span>
+                      </div>
+
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-text-secondary)' }}>
+                        {spec.badge}
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1rem' }}>
+                      {tierItems.map((sponsor, idx) => {
+                        const isPub = sponsor.is_published !== false;
+
+                        return (
+                          <div
+                            key={sponsor.id}
+                            style={{
+                              background: 'var(--color-surface-secondary)',
+                              border: `1px solid ${isPub ? 'var(--border-subtle)' : 'rgba(245, 196, 81, 0.25)'}`,
+                              borderRadius: '6px',
+                              padding: '1.25rem',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'space-between',
+                              gap: '0.8rem',
+                            }}
+                          >
+                            <div>
+                              {/* Header & Logo */}
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>
+                                <div
+                                  style={{
+                                    width: '64px',
+                                    height: '64px',
+                                    borderRadius: '6px',
+                                    background: 'rgba(255, 255, 255, 0.04)',
+                                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '4px',
+                                    overflow: 'hidden',
+                                  }}
+                                >
+                                  {sponsor.logo_url ? (
+                                    <img
+                                      src={sponsor.logo_url}
+                                      alt={sponsor.name}
+                                      style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                                    />
+                                  ) : (
+                                    <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: 'var(--color-arc-cyan)' }}>
+                                      {sponsor.name.charAt(0).toUpperCase()}
+                                    </span>
+                                  )}
+                                </div>
+
                                 <span
                                   style={{
                                     fontFamily: 'var(--font-mono)',
-                                    fontSize: '0.68rem',
-                                    color: 'var(--color-stark-gold)',
-                                    background: 'rgba(245, 182, 66, 0.15)',
-                                    padding: '0.15rem 0.4rem',
+                                    fontSize: '0.65rem',
+                                    padding: '0.15rem 0.45rem',
                                     borderRadius: '3px',
+                                    background: isPub ? 'rgba(0, 255, 119, 0.12)' : 'rgba(245, 196, 81, 0.12)',
+                                    color: isPub ? '#00ff77' : 'var(--color-infinity-gold)',
+                                    border: `1px solid ${isPub ? 'rgba(0, 255, 119, 0.3)' : 'rgba(245, 196, 81, 0.3)'}`,
+                                    fontWeight: 600,
                                   }}
                                 >
-                                  {item.badge}
+                                  {isPub ? 'PUBLISHED' : 'DRAFT'}
                                 </span>
-                              )}
-                              {item.is_highlight && (
-                                <span style={{ fontSize: '0.68rem', color: '#10B981', fontWeight: 600 }}>KEY HIGHLIGHT</span>
-                              )}
-                            </div>
-
-                            <div style={{ fontWeight: 600, color: '#fff', fontSize: '0.95rem' }}>{item.title}</div>
-                            {item.description && (
-                              <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem', marginTop: '0.2rem' }}>
-                                {item.description}
                               </div>
-                            )}
-                            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.4rem', fontSize: '0.75rem', color: '#94A3B8' }}>
-                              {item.location && <span>📍 {item.location}</span>}
-                              {item.speaker && <span>🎙️ {item.speaker}</span>}
+
+                              <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', color: '#fff', fontWeight: 600, marginBottom: '0.2rem' }}>
+                                {sponsor.name}
+                              </div>
+
+                              {sponsor.description && (
+                                <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem', lineHeight: '1.4', margin: '0 0 0.5rem 0' }}>
+                                  {sponsor.description}
+                                </p>
+                              )}
+
+                              {sponsor.website_url && (
+                                <a
+                                  href={sponsor.website_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '0.3rem',
+                                    color: 'var(--color-arc-cyan)',
+                                    fontSize: '0.74rem',
+                                    fontFamily: 'var(--font-mono)',
+                                    textDecoration: 'none',
+                                    wordBreak: 'break-all',
+                                  }}
+                                >
+                                  <ExternalLink size={12} />
+                                  {sponsor.website_url}
+                                </a>
+                              )}
+                            </div>
+
+                            {/* Card Footer Controls */}
+                            <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.4rem' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => handleReorderSponsor(sponsor, 'up')}
+                                  disabled={idx === 0}
+                                  style={{
+                                    padding: '0.2rem 0.35rem',
+                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                                    color: idx === 0 ? 'rgba(255, 255, 255, 0.2)' : '#fff',
+                                    borderRadius: '3px',
+                                    cursor: idx === 0 ? 'not-allowed' : 'pointer',
+                                  }}
+                                  title="Shift Priority Up"
+                                >
+                                  <ChevronUp size={12} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleReorderSponsor(sponsor, 'down')}
+                                  disabled={idx === tierItems.length - 1}
+                                  style={{
+                                    padding: '0.2rem 0.35rem',
+                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                                    color: idx === tierItems.length - 1 ? 'rgba(255, 255, 255, 0.2)' : '#fff',
+                                    borderRadius: '3px',
+                                    cursor: idx === tierItems.length - 1 ? 'not-allowed' : 'pointer',
+                                  }}
+                                  title="Shift Priority Down"
+                                >
+                                  <ChevronDown size={12} />
+                                </button>
+                              </div>
+
+                              <div style={{ display: 'flex', gap: '0.35rem' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => handlePreviewSponsor(sponsor)}
+                                  className="btn btn-secondary"
+                                  style={{ padding: '0.3rem 0.55rem', fontSize: '0.72rem' }}
+                                  title="Preview card"
+                                >
+                                  <Eye size={12} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenSponsorModal(sponsor)}
+                                  className="btn btn-secondary"
+                                  style={{ padding: '0.3rem 0.55rem', fontSize: '0.72rem' }}
+                                  title="Edit sponsor details"
+                                >
+                                  <Edit2 size={12} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleSponsorPublish(sponsor)}
+                                  style={{
+                                    padding: '0.3rem 0.55rem',
+                                    fontSize: '0.72rem',
+                                    borderRadius: '4px',
+                                    background: isPub ? 'rgba(245, 196, 81, 0.15)' : 'rgba(0, 255, 119, 0.15)',
+                                    border: `1px solid ${isPub ? 'rgba(245, 196, 81, 0.4)' : 'rgba(0, 255, 119, 0.4)'}`,
+                                    color: isPub ? 'var(--color-infinity-gold)' : '#00ff77',
+                                    cursor: 'pointer',
+                                    fontFamily: 'var(--font-mono)',
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  {isPub ? 'DRAFT' : 'PUBLISH'}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handlePromptDeleteSponsor(sponsor)}
+                                  style={{
+                                    padding: '0.3rem 0.5rem',
+                                    borderRadius: '4px',
+                                    background: 'rgba(230, 36, 41, 0.12)',
+                                    border: '1px solid rgba(230, 36, 41, 0.35)',
+                                    color: '#ffb4b7',
+                                    cursor: 'pointer',
+                                  }}
+                                  title="Delete sponsor"
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              </div>
                             </div>
                           </div>
-
-                          <div style={{ display: 'flex', gap: '0.4rem' }}>
-                            <button
-                              onClick={() => handleOpenScheduleModal(item)}
-                              style={{
-                                padding: '0.35rem 0.65rem',
-                                background: 'rgba(0, 191, 255, 0.15)',
-                                border: '1px solid var(--color-arc-blue)',
-                                color: 'var(--color-arc-blue)',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                              }}
-                              title="Edit Session"
-                            >
-                              <Edit2 size={13} />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteSchedule(item.id, item.title)}
-                              style={{
-                                padding: '0.35rem 0.65rem',
-                                background: 'rgba(143, 48, 53, 0.2)',
-                                border: '1px solid var(--color-muted-crimson)',
-                                color: '#ffb4b7',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                              }}
-                              title="Delete Session"
-                            >
-                              <Trash2 size={13} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                  </div>
+                );
+              });
+            })()}
           </div>
         )}
 
@@ -2106,41 +2891,71 @@ export default function AdminCmsPage() {
                 border: '1px solid var(--color-arc-blue)',
                 borderRadius: '8px',
                 width: '100%',
-                maxWidth: '600px',
+                maxWidth: '680px',
                 padding: '1.75rem',
                 maxHeight: '90vh',
                 overflowY: 'auto',
               }}
             >
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', color: '#fff', margin: '0 0 1.25rem 0' }}>
-                {editingSchedule ? 'EDIT SCHEDULE SESSION' : 'ADD SCHEDULE SESSION'}
-              </h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.75rem' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Calendar size={20} color="var(--color-arc-blue)" />
+                  {editingSchedule ? 'EDIT SCHEDULE EVENT' : 'ADD NEW SCHEDULE EVENT'}
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setScheduleModalOpen(false)}
+                  style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer' }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
 
               <form onSubmit={handleSaveSchedule}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 190px), 1fr))', gap: '1rem', marginBottom: '1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
-                      DAY NUMBER:
+                      EVENT DATE:
                     </label>
-                    <select
-                      value={scheduleForm.day_number}
-                      onChange={(e) => setScheduleForm({ ...scheduleForm, day_number: Number(e.target.value) })}
+                    <input
+                      type="date"
+                      required
+                      value={scheduleForm.event_date || '2026-10-24'}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, event_date: e.target.value })}
                       style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
-                    >
-                      <option value={1}>DAY 1 (OPENING)</option>
-                      <option value={2}>DAY 2 (FINALE)</option>
-                    </select>
+                    />
                   </div>
 
                   <div>
                     <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
-                      BADGE / CATEGORY:
+                      DAY NUMBER:
+                    </label>
+                    <input
+                      type="number"
+                      min={1}
+                      required
+                      value={scheduleForm.day_number}
+                      onChange={(e) => {
+                        const num = Number(e.target.value);
+                        setScheduleForm({
+                          ...scheduleForm,
+                          day_number: num,
+                          day_label: scheduleForm.day_label || `DAY ${String(num).padStart(2, '0')}`,
+                        });
+                      }}
+                      style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
+                      DAY LABEL / BADGE:
                     </label>
                     <input
                       type="text"
-                      value={scheduleForm.badge}
-                      onChange={(e) => setScheduleForm({ ...scheduleForm, badge: e.target.value })}
-                      placeholder="e.g. STAGE, WORKSHOP, CEREMONY"
+                      value={scheduleForm.day_label || ''}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, day_label: e.target.value })}
+                      placeholder="e.g. DAY 01"
                       style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
                     />
                   </div>
@@ -2148,14 +2963,14 @@ export default function AdminCmsPage() {
 
                 <div style={{ marginBottom: '1rem' }}>
                   <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
-                    SESSION TITLE:
+                    EVENT TITLE:
                   </label>
                   <input
                     type="text"
                     required
                     value={scheduleForm.title}
                     onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
-                    placeholder="e.g. Keynote Address & Hackathon Kickoff"
+                    placeholder="e.g. Opening Ceremony & Hackathon Kickoff"
                     style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
                   />
                 </div>
@@ -2163,25 +2978,35 @@ export default function AdminCmsPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '1rem', marginBottom: '1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
-                      START TIME:
+                      EVENT CATEGORY:
                     </label>
-                    <input
-                      type="text"
-                      value={scheduleForm.start_time}
-                      onChange={(e) => setScheduleForm({ ...scheduleForm, start_time: e.target.value })}
-                      placeholder="09:00 AM"
+                    <select
+                      value={scheduleForm.category || 'Opening Ceremony'}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, category: e.target.value })}
                       style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
-                    />
+                    >
+                      <option value="Opening Ceremony">Opening Ceremony</option>
+                      <option value="Competition Track">Competition / Hacking</option>
+                      <option value="Keynote & Talk">Keynote & Expert Talk</option>
+                      <option value="Workshop">Workshop & Demo</option>
+                      <option value="Mentorship Sprint">Mentorship Sprint</option>
+                      <option value="Food & Refreshments">Break & Refreshments</option>
+                      <option value="Judging Round">Judging Round</option>
+                      <option value="Project Pitching">Project Pitching</option>
+                      <option value="Results & Valedictory">Results & Valedictory</option>
+                      <option value="General">General / Other</option>
+                    </select>
                   </div>
+
                   <div>
                     <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
-                      END TIME:
+                      VISUAL BADGE / MARKER:
                     </label>
                     <input
                       type="text"
-                      value={scheduleForm.end_time}
-                      onChange={(e) => setScheduleForm({ ...scheduleForm, end_time: e.target.value })}
-                      placeholder="10:30 AM"
+                      value={scheduleForm.badge}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, badge: e.target.value })}
+                      placeholder="e.g. STAGE, CEREMONY, HACKATHON"
                       style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
                     />
                   </div>
@@ -2190,31 +3015,60 @@ export default function AdminCmsPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '1rem', marginBottom: '1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
-                      LOCATION / VENUE:
+                      START TIME (IST) — {scheduleForm.start_time}:
                     </label>
                     <input
-                      type="text"
-                      value={scheduleForm.location}
-                      onChange={(e) => setScheduleForm({ ...scheduleForm, location: e.target.value })}
-                      placeholder="Auditorium, REC Banda"
+                      type="time"
+                      required
+                      value={to24HourInput(scheduleForm.start_time)}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, start_time: from24HourInput(e.target.value) })}
                       style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
                     />
                   </div>
+
                   <div>
                     <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
-                      SPEAKER / MODERATOR:
+                      END TIME (IST) — {scheduleForm.end_time}:
                     </label>
                     <input
-                      type="text"
-                      value={scheduleForm.speaker}
-                      onChange={(e) => setScheduleForm({ ...scheduleForm, speaker: e.target.value })}
-                      placeholder="Guest Speaker / Faculty"
+                      type="time"
+                      required
+                      value={to24HourInput(scheduleForm.end_time)}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, end_time: from24HourInput(e.target.value) })}
                       style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
                     />
                   </div>
                 </div>
 
-                <div style={{ marginBottom: '1.25rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
+                      VENUE / LOCATION:
+                    </label>
+                    <input
+                      type="text"
+                      value={scheduleForm.location}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, location: e.target.value })}
+                      placeholder="Main Auditorium, REC Banda"
+                      style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
+                      SPEAKER / HOST:
+                    </label>
+                    <input
+                      type="text"
+                      value={scheduleForm.speaker}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, speaker: e.target.value })}
+                      placeholder="e.g. Chief Guest / Dr. Mentor"
+                      style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
                   <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
                     DESCRIPTION:
                   </label>
@@ -2227,16 +3081,45 @@ export default function AdminCmsPage() {
                   />
                 </div>
 
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
+                      DISPLAY SORT ORDER:
+                    </label>
+                    <input
+                      type="number"
+                      min={1}
+                      value={scheduleForm.sort_order}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, sort_order: Number(e.target.value) })}
+                      style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
+                      STATUS:
+                    </label>
+                    <select
+                      value={scheduleForm.is_published ? 'published' : 'draft'}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, is_published: e.target.value === 'published' })}
+                      style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                    >
+                      <option value="published">PUBLISHED (PUBLIC TIMELINE)</option>
+                      <option value="draft">DRAFT (HIDDEN)</option>
+                    </select>
+                  </div>
+                </div>
+
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
                     checked={scheduleForm.is_highlight}
                     onChange={(e) => setScheduleForm({ ...scheduleForm, is_highlight: e.target.checked })}
                   />
-                  <span style={{ fontSize: '0.85rem', color: '#fff' }}>Highlight session on public timeline</span>
+                  <span style={{ fontSize: '0.85rem', color: '#fff' }}>Highlight session with prominent golden glow on public timeline</span>
                 </label>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1rem' }}>
                   <button
                     type="button"
                     onClick={() => setScheduleModalOpen(false)}
@@ -2249,10 +3132,441 @@ export default function AdminCmsPage() {
                     disabled={saving}
                     className="btn btn-primary"
                   >
-                    {saving ? 'SAVING...' : 'COMMIT SESSION'}
+                    {saving ? 'SAVING...' : editingSchedule ? 'UPDATE EVENT' : 'COMMIT EVENT'}
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* ============================================================== */}
+        {/* SPONSOR MODAL                                                   */}
+        {/* ============================================================== */}
+        {sponsorModalOpen && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.85)',
+              zIndex: 1000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem',
+              backdropFilter: 'blur(6px)',
+            }}
+          >
+            <div
+              style={{
+                background: '#1A1F26',
+                border: '1px solid var(--color-arc-blue)',
+                borderRadius: '8px',
+                width: '100%',
+                maxWidth: '620px',
+                padding: '1.75rem',
+                maxHeight: '90vh',
+                overflowY: 'auto',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.75rem' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Handshake size={20} color="var(--color-arc-blue)" />
+                  {editingSponsor ? 'EDIT SPONSOR RECORD' : 'REGISTER NEW SPONSOR'}
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setSponsorModalOpen(false)}
+                  style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer' }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveSponsor}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
+                      ORGANIZATION / BRAND NAME:
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={sponsorForm.name}
+                      onChange={(e) => setSponsorForm({ ...sponsorForm, name: e.target.value })}
+                      placeholder="e.g. Stark Industries, Google, GitHub"
+                      style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
+                      PARTNERSHIP TIER:
+                    </label>
+                    <select
+                      value={sponsorForm.tier}
+                      onChange={(e) => setSponsorForm({ ...sponsorForm, tier: e.target.value })}
+                      style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                    >
+                      <option value="title">TITLE SPONSOR (TIER 1)</option>
+                      <option value="powered_by">POWERED BY (TIER 2)</option>
+                      <option value="gold">GOLD SPONSOR</option>
+                      <option value="silver">SILVER SPONSOR</option>
+                      <option value="bronze">BRONZE SPONSOR</option>
+                      <option value="community">COMMUNITY PARTNER</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Logo Upload Section */}
+                <div style={{ marginBottom: '1rem', padding: '1rem', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-subtle)', borderRadius: '6px' }}>
+                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.5rem' }}>
+                    SPONSOR LOGO (UPLOAD OR DIRECT URL):
+                  </label>
+
+                  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '0.75rem' }}>
+                    <label
+                      style={{
+                        padding: '0.5rem 1rem',
+                        background: uploadingLogo ? 'rgba(0, 240, 255, 0.1)' : 'rgba(255, 255, 255, 0.08)',
+                        border: '1px solid var(--color-arc-blue)',
+                        color: 'var(--color-arc-blue)',
+                        borderRadius: '4px',
+                        cursor: uploadingLogo ? 'wait' : 'pointer',
+                        fontSize: '0.78rem',
+                        fontFamily: 'var(--font-mono)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                      }}
+                    >
+                      <Upload size={14} />
+                      {uploadingLogo ? 'UPLOADING TO STORAGE...' : 'SELECT LOGO FILE'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoUpload}
+                        disabled={uploadingLogo}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                    <span style={{ fontSize: '0.72rem', color: '#94A3B8', fontFamily: 'var(--font-mono)' }}>
+                      PNG, SVG, or WebP recommended (Max 5MB)
+                    </span>
+                  </div>
+
+                  <input
+                    type="url"
+                    value={sponsorForm.logo_url}
+                    onChange={(e) => setSponsorForm({ ...sponsorForm, logo_url: e.target.value })}
+                    placeholder="https://... or auto-filled upon upload"
+                    style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff', fontSize: '0.8rem' }}
+                  />
+
+                  {/* Logo live preview in modal */}
+                  <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div
+                      style={{
+                        width: '120px',
+                        height: '60px',
+                        background: '#0d1117',
+                        border: '1px dashed var(--border-subtle)',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '0.25rem',
+                      }}
+                    >
+                      {sponsorForm.logo_url ? (
+                        <img
+                          src={sponsorForm.logo_url}
+                          alt="Logo Preview"
+                          style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div style={{ color: '#64748B', fontSize: '0.68rem', fontFamily: 'var(--font-mono)', textAlign: 'center' }}>
+                          NO LOGO
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ fontSize: '0.74rem', color: '#94A3B8', lineHeight: 1.4 }}>
+                      Card will display brand emblem fallback with initials if logo is left blank or fails to load.
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
+                    OFFICIAL WEBSITE URL (OPTIONAL):
+                  </label>
+                  <input
+                    type="url"
+                    value={sponsorForm.website_url}
+                    onChange={(e) => setSponsorForm({ ...sponsorForm, website_url: e.target.value })}
+                    placeholder="https://company.org"
+                    style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
+                    SHORT DESCRIPTION / PARTNERSHIP NOTE:
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={sponsorForm.description}
+                    onChange={(e) => setSponsorForm({ ...sponsorForm, description: e.target.value })}
+                    placeholder="Brief description or partnership role..."
+                    style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
+                      DISPLAY SORT ORDER:
+                    </label>
+                    <input
+                      type="number"
+                      min={1}
+                      value={sponsorForm.sort_order}
+                      onChange={(e) => setSponsorForm({ ...sponsorForm, sort_order: Number(e.target.value) })}
+                      style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)', marginBottom: '0.3rem' }}>
+                      PUBLICATION STATUS:
+                    </label>
+                    <select
+                      value={sponsorForm.is_published ? 'published' : 'draft'}
+                      onChange={(e) => setSponsorForm({ ...sponsorForm, is_published: e.target.value === 'published' })}
+                      style={{ width: '100%', padding: '0.6rem', background: '#111827', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                    >
+                      <option value="published">PUBLISHED (PUBLIC VISIBLE)</option>
+                      <option value="draft">DRAFT (HIDDEN)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => handlePreviewSponsor(sponsorForm)}
+                    style={{
+                      background: 'none',
+                      border: '1px solid var(--border-subtle)',
+                      color: 'var(--color-stark-gold)',
+                      borderRadius: '4px',
+                      padding: '0.5rem 0.9rem',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.75rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                    }}
+                  >
+                    <Eye size={14} />
+                    PREVIEW CARD
+                  </button>
+
+                  <div style={{ display: 'flex', gap: '0.75rem' }}>
+                    <button
+                      type="button"
+                      onClick={() => setSponsorModalOpen(false)}
+                      className="btn btn-secondary"
+                    >
+                      CANCEL
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={saving || uploadingLogo}
+                      className="btn btn-primary"
+                    >
+                      {saving ? 'SAVING...' : editingSponsor ? 'UPDATE SPONSOR' : 'REGISTER SPONSOR'}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* ============================================================== */}
+        {/* SPONSOR LIVE CARD PREVIEW MODAL                                 */}
+        {/* ============================================================== */}
+        {sponsorPreviewOpen && previewSponsor && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.85)',
+              zIndex: 1100,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem',
+              backdropFilter: 'blur(6px)',
+            }}
+          >
+            <div
+              style={{
+                background: '#1A1F26',
+                border: '1px solid var(--color-arc-blue)',
+                borderRadius: '8px',
+                width: '100%',
+                maxWidth: '460px',
+                padding: '1.75rem',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.75rem' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Eye size={18} color="var(--color-arc-blue)" />
+                  PUBLIC SPONSOR CARD PREVIEW
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setSponsorPreviewOpen(false)}
+                  style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer' }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Rendered Preview Card matching SponsorsSection */}
+              <div
+                style={{
+                  background: 'linear-gradient(180deg, rgba(20, 24, 33, 0.95) 0%, rgba(13, 17, 23, 0.98) 100%)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: '10px',
+                  padding: '1.5rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'inline-block',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.68rem',
+                    color: 'var(--color-stark-gold)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    padding: '0.2rem 0.6rem',
+                    background: 'rgba(255, 184, 0, 0.08)',
+                    border: '1px solid rgba(255, 184, 0, 0.25)',
+                    borderRadius: '4px',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  {previewSponsor.tier?.replace('_', ' ').toUpperCase() || 'SPONSOR'}
+                </div>
+
+                <div
+                  style={{
+                    width: '100%',
+                    height: '90px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '1rem',
+                    padding: '0.5rem',
+                  }}
+                >
+                  {previewSponsor.logo_url ? (
+                    <img
+                      src={previewSponsor.logo_url}
+                      alt={previewSponsor.name || 'Sponsor'}
+                      style={{
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                        objectFit: 'contain',
+                        filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.5))',
+                      }}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: '70px',
+                        height: '70px',
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(255, 184, 0, 0.15))',
+                        border: '1px solid rgba(0, 240, 255, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--color-arc-blue)',
+                        fontFamily: 'var(--font-heading)',
+                        fontSize: '1.2rem',
+                        fontWeight: 700,
+                      }}
+                    >
+                      {(previewSponsor.name || 'SP').slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+
+                <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', color: '#fff', margin: '0 0 0.5rem 0' }}>
+                  {previewSponsor.name || 'Sponsor Name'}
+                </h4>
+
+                {previewSponsor.description && (
+                  <p style={{ color: '#94A3B8', fontSize: '0.82rem', lineHeight: 1.4, margin: '0 0 1rem 0' }}>
+                    {previewSponsor.description}
+                  </p>
+                )}
+
+                {previewSponsor.website_url ? (
+                  <a
+                    href={previewSponsor.website_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.72rem',
+                      color: 'var(--color-arc-blue)',
+                      textDecoration: 'none',
+                      padding: '0.4rem 0.8rem',
+                      border: '1px solid rgba(0, 240, 255, 0.3)',
+                      borderRadius: '4px',
+                      background: 'rgba(0, 240, 255, 0.05)',
+                    }}
+                  >
+                    <span>VISIT OFFICIAL SITE</span>
+                    <ExternalLink size={12} />
+                  </a>
+                ) : (
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#64748B' }}>
+                    NO WEBSITE LINK SPECIFIED
+                  </span>
+                )}
+              </div>
+
+              <div style={{ marginTop: '1.25rem', display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  type="button"
+                  onClick={() => setSponsorPreviewOpen(false)}
+                  className="btn btn-secondary"
+                >
+                  CLOSE PREVIEW
+                </button>
+              </div>
             </div>
           </div>
         )}

@@ -136,6 +136,7 @@ export default function Navbar() {
     { label: 'PROBLEMS', path: '/problems' },
     { label: 'SCHEDULE', path: '/schedule' },
     { label: 'PRIZES', path: '/prizes' },
+    { label: 'SPONSORS', path: '/sponsors' },
     { label: 'LEADERBOARD', path: '/leaderboard' },
   ];
 

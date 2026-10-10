@@ -148,45 +148,173 @@ export const eventService = {
     }
   },
 
-  // Get schedule
+  // Get schedule (Dynamic Multi-Day + Backward-Compatible)
   async getSchedules() {
     if (!isSupabaseConfigured) return fallbackScheduleData;
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('schedules')
         .select('*')
+        .order('day_number', { ascending: true })
         .order('sort_order', { ascending: true });
+
+      const { data, error } = await query;
 
       if (error || !data || data.length === 0) return fallbackScheduleData;
 
-      const day1Items = data.filter((d) => d.day_number === 1).map((d, i) => ({
-        order: String(i + 1).padStart(2, '0'),
-        time: d.start_time || '[TO BE DECIDED]',
-        title: d.title,
-        location: d.location,
-        speaker: d.speaker,
-        description: d.description,
-        badge: d.badge,
-        highlight: d.is_highlight,
-      }));
+      // Filter only published items (check native is_published or fallback [DRAFT] marker)
+      const published = data.filter((d) => {
+        if (d.is_published !== undefined) return d.is_published === true;
+        return !d.badge?.includes('[DRAFT]');
+      });
+      if (published.length === 0) return fallbackScheduleData;
 
-      const day2Items = data.filter((d) => d.day_number === 2).map((d, i) => ({
-        order: String(i + 1).padStart(2, '0'),
-        time: d.start_time || '[TO BE DECIDED]',
-        title: d.title,
-        location: d.location,
-        speaker: d.speaker,
-        description: d.description,
-        badge: d.badge,
-        highlight: d.is_highlight,
-      }));
+      // Group dynamically by day_number
+      const dayMap = new Map();
+      published.forEach((d) => {
+        const dayNum = Number(d.day_number) || 1;
+        if (!dayMap.has(dayNum)) {
+          dayMap.set(dayNum, []);
+        }
+        dayMap.get(dayNum).push(d);
+      });
+
+      // Construct dynamic days list
+      const dynamicDays = Array.from(dayMap.entries())
+        .sort(([a], [b]) => a - b)
+        .map(([dayNum, items]) => {
+          const firstItem = items[0] || {};
+          const dayLabel = firstItem.day_label || `DAY ${String(dayNum).padStart(2, '0')}`;
+          const eventDate = firstItem.event_date || (dayNum === 1 ? 'OCTOBER 24, 2026' : 'OCTOBER 25, 2026');
+
+          const formattedItems = items.map((d, i) => {
+            const timeDisplay = (d.start_time && d.end_time)
+              ? `${d.start_time} – ${d.end_time}`
+              : (d.start_time || '[TO BE DECIDED]');
+
+            const category = d.category || d.badge?.replace('[DRAFT]', '').trim() || 'General';
+            const badge = d.badge?.replace('[DRAFT]', '').trim() || category;
+
+            return {
+              id: d.id,
+              order: String(d.sort_order || i + 1).padStart(2, '0'),
+              time: timeDisplay,
+              startTime: d.start_time,
+              endTime: d.end_time,
+              title: d.title,
+              location: d.location || 'Multipurpose Hall, REC Banda',
+              speaker: d.speaker || '',
+              description: d.description || '',
+              badge,
+              category,
+              icon: d.icon || '',
+              highlight: Boolean(d.is_highlight),
+              eventDate: d.event_date || eventDate,
+              dayNumber: dayNum,
+            };
+          });
+
+          return {
+            dayNumber: dayNum,
+            key: `day${dayNum}`,
+            label: dayLabel,
+            date: eventDate,
+            theme: dayNum === 1 ? 'INAUGURATION & HACKING SPRINTS' : 'EVALUATION & AWARDS CEREMONY',
+            venue: firstItem.location || 'Multipurpose Hall, REC Banda',
+            items: formattedItems,
+          };
+        });
+
+      // Maintain backward-compatible day1 and day2 keys
+      const day1Obj = dynamicDays.find((d) => d.dayNumber === 1) || {
+        ...fallbackScheduleData.day1,
+        items: fallbackScheduleData.day1.items,
+      };
+      const day2Obj = dynamicDays.find((d) => d.dayNumber === 2) || {
+        ...fallbackScheduleData.day2,
+        items: fallbackScheduleData.day2.items,
+      };
 
       return {
-        day1: { ...fallbackScheduleData.day1, items: day1Items.length > 0 ? day1Items : fallbackScheduleData.day1.items },
-        day2: { ...fallbackScheduleData.day2, items: day2Items.length > 0 ? day2Items : fallbackScheduleData.day2.items },
+        ...fallbackScheduleData,
+        days: dynamicDays,
+        day1: day1Obj,
+        day2: day2Obj,
+        rawItems: published,
       };
-    } catch {
+    } catch (err) {
+      console.warn('Error fetching schedules:', err);
       return fallbackScheduleData;
+    }
+  },
+
+  // Get Sponsors grouped by official tiers
+  async getSponsors() {
+    if (!isSupabaseConfigured) return { tiers: [], all: [] };
+    try {
+      const { data, error } = await supabase
+        .from('sponsors')
+        .select('*')
+        .order('sort_order', { ascending: true })
+        .order('created_at', { ascending: true });
+
+      if (error || !data) return { tiers: [], all: [] };
+
+      // Filter only published sponsors (check native is_published or fallback tag !== 'draft')
+      const published = data.filter((s) => {
+        if (s.is_published !== undefined) return s.is_published === true;
+        return s.tag !== 'draft';
+      });
+
+      // Tier specifications in order of prestige
+      const tierOrder = [
+        { id: 'title', label: 'TITLE SPONSOR', badge: 'PRINCIPAL SPONSOR', variant: 'gold' },
+        { id: 'powered_by', label: 'POWERED BY', badge: 'INFRASTRUCTURE PARTNER', variant: 'cyan' },
+        { id: 'gold', label: 'GOLD SPONSORS', badge: 'GOLD ALLIANCE', variant: 'gold' },
+        { id: 'silver', label: 'SILVER SPONSORS', badge: 'SILVER ALLIANCE', variant: 'cyan' },
+        { id: 'bronze', label: 'BRONZE SPONSORS', badge: 'BRONZE ALLIANCE', variant: 'steel' },
+        { id: 'community', label: 'COMMUNITY PARTNERS', badge: 'COMMUNITY ECOSYSTEM', variant: 'violet' },
+      ];
+
+      const groupedTiers = [];
+
+      tierOrder.forEach((t) => {
+        const matches = published.filter(
+          (s) => (s.tier || s.role || s.category || '').toLowerCase() === t.id.toLowerCase()
+        );
+        if (matches.length > 0) {
+          groupedTiers.push({
+            ...t,
+            sponsors: matches.map((m) => ({
+              ...m,
+              tier: m.tier || m.role || m.category || t.id,
+            })),
+          });
+        }
+      });
+
+      // Also check if any sponsors have other custom categories/tiers
+      const knownIds = new Set(tierOrder.map((t) => t.id.toLowerCase()));
+      const others = published.filter(
+        (s) => !knownIds.has((s.tier || s.role || s.category || '').toLowerCase())
+      );
+      if (others.length > 0) {
+        groupedTiers.push({
+          id: 'partner',
+          label: 'ECOSYSTEM ALLIES',
+          badge: 'STRATEGIC PARTNER',
+          variant: 'cyan',
+          sponsors: others,
+        });
+      }
+
+      return {
+        tiers: groupedTiers,
+        all: published,
+      };
+    } catch (err) {
+      console.warn('Error fetching sponsors:', err);
+      return { tiers: [], all: [] };
     }
   },
 
