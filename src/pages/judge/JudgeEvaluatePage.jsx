@@ -125,16 +125,16 @@ export default function JudgeEvaluatePage() {
 
         {submission && (
           <div style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: '2rem', marginBottom: '2.5rem' }}>
-            <span className="chapter-badge">CASE UNDER EXAMINATION</span>
+            <span className="chapter-badge">PROJECT UNDER REVIEW</span>
             <h1 className="heading-display" style={{ fontSize: '2.2rem', marginBottom: '0.4rem' }}>
               {submission.title}
             </h1>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.86rem', color: 'var(--color-warm-amber)', marginBottom: '1.2rem' }}>
-              SQUAD: {submission.team?.name || 'Individual'} • TRACK: {submission.problem_category?.theme || 'General'}
+              TEAM: {submission.team?.name || 'Individual'} • TRACK: {submission.problem_category?.theme || 'General'}
             </div>
 
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>
-              {submission.description || 'No system overview provided.'}
+              {submission.description || 'No project description provided.'}
             </p>
 
             <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>

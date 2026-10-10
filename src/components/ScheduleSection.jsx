@@ -18,8 +18,8 @@ export default function ScheduleSection() {
 
   const currentSchedule = schedule[activeDay] || defaultScheduleData[activeDay];
 
-  const day1Milestones = ['RECRUIT', 'ASSEMBLE', 'BUILD', 'BATTLE'];
-  const day2Milestones = ['DEPLOY', 'EVALUATE', 'FINAL BATTLE', 'CHAMPIONS'];
+  const day1Milestones = ['CHECK-IN', 'INAUGURATION', 'HACKING SPRINT', 'MENTORSHIP'];
+  const day2Milestones = ['SUBMISSIONS', 'EVALUATION', 'FINAL PITCHES', 'AWARDS'];
   const currentMilestones = activeDay === 'day1' ? day1Milestones : day2Milestones;
 
   return (
@@ -29,15 +29,15 @@ export default function ScheduleSection() {
         {/* Header */}
         <div className="section-header center">
           <HoloBadge variant="cyan" icon={Clock}>
-            OPERATION TIMELINE // CHAPTER 06
+            EVENT SCHEDULE
           </HoloBadge>
-          <h2 className="heading-section marvel-section-title">MISSION TIMELINE: 48-HOUR FLIGHT PLAN</h2>
+          <h2 className="heading-section marvel-section-title">EVENT SCHEDULE: 48-HOUR TIMELINE</h2>
           <p className="section-lead">
-            The chronological flight plan across both high-stakes operational days of HackFest 3.0.
+            The complete agenda across both days of HackFest 3.0.
           </p>
         </div>
 
-        {/* Superhero Operational Phase Pipeline Bar */}
+        {/* Phase Pipeline Bar */}
         <div className="superhero-phase-bar">
           {currentMilestones.map((m, idx) => (
             <React.Fragment key={idx}>
@@ -59,25 +59,25 @@ export default function ScheduleSection() {
             onClick={() => setActiveDay('day1')}
           >
             <span className="stark-tab-indicator" />
-            DAY 01 • RECRUIT, ASSEMBLE & ARENA SPRINTS
+            DAY 01 • INAUGURATION & HACKING SPRINTS
           </button>
           <button
             className={`schedule-tab-btn stark-tab-btn ${activeDay === 'day2' ? 'active stark-tab-active' : ''}`}
             onClick={() => setActiveDay('day2')}
           >
             <span className="stark-tab-indicator" style={{ background: 'var(--color-energy-red)' }} />
-            DAY 02 • THE FINAL BATTLE & CHAMPION SEALS
+            DAY 02 • EVALUATION & AWARDS CEREMONY
           </button>
         </div>
 
         {/* Day Header Info */}
         <div className="stark-schedule-meta-box">
           <div className="stark-schedule-theme-tag" style={{ color: 'var(--color-stark-gold)', fontWeight: 700 }}>
-            OPERATION: {currentSchedule.theme.toUpperCase()}
+            THEME: {currentSchedule.theme.toUpperCase()}
           </div>
           <div className="stark-schedule-venue-tag">
             <MapPin size={14} color="var(--color-arc-blue)" />
-            <span>PRIMARY COORDINATES: {currentSchedule.venue}</span>
+            <span>VENUE: {currentSchedule.venue}</span>
           </div>
         </div>
 

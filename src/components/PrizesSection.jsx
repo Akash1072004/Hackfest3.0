@@ -13,13 +13,13 @@ export default function PrizesSection() {
         {/* Header */}
         <div className="section-header center">
           <HoloBadge variant="gold" icon={Trophy}>
-            COSMIC ARTIFACTS // CHAPTER 09
+            PRIZES & RECOGNITION
           </HoloBadge>
           <h2 className="heading-section marvel-section-title">
-            INFINITY POWER VAULT: REWARDS
+            PRIZES & AWARDS
           </h2>
           <p className="section-lead">
-            {prizesData.subtitle}. Celebrating algorithmic supremacy, conceptual brilliance, and full-stack engineering resilience.
+            {prizesData.subtitle}. Celebrating technical excellence, creative brilliance, and engineering resilience.
           </p>
         </div>
 
@@ -27,7 +27,7 @@ export default function PrizesSection() {
         <div className="infinity-3d-vault-card">
           <div className="vault-telemetry-strip">
             <span className="marvel-tag-pulse" />
-            <span>COSMIC VAULT // CHAMPION CORE • VANGUARD CORE • HERO CORE</span>
+            <span>INTERACTIVE 3D PODIUM // 1ST • 2ND • 3RD PLACE</span>
           </div>
 
           <InfinityVault3D />
@@ -35,15 +35,15 @@ export default function PrizesSection() {
           <div className="vault-pedestal-labels">
             <div className="vault-podium-label left" style={{ borderColor: 'rgba(0, 191, 255, 0.4)' }}>
               <span className="podium-rank" style={{ color: 'var(--color-arc-blue)' }}>2ND PLACE</span>
-              <span className="podium-title">VANGUARD CORE // SPACE STONE</span>
+              <span className="podium-title">1ST RUNNER UP // SILVER</span>
             </div>
             <div className="vault-podium-label center" style={{ borderColor: 'rgba(245, 182, 66, 0.6)' }}>
-              <span className="podium-rank champion" style={{ color: 'var(--color-stark-gold)' }}>1ST PLACE APEX</span>
-              <span className="podium-title">CHAMPION CORE // SOLAR FLARE</span>
+              <span className="podium-rank champion" style={{ color: 'var(--color-stark-gold)' }}>1ST PLACE</span>
+              <span className="podium-title">CHAMPION // GOLD</span>
             </div>
             <div className="vault-podium-label right" style={{ borderColor: 'rgba(230, 36, 41, 0.4)' }}>
               <span className="podium-rank" style={{ color: 'var(--color-energy-red)' }}>3RD PLACE</span>
-              <span className="podium-title">HERO CORE // REALITY CRIMSON</span>
+              <span className="podium-title">2ND RUNNER UP // BRONZE</span>
             </div>
           </div>
         </div>
@@ -61,33 +61,33 @@ export default function PrizesSection() {
 
           <div>
             <HoloBadge variant="gold" style={{ marginBottom: '0.8rem' }}>
-              OFFICIAL RECOGNITION STRUCTURE
+              AWARDS & HONORS
             </HoloBadge>
             <h3 className="heading-display" style={{ fontSize: '2.1rem', color: '#FFFFFF', marginBottom: '0.8rem', letterSpacing: '0.04em' }}>
-              CHAMPIONSHIP HONORS & VERIFIED CREDS
+              AWARDS, TROPHIES & CERTIFICATES
             </h3>
             <p style={{ color: '#94A3B8', fontSize: '0.98rem', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-              Every winning operative receives distinguished official honors ratified by Rajkiya Engineering College Banda. Recognition packages include original geometric metallic trophies, commemorative medal sets, blockchain-verifiable digital certificates, and sponsor tech hardware hampers.
+              Every winning participant and team receives official honors certified by Rajkiya Engineering College, Banda. Recognition packages include custom trophies, commemorative medals, verified certificates of excellence, and sponsor swag hampers.
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
-              <SuperheroPanel variant="gold" tag="APEX CHAMPION" issueNumber="1ST PLACE">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '1.2rem' }}>
+              <SuperheroPanel variant="gold" tag="FIRST PLACE" issueNumber="1ST PLACE">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-stark-gold)', fontWeight: 700, fontSize: '0.92rem' }}>
                   <Trophy size={20} />
-                  <span>1ST PLACE PINNACLE</span>
+                  <span>1ST PLACE WINNER</span>
                 </div>
                 <div style={{ color: '#F5F7FA', fontSize: '0.94rem', marginTop: '6px', fontWeight: 600 }}>
-                  Custom Metallic Trophy + Shield + Citations
+                  Custom Metallic Trophy + Shield + Certificates
                 </div>
               </SuperheroPanel>
 
-              <SuperheroPanel variant="blue" tag="VANGUARD" issueNumber="2ND & 3RD">
+              <SuperheroPanel variant="blue" tag="RUNNERS-UP" issueNumber="2ND & 3RD">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-arc-blue)', fontWeight: 700, fontSize: '0.92rem' }}>
                   <Medal size={20} />
                   <span>2ND & 3RD PLACE</span>
                 </div>
                 <div style={{ color: '#F5F7FA', fontSize: '0.94rem', marginTop: '6px', fontWeight: 600 }}>
-                  Commemorative Medals + Verified Hampers
+                  Commemorative Medals + Hampers + Certificates
                 </div>
               </SuperheroPanel>
             </div>
@@ -104,7 +104,7 @@ export default function PrizesSection() {
                 key={arena.arenaId}
                 variant={v}
                 tag={arena.arenaName.toUpperCase()}
-                issueNumber="ARENA PRIZES"
+                issueNumber="EVENT PRIZES"
                 className="prize-arena-card"
               >
                 <h4 className="prize-arena-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', color: '#FFFFFF' }}>

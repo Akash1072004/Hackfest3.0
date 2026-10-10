@@ -17,11 +17,11 @@ export default function HowItWorksSection() {
         {/* Header */}
         <div className="section-header center">
           <HoloBadge variant="cyan" icon={Workflow}>
-            ENGAGEMENT PROTOCOL // CHAPTER 07
+            EVENT PROCESS // CHAPTER 07
           </HoloBadge>
-          <h2 className="heading-section marvel-section-title">DEPLOYMENT BLUEPRINT</h2>
+          <h2 className="heading-section marvel-section-title">HOW IT WORKS</h2>
           <p className="section-lead">
-            Step-by-step technical pipelines from initial check-in to prototype release across each arena.
+            Step-by-step process from initial check-in to prototype presentation across each competition.
           </p>
         </div>
 
@@ -32,21 +32,21 @@ export default function HowItWorksSection() {
             onClick={() => setActiveWorkflow('hackathon')}
           >
             <span className="stark-tab-indicator" />
-            HACKATHON DEPLOYMENT
+            HACKATHON PROCESS
           </button>
           <button
             className={`workflow-tab-btn stark-tab-btn ${activeWorkflow === 'codeathon' ? 'active stark-tab-active' : ''}`}
             onClick={() => setActiveWorkflow('codeathon')}
           >
             <span className="stark-tab-indicator" />
-            CODEATHON SPRINT (1.5H)
+            CODEATHON PROCESS (1.5H)
           </button>
           <button
             className={`workflow-tab-btn stark-tab-btn ${activeWorkflow === 'ideathon' ? 'active stark-tab-active' : ''}`}
             onClick={() => setActiveWorkflow('ideathon')}
           >
             <span className="stark-tab-indicator" />
-            IDEATHON MATRIX (PITCH)
+            IDEATHON PROCESS (PITCH)
           </button>
         </div>
 

@@ -67,43 +67,43 @@ export default function LeaderboardPage() {
           RETURN TO COMMAND BASE
         </Link>
 
-        {/* Header Telemetry */}
+        {/* Header */}
         <div style={{ marginBottom: '2.5rem' }}>
           <HoloBadge variant="gold" icon={Trophy} style={{ marginBottom: '0.8rem' }}>
-            APEX HONORS // CHAPTER 13
+            OFFICIAL STANDINGS
           </HoloBadge>
           <h1 className="heading-display marvel-section-title" style={{ fontSize: 'clamp(2.6rem, 5vw, 4.4rem)', marginBottom: '0.4rem', color: '#FFFFFF' }}>
-            EARTH'S MIGHTIEST BUILDERS
+            EVENT LEADERBOARD
           </h1>
           <p style={{ color: '#94A3B8', fontSize: '1.05rem', maxWidth: '640px', lineHeight: '1.6' }}>
-            Official standings, jury ratings, and verified honors compiled across all three arenas of {eventMeta.name}.
+            Official standings, jury ratings, and verified honors compiled across all competitions of {eventMeta.name}.
           </p>
         </div>
 
         {loading ? (
-          <HudPanel variant="cyan" tag="DECRYPTING TELEMETRY // LOADING" scan={true}>
+          <HudPanel variant="cyan" tag="LOADING STANDINGS" scan={true}>
             <div style={{ padding: '3.5rem 2rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
               <Loader2 size={36} color="var(--color-arc-blue)" className="animate-spin" />
               <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: '#F5F7FA', letterSpacing: '0.05em' }}>
-                SYNCHRONIZING APEX STANDINGS...
+                LOADING LEADERBOARD...
               </div>
             </div>
           </HudPanel>
         ) : !published ? (
-          <HudPanel variant="gold" tag="STATUS // VAULT ENCRYPTED" scan={true}>
+          <HudPanel variant="gold" tag="STATUS // RESULTS PENDING" scan={true}>
             <div style={{ padding: '3rem 2rem', textAlign: 'center' }}>
               <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(245, 182, 66, 0.15)', border: '1px solid var(--color-stark-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto', color: 'var(--color-stark-gold)', boxShadow: '0 0 25px rgba(245, 182, 66, 0.3)' }}>
                 <Lock size={32} />
               </div>
               <h2 className="heading-display" style={{ fontSize: '2rem', marginBottom: '0.6rem', color: '#F5F7FA' }}>
-                RANKINGS UNDER QUANTUM SEAL
+                RANKINGS NOT YET PUBLISHED
               </h2>
               <p style={{ color: '#94A3B8', maxWidth: '560px', margin: '0 auto 1.8rem auto', lineHeight: '1.6', fontSize: '0.96rem' }}>
-                Operational scoring is in final deliberation by the High Council. Standings will be decrypted and unveiled live during the Grand Awards Ceremony in the Multipurpose Hall.
+                Final scores are being compiled by the judges. Standings will be announced live during the Awards Ceremony in the Multipurpose Hall.
               </p>
               <Link to="/schedule" className="btn btn-reactor" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem' }}>
                 <Zap size={16} />
-                VIEW CEREMONY FLIGHT PLAN
+                VIEW EVENT SCHEDULE
               </Link>
             </div>
           </HudPanel>
@@ -113,7 +113,7 @@ export default function LeaderboardPage() {
             {standings.length >= 3 && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.2rem', marginBottom: '1.5rem' }}>
                 {/* 1st Place */}
-                <SuperheroPanel variant="gold" tag="#1 CHAMPION" issueNumber="APEX" className="podium-top-card">
+                <SuperheroPanel variant="gold" tag="#1 CHAMPION" issueNumber="1ST" className="podium-top-card">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.6rem' }}>
                     <div style={{ width: 38, height: 38, borderRadius: '4px', background: 'rgba(245, 182, 66, 0.2)', border: '1px solid var(--color-stark-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-stark-gold)' }}>
                       <CrownIcon />
@@ -123,7 +123,7 @@ export default function LeaderboardPage() {
                       <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: '#FFFFFF', fontWeight: 700 }}>{standings[0]?.title}</div>
                     </div>
                   </div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#94A3B8' }}>{standings[0]?.team?.name || 'Solo Operative'}</div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#94A3B8' }}>{standings[0]?.team?.name || 'Individual Participant'}</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', borderTop: '1px solid rgba(245, 182, 66, 0.2)', paddingTop: '0.6rem' }}>
                     <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#64748B' }}>{standings[0]?.competition?.name}</span>
                     <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', color: 'var(--color-stark-gold)', fontWeight: 700 }}>{standings[0]?.avgScore.toFixed(1)}</span>
@@ -131,17 +131,17 @@ export default function LeaderboardPage() {
                 </SuperheroPanel>
 
                 {/* 2nd Place */}
-                <SuperheroPanel variant="blue" tag="#2 VANGUARD" issueNumber="RUNNER-UP" className="podium-top-card">
+                <SuperheroPanel variant="blue" tag="#2 RUNNER-UP" issueNumber="2ND" className="podium-top-card">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.6rem' }}>
                     <div style={{ width: 38, height: 38, borderRadius: '4px', background: 'rgba(0, 191, 255, 0.2)', border: '1px solid var(--color-arc-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-arc-blue)' }}>
                       <Star size={18} />
                     </div>
                     <div>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-arc-blue)', letterSpacing: '0.1em' }}>#2 VANGUARD</div>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-arc-blue)', letterSpacing: '0.1em' }}>#2 RUNNER-UP</div>
                       <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: '#FFFFFF', fontWeight: 700 }}>{standings[1]?.title}</div>
                     </div>
                   </div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#94A3B8' }}>{standings[1]?.team?.name || 'Solo Operative'}</div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#94A3B8' }}>{standings[1]?.team?.name || 'Individual Participant'}</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', borderTop: '1px solid rgba(0, 191, 255, 0.2)', paddingTop: '0.6rem' }}>
                     <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#64748B' }}>{standings[1]?.competition?.name}</span>
                     <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', color: 'var(--color-arc-blue)', fontWeight: 700 }}>{standings[1]?.avgScore.toFixed(1)}</span>
@@ -149,17 +149,17 @@ export default function LeaderboardPage() {
                 </SuperheroPanel>
 
                 {/* 3rd Place */}
-                <SuperheroPanel variant="red" tag="#3 DEFENDER" issueNumber="HONORS" className="podium-top-card">
+                <SuperheroPanel variant="red" tag="#3 RUNNER-UP" issueNumber="3RD" className="podium-top-card">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.6rem' }}>
                     <div style={{ width: 38, height: 38, borderRadius: '4px', background: 'rgba(230, 36, 41, 0.2)', border: '1px solid var(--color-energy-red)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-energy-red)' }}>
                       <Award size={18} />
                     </div>
                     <div>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-energy-red)', letterSpacing: '0.1em' }}>#3 DEFENDER</div>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-energy-red)', letterSpacing: '0.1em' }}>#3 RUNNER-UP</div>
                       <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: '#FFFFFF', fontWeight: 700 }}>{standings[2]?.title}</div>
                     </div>
                   </div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#94A3B8' }}>{standings[2]?.team?.name || 'Solo Operative'}</div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#94A3B8' }}>{standings[2]?.team?.name || 'Individual Participant'}</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', borderTop: '1px solid rgba(230, 36, 41, 0.2)', paddingTop: '0.6rem' }}>
                     <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#64748B' }}>{standings[2]?.competition?.name}</span>
                     <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', color: 'var(--color-energy-red)', fontWeight: 700 }}>{standings[2]?.avgScore.toFixed(1)}</span>
@@ -169,14 +169,14 @@ export default function LeaderboardPage() {
             )}
 
             {/* Complete Ranking Table */}
-            <HudPanel variant="steel" tag="COMPLETE SQUAD ROSTER // TELEMETRY" scan={false}>
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <HudPanel variant="steel" tag="FULL RESULTS & STANDINGS" scan={false}>
+              <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
                   <thead>
                     <tr style={{ background: 'rgba(5, 7, 13, 0.9)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', letterSpacing: '0.1em' }}>
                       <th style={{ padding: '1rem 1.25rem' }}>RANK</th>
-                      <th style={{ padding: '1rem 1.25rem' }}>SQUAD & PROTOTYPE</th>
-                      <th style={{ padding: '1rem 1.25rem' }}>ARENA SECTOR</th>
+                      <th style={{ padding: '1rem 1.25rem' }}>TEAM & PROJECT</th>
+                      <th style={{ padding: '1rem 1.25rem' }}>COMPETITION</th>
                       <th style={{ padding: '1rem 1.25rem', textAlign: 'right' }}>SCORE</th>
                     </tr>
                   </thead>
@@ -189,7 +189,7 @@ export default function LeaderboardPage() {
 
                       return (
                         <tr
-                          key={s.id}
+                          key={s.id || idx}
                           style={{
                             borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
                             background: isFirst ? 'rgba(245, 182, 66, 0.05)' : isSecond ? 'rgba(0, 191, 255, 0.04)' : isThird ? 'rgba(230, 36, 41, 0.04)' : 'transparent',
@@ -204,7 +204,7 @@ export default function LeaderboardPage() {
                               {s.title}
                             </div>
                             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8' }}>
-                              {s.team?.name || 'Solo Operative'}
+                              {s.team?.name || 'Individual Participant'}
                             </div>
                           </td>
                           <td style={{ padding: '1.1rem 1.25rem', color: '#64748B', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>

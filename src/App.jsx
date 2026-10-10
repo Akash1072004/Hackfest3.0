@@ -45,6 +45,11 @@ import AdminTeamsPage from './pages/admin/AdminTeamsPage';
 import AdminRegistrationsPage from './pages/admin/AdminRegistrationsPage';
 import AdminSubmissionsPage from './pages/admin/AdminSubmissionsPage';
 import AdminJudgingPage from './pages/admin/AdminJudgingPage';
+import AdminCmsPage from './pages/admin/AdminCmsPage';
+import AdminSdcMembersPage from './pages/admin/AdminSdcMembersPage';
+import AdminUsersPage from './pages/admin/AdminUsersPage';
+import AdminAuditPage from './pages/admin/AdminAuditPage';
+import SdcMembersPage from './pages/SdcMembersPage';
 
 export default function App() {
   return (
@@ -67,6 +72,7 @@ export default function App() {
             <Route path="/hackathon" element={<CompetitionDetailPage competitionId="hackathon" />} />
             
             <Route path="/missions" element={<MissionsPage />} />
+            <Route path="/problems" element={<MissionsPage />} />
             <Route path="/schedule" element={<SchedulePage />} />
             <Route path="/prizes" element={<PrizesPage />} />
             <Route path="/rules" element={<RulesFaqPage />} />
@@ -76,6 +82,8 @@ export default function App() {
             <Route path="/sponsors" element={<SponsorsPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
+            <Route path="/sdc-members" element={<SdcMembersPage />} />
+            <Route path="/members" element={<SdcMembersPage />} />
 
             {/* Auth Routes */}
             <Route path="/login" element={<LoginPage />} />
@@ -196,6 +204,38 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={['admin', 'organizer']}>
                   <AdminJudgingPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/cms"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'organizer']}>
+                  <AdminCmsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/sdc-members"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'organizer']}>
+                  <AdminSdcMembersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute allowedRoles={['super_admin']}>
+                  <AdminUsersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/audit"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'organizer']}>
+                  <AdminAuditPage />
                 </ProtectedRoute>
               }
             />

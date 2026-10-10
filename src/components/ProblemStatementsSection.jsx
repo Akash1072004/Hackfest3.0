@@ -9,17 +9,54 @@ import HoloBadge from './ui/HoloBadge';
 
 export default function ProblemStatementsSection() {
   const [categories, setCategories] = useState(defaultCategories);
+  const [statements, setStatements] = useState([]);
   const [activeProblem, setActiveProblem] = useState(null);
 
-  useEffect(() => {
-    let isMounted = true;
-    eventService.getProblemCategories().then((res) => {
-      if (isMounted && res?.length > 0) {
-        setCategories(res);
+  const loadData = async () => {
+    try {
+      const [catRes, stmtRes] = await Promise.all([
+        eventService.getProblemCategories(),
+        eventService.getProblemStatements(),
+      ]);
+      if (catRes?.length > 0) {
+        setCategories(catRes);
       }
-    });
-    return () => { isMounted = false; };
+      if (stmtRes?.length > 0) {
+        setStatements(stmtRes);
+      }
+    } catch (err) {
+      console.warn('Failed to load problem data:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
   }, []);
+
+  const handleOpenCategory = (cat) => {
+    // Match linked published statement if available
+    const linked = statements.find(
+      (s) => s.category_id === cat.id || s.category?.slug === cat.slug || s.slug === cat.slug
+    );
+
+    if (linked) {
+      setActiveProblem({
+        ...cat,
+        title: linked.title || cat.title,
+        challenge: linked.description || cat.challenge,
+        background: cat.background || linked.description,
+        requirements: (Array.isArray(linked.requirements) && linked.requirements.length > 0)
+          ? linked.requirements
+          : (cat.requirements || []),
+        constraints: linked.constraints || '',
+        examples: linked.examples || '',
+        inputOutputSpecs: linked.input_output_specs || '',
+        referenceFileUrl: linked.reference_file_url || '',
+      });
+    } else {
+      setActiveProblem(cat);
+    }
+  };
 
   const threatLevels = ['OMEGA LEVEL', 'CRITICAL LEVEL', 'GLOBAL CRISIS', 'EXTINCTION CLASS', 'OMEGA LEVEL', 'TACTICAL CRISIS'];
   const variants = ['green', 'red', 'gold', 'green', 'red', 'gold'];
@@ -31,14 +68,13 @@ export default function ProblemStatementsSection() {
         {/* Header Briefing */}
         <div className="section-header center">
           <HoloBadge variant="red" icon={ShieldAlert}>
-            THE FINAL BATTLE // GLOBAL THREAT DATABASE
+            HACKATHON TRACKS & THEMES
           </HoloBadge>
           <h2 className="heading-section marvel-section-title">
-            THREAT DATABASE: CRISIS PROTOCOLS
+            PROBLEM STATEMENTS & TRACKS
           </h2>
           <p className="section-lead">
-            A multiversal villainous threat has destabilized our digital and physical infrastructure.
-            Examine the threat dossiers below, assemble your squad, and deploy counter-measures in the Flagship 48-Hour Battlefield.
+            Explore the problem tracks below, assemble your team, and develop transformative solutions during the Flagship 48-Hour Hackathon.
           </p>
         </div>
 
@@ -46,7 +82,7 @@ export default function ProblemStatementsSection() {
         <div className="doom-villain-stage-card">
           <div className="doom-stage-header">
             <span className="doom-status-dot" />
-            <span>THREAT OVERLORD DETECTED // THE CITADEL ARCHIVE</span>
+            <span>INTERACTIVE 3D SHOWCASE // DOCTOR DOOM</span>
           </div>
 
           <DoomThreatNexus3D />
@@ -54,12 +90,12 @@ export default function ProblemStatementsSection() {
           <div className="doom-stage-footer">
             <span className="doom-warning-text">
               <AlertTriangle size={15} color="#00ff77" />
-              SELECT A MISSION SECTOR TO ENGAGE IN DEFENSE
+              SELECT A TRACK BELOW TO VIEW DETAILED PROBLEM STATEMENTS
             </span>
           </div>
         </div>
 
-        {/* 6 Threat Cards Grid */}
+        {/* 6 Track Cards Grid */}
         <div className="problems-grid doom-threats-grid" style={{ marginTop: '3rem' }}>
           {categories.map((prob, idx) => {
             const threatLevel = threatLevels[idx % threatLevels.length];
@@ -69,30 +105,30 @@ export default function ProblemStatementsSection() {
               <SuperheroPanel
                 key={prob.id}
                 variant={variant}
-                tag={`THREAT ${prob.number} // ${prob.theme.toUpperCase()}`}
-                issueNumber={threatLevel}
+                tag={`TRACK 0${prob.number} // ${prob.theme.toUpperCase()}`}
+                issueNumber={prob.theme.toUpperCase()}
                 className="doom-threat-panel"
               >
                 <div
                   className="doom-threat-inner"
                   role="button"
                   tabIndex={0}
-                  onClick={() => setActiveProblem(prob)}
+                  onClick={() => handleOpenCategory(prob)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      setActiveProblem(prob);
+                      handleOpenCategory(prob);
                     }
                   }}
                   style={{ cursor: 'pointer' }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>
                     <span className="doom-threat-code">
-                      SECTOR 0{prob.number}
+                      TRACK 0{prob.number}
                     </span>
                     <span className="doom-threat-badge">
-                      <Skull size={13} style={{ marginRight: '4px' }} />
-                      ALERT ACTIVE
+                      <Flame size={13} style={{ marginRight: '4px' }} />
+                      ACTIVE
                     </span>
                   </div>
 
@@ -105,7 +141,7 @@ export default function ProblemStatementsSection() {
                   </p>
 
                   <div className="doom-threat-action-bar">
-                    <span>INSPECT THREAT DOSSIER</span>
+                    <span>VIEW PROBLEM DETAILS</span>
                     <ChevronRight size={16} />
                   </div>
                 </div>

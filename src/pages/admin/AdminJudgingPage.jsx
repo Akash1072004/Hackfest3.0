@@ -51,7 +51,7 @@ export default function AdminJudgingPage() {
             JUDGING PROGRESS & SCORE COMPILATION
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
-            Consolidated jury evaluation scores and rank ordering across all arenas.
+            Consolidated jury evaluation scores and rank ordering across all competitions.
           </p>
         </div>
 
@@ -61,7 +61,7 @@ export default function AdminJudgingPage() {
               <tr style={{ background: '#111827', borderBottom: '1px solid var(--border-subtle)', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--color-warm-amber)' }}>
                 <th style={{ padding: '1rem' }}>RANK</th>
                 <th style={{ padding: '1rem' }}>PROJECT TITLE</th>
-                <th style={{ padding: '1rem' }}>SQUAD</th>
+                <th style={{ padding: '1rem' }}>TEAM</th>
                 <th style={{ padding: '1rem' }}>EVALUATIONS</th>
                 <th style={{ padding: '1rem', textAlign: 'right' }}>SCORE (AVG)</th>
               </tr>

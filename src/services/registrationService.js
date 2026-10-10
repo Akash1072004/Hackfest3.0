@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { isDeadlineExpired } from '../utils/eventTime';
 
 export const registrationService = {
   // Register for a competition
@@ -41,6 +42,22 @@ export const registrationService = {
         if (cat?.id) resolvedProbCatId = cat.id;
       } catch {
         // Fallback
+      }
+    }
+
+    // Check canonical event settings for registration availability & deadline
+    const { data: settings } = await supabase
+      .from('event_settings')
+      .select('*')
+      .limit(1)
+      .maybeSingle();
+
+    if (settings) {
+      if (settings.registration_open === false || settings.registration_status === 'CLOSED') {
+        throw new Error('Event registration is currently closed by event administration.');
+      }
+      if (settings.registration_deadline && isDeadlineExpired(settings.registration_deadline)) {
+        throw new Error(`Event registration deadline (${settings.registration_deadline}) has passed.`);
       }
     }
 

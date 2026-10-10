@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { isDeadlineExpired } from '../utils/eventTime';
 
 export const submissionService = {
   // Get submissions for user's team or user
@@ -72,6 +73,24 @@ export const submissionService = {
       }
     }
 
+    // Enforce submission settings when submitting final project
+    if (status === 'submitted') {
+      const { data: settings } = await supabase
+        .from('event_settings')
+        .select('*')
+        .limit(1)
+        .maybeSingle();
+
+      if (settings) {
+        if (settings.ppt_submissions_open === false) {
+          throw new Error('Project and PPT submissions are currently closed by event administration.');
+        }
+        if (settings.submission_deadline && isDeadlineExpired(settings.submission_deadline)) {
+          throw new Error(`Project submission deadline (${settings.submission_deadline}) has passed.`);
+        }
+      }
+    }
+
     const payload = {
       user_id: userId,
       team_id: teamId,
@@ -111,6 +130,40 @@ export const submissionService = {
   // Upload file to Supabase storage bucket 'submissions'
   async uploadFile(file, path) {
     if (!isSupabaseConfigured) throw new Error('Supabase not configured.');
+
+    // Check submission settings before accepting file upload
+    const { data: settings } = await supabase
+      .from('event_settings')
+      .select('*')
+      .limit(1)
+      .maybeSingle();
+
+    if (settings) {
+      if (settings.ppt_submissions_open === false) {
+        throw new Error('PPT submissions are currently closed by event administration.');
+      }
+      if (settings.submission_deadline && isDeadlineExpired(settings.submission_deadline)) {
+        throw new Error(`PPT submission deadline (${settings.submission_deadline}) has passed.`);
+      }
+    }
+
+    // Validate accepted file types
+    const rawAccepted = settings?.accepted_file_types || '.pdf,.pptx,.ppt';
+    const allowedExtensions = rawAccepted
+      .split(',')
+      .map((t) => t.trim().toLowerCase())
+      .filter(Boolean);
+
+    const fileName = (file.name || '').toLowerCase();
+    const hasValidExt = allowedExtensions.some((ext) => fileName.endsWith(ext));
+    if (!hasValidExt) {
+      throw new Error(`Invalid file type "${file.name}". Allowed formats: ${allowedExtensions.join(', ')}`);
+    }
+
+    const maxSizeMb = settings?.max_file_size_mb || 25;
+    if (file.size > maxSizeMb * 1024 * 1024) {
+      throw new Error(`File size exceeds maximum allowed limit of ${maxSizeMb}MB.`);
+    }
 
     const cleanPath = `${Date.now()}_${path.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
     const { data, error } = await supabase.storage

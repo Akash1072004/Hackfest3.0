@@ -85,13 +85,13 @@ export default function SponsorsSection() {
         </div>
 
         {/* Become a Sponsor Banner */}
-        <HudPanel variant="cyan" tag="ALLIANCE ENLISTMENT" scan={true} className="sponsor-cta-banner">
+        <HudPanel variant="cyan" tag="PARTNER WITH US" scan={true} className="sponsor-cta-banner">
           <div style={{ textAlign: 'center', padding: '1rem 0' }}>
             <h3 className="heading-display" style={{ fontSize: '1.6rem', color: '#F5F7FA', marginBottom: '0.6rem' }}>
-              JOIN THE ALLIANCE // BECOME A SPONSOR
+              BECOME A SPONSOR OR PARTNER
             </h3>
             <p style={{ color: '#94A3B8', fontSize: '0.94rem', maxWidth: '620px', margin: '0 auto 1.6rem auto', lineHeight: '1.6' }}>
-              Connect with hundreds of elite student developers, showcase your developer platform, and fuel grassroots technological breakthroughs at REC Banda.
+              Connect with hundreds of talented student developers, showcase your developer platform, and support grassroots innovation at REC Banda.
             </p>
             <a
               href={`mailto:${eventMeta.contactEmail}?subject=HackFest%203.0%20Sponsorship%20Inquiry`}
@@ -99,7 +99,7 @@ export default function SponsorsSection() {
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem' }}
             >
               <Mail size={16} />
-              REQUEST SPONSORSHIP PROSPECTUS
+              REQUEST SPONSORSHIP DETAILS
             </a>
           </div>
         </HudPanel>

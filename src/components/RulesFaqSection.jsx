@@ -27,17 +27,17 @@ export default function RulesFaqSection() {
       <div className="container">
         <div className="section-header">
           <HoloBadge variant="gold" icon={ShieldAlert}>
-            GOVERNANCE & PROTOCOLS // CHAPTER 10
+            GUIDELINES & HELP
           </HoloBadge>
-          <h2 className="heading-section stark-section-title">RULES & FAQ PROTOCOLS</h2>
+          <h2 className="heading-section stark-section-title">RULES & FAQS</h2>
           <p className="section-lead">
-            Essential guidelines, regulatory standards, and verified answers for all operatives.
+            Essential guidelines, competition rules, and answers to frequently asked questions.
           </p>
         </div>
 
         <div className="rules-faq-grid">
-          {/* Left Column: Official Rules in HUD Frame */}
-          <HudPanel variant="gold" tag="DIRECTIVES // ENGAGEMENT CODE" scan={false}>
+          {/* Left Column: Official Rules */}
+          <HudPanel variant="gold" tag="RULES & GUIDELINES" scan={false}>
             <h3 className="rules-col-title" style={{ color: 'var(--color-stark-gold)', display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.4rem' }}>
               <FileText size={22} color="var(--color-stark-gold)" />
               EVENT RULES & CONDUCT
@@ -61,8 +61,8 @@ export default function RulesFaqSection() {
             </div>
           </HudPanel>
 
-          {/* Right Column: FAQ Accordions in HUD Frame */}
-          <HudPanel variant="cyan" tag="TELEMETRY // QUERY INTERFACE" scan={false}>
+          {/* Right Column: FAQ Accordions */}
+          <HudPanel variant="cyan" tag="FREQUENTLY ASKED QUESTIONS" scan={false}>
             <h3 className="faq-col-title" style={{ color: 'var(--color-arc-blue)', display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.4rem' }}>
               <HelpCircle size={22} color="var(--color-arc-blue)" />
               FREQUENTLY ASKED QUESTIONS

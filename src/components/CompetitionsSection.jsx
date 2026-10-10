@@ -1,35 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Clock, Award, Users, Zap, Terminal, Sparkles, Shield, Flame } from 'lucide-react';
 import { competitions } from '../data/eventData';
+import { eventService } from '../services/eventService';
 import SuperheroPanel from './ui/SuperheroPanel';
 import HoloBadge from './ui/HoloBadge';
 
 export default function CompetitionsSection() {
+  const [compList, setCompList] = useState(competitions);
+
+  useEffect(() => {
+    let isMounted = true;
+    eventService.getCompetitions().then((res) => {
+      if (isMounted && res?.length > 0) setCompList(res);
+    });
+    return () => { isMounted = false; };
+  }, []);
   const arenaThemes = {
     codeathon: {
-      themeName: 'SUPERHERO SPEED RUN',
+      themeName: 'SPEED CODING',
       variant: 'blue',
-      badgeLabel: 'ALGORITHMIC VELOCITY',
+      badgeLabel: 'ALGORITHMS & SPEED',
       accentColor: 'var(--color-arc-blue)',
       icon: Terminal,
-      subHeadline: 'BLUE ENERGY // HIGH VELOCITY SPRINT',
+      subHeadline: 'ROUND 01 // INDIVIDUAL SPEED SPRINT',
     },
     ideathon: {
-      themeName: 'THE INNOVATION LAB',
+      themeName: 'IDEATION & PITCH',
       variant: 'gold',
-      badgeLabel: 'STRATEGIC ARCHITECTURE',
+      badgeLabel: 'INNOVATION & DESIGN',
       accentColor: 'var(--color-stark-gold)',
       icon: Sparkles,
-      subHeadline: 'QUANTUM R&D // DISRUPTIVE PITCH',
+      subHeadline: 'ROUND 02 // PROPOSAL & PRESENTATION',
     },
     hackathon: {
-      themeName: 'THE FINAL BATTLEFIELD',
+      themeName: 'FLAGSHIP HACKATHON',
       variant: 'red',
-      badgeLabel: '48H CRISIS DEPLOYMENT',
+      badgeLabel: '48H PROTOTYPE SPRINT',
       accentColor: 'var(--color-energy-red)',
       icon: Flame,
-      subHeadline: 'MULTIVERSE FRONT // FULL PROTOTYPE',
+      subHeadline: 'ROUND 03 // FULL PROJECT BUILD & DEMO',
     },
   };
 
@@ -40,25 +50,25 @@ export default function CompetitionsSection() {
         {/* Header */}
         <div className="section-header">
           <HoloBadge variant="red" icon={Shield}>
-            BATTLEGROUND SECTORS // CHAPTER 04
+            COMPETITIONS
           </HoloBadge>
-          <h2 className="heading-section marvel-section-title">THE THREE SUPERHERO ARENAS</h2>
+          <h2 className="heading-section marvel-section-title">THE THREE COMPETITIONS</h2>
           <p className="section-lead">
-            Three operational battlefields calibrated to test computational velocity, disruptive conceptual defense, and deep technological endurance.
+            Three tailored competition tracks designed to test your problem-solving speed, creative ideation, and end-to-end building capabilities.
           </p>
         </div>
 
         {/* 3 Arenas Grid */}
         <div className="competitions-grid marvel-arenas-grid">
-          {competitions.map((comp) => {
+          {compList.map((comp) => {
             const isMain = comp.isDominant;
             const theme = arenaThemes[comp.id] || {
-              themeName: 'TACTICAL SECTOR',
+              themeName: 'EVENT TRACK',
               variant: 'blue',
               badgeLabel: comp.badge,
               accentColor: 'var(--color-arc-blue)',
               icon: Zap,
-              subHeadline: 'COMBAT ARENA',
+              subHeadline: 'COMPETITION TRACK',
             };
             const ThemeIcon = theme.icon;
 

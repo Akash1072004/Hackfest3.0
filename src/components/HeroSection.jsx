@@ -2,12 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Compass, Zap, RotateCcw, Shield, Sparkles } from 'lucide-react';
 import { eventMeta } from '../data/eventData';
+import { eventService } from '../services/eventService';
 import MarvelCinematicHero3D from './3d/MarvelCinematicHero3D';
 import HoloBadge from './ui/HoloBadge';
 
 export default function HeroSection() {
   const [introPhase, setIntroPhase] = useState(0); // 0: Portal ignite, 1: Hero strike, 2: Title reveal, 3: Full controls ready
   const [replayKey, setReplayKey] = useState(0);
+  const [meta, setMeta] = useState(eventMeta);
+
+  useEffect(() => {
+    let isMounted = true;
+    eventService.getSettings().then((res) => {
+      if (isMounted && res) setMeta(res);
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   useEffect(() => {
     // Cinematic opening sequence timeline
@@ -45,36 +55,36 @@ export default function HeroSection() {
         <div className="marvel-hero-grid">
           {/* Left Column: Comic Narrative & Call to Action */}
           <div className={`marvel-hero-narrative-col phase-${introPhase}`}>
-            {/* Marvel Comic Strip Header */}
+            {/* Comic Header Strip */}
             <div className="marvel-comic-badge-strip">
               <span className="marvel-logo-badge">
-                HACKFEST COMICS
+                HACKFEST
               </span>
               <HoloBadge variant="red" icon={Shield}>
-                MULTIVERSE PROTOCOL // ISSUE #03
+                EDITION 3.0 // ANNUAL HACKATHON
               </HoloBadge>
               <span className="marvel-hero-inst">REC BANDA • SDC</span>
             </div>
 
-            {/* Epic Main Display Headline */}
+            {/* Main Headline */}
             <div className="marvel-title-wrap">
               <h1 className="heading-display marvel-main-title">
                 <span className="marvel-title-word">HACKFEST</span>
                 <span className="marvel-title-number">3.0</span>
               </h1>
               <div className="marvel-impact-burst-tag">
-                THE NEXT GENERATION HEROES
+                THE NEXT GENERATION OF BUILDERS
               </div>
             </div>
 
             {/* Subheading Narrative */}
             <p className="marvel-hero-desc">
-              When critical global infrastructure faces multiversal collapse, earth's mightiest student builders assemble.
-              Swing into high-velocity algorithms in <strong>Codeathon</strong>, innovate in the <strong>Ideathon Lab</strong>,
-              and fight on the frontlines of the <strong>Flagship 48-Hour Battlefield</strong>.
+              Join hundreds of student innovators, developers, and designers from across India.
+              Compete in high-speed algorithms in <strong>Codeathon</strong>, present visionary ideas in the <strong>Ideathon</strong>,
+              and build groundbreaking software in the <strong>Flagship 48-Hour Hackathon</strong>.
             </p>
 
-            {/* Hero Command Actions */}
+            {/* Action Buttons */}
             <div className="marvel-hero-actions">
               <Link
                 to="/register"
@@ -82,7 +92,7 @@ export default function HeroSection() {
                 id="hero-register-btn"
               >
                 <Zap size={20} />
-                <span>ASSEMBLE NOW // ENTER MISSION</span>
+                <span>REGISTER NOW</span>
                 <ArrowUpRight size={20} />
               </Link>
 
@@ -93,7 +103,7 @@ export default function HeroSection() {
                 id="hero-explore-btn"
               >
                 <Compass size={18} />
-                <span>EXPLORE UNIVERSE</span>
+                <span>EXPLORE EVENT</span>
               </button>
 
               <button
@@ -109,41 +119,41 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right Column: 3D Marvel Cinematic Superhero Battlefield */}
+          {/* Right Column: 3D Marvel Cinematic Superhero Showcase */}
           <div className="marvel-hero-3d-col">
             <div className="marvel-cinematic-viewport">
-              {/* Superhero HUD Status Banner */}
+              {/* Status Banner */}
               <div className="marvel-viewport-tag">
                 <span className="marvel-tag-pulse" />
-                <span>MULTIVERSE ARENA // SPIDER-MAN • IRON MAN • PORTAL 3.0</span>
+                <span>CINEMATIC SHOWCASE // INTERACTIVE 3D EXPERIENCE</span>
               </div>
 
               {/* Live 3D Scene */}
               <MarvelCinematicHero3D key={replayKey} />
 
-              {/* Quick Hero Interaction Hint */}
+              {/* Interaction Hint */}
               <div className="marvel-viewport-footer">
                 <span className="marvel-hint-pill">
                   <Sparkles size={13} color="#f5b642" />
-                  DRAG CURSOR TO CONTROL MULTIVERSE CAMERA
+                  DRAG TO ROTATE 3D CAMERA
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Hero Stats: Aligned to the full container width */}
+        {/* Bottom Key Stats */}
         <div className="marvel-roster-strip">
           <div className="marvel-roster-item">
-            <span className="marvel-roster-lbl">ACTIVE BATTLEGROUND</span>
-            <span className="marvel-roster-val">{eventMeta.venueShort}</span>
+            <span className="marvel-roster-lbl">VENUE</span>
+            <span className="marvel-roster-val">{meta.venueShort}</span>
           </div>
           <div className="marvel-roster-item">
-            <span className="marvel-roster-lbl">HERO ROSTER</span>
+            <span className="marvel-roster-lbl">PARTICIPANTS</span>
             <span className="marvel-roster-val">500+ PAN-INDIA</span>
           </div>
           <div className="marvel-roster-item">
-            <span className="marvel-roster-lbl">BATTLE DURATION</span>
+            <span className="marvel-roster-lbl">EVENT DURATION</span>
             <span className="marvel-roster-val">48 CONTINUOUS HOURS</span>
           </div>
         </div>

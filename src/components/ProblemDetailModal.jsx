@@ -83,24 +83,83 @@ export default function ProblemDetailModal({ problem, onClose }) {
           </div>
 
           {/* Expected Outcome */}
-          <div>
-            <h4 style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', letterSpacing: '0.12em', color: 'var(--color-soft-gray)', marginBottom: '0.4rem', textTransform: 'uppercase' }}>
-              EXPECTED OUTCOME
-            </h4>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.93rem', lineHeight: '1.6' }}>
-              {problem.expectedOutcome}
-            </p>
-          </div>
+          {problem.expectedOutcome && (
+            <div>
+              <h4 style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', letterSpacing: '0.12em', color: 'var(--color-soft-gray)', marginBottom: '0.4rem', textTransform: 'uppercase' }}>
+                EXPECTED OUTCOME
+              </h4>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.93rem', lineHeight: '1.6' }}>
+                {problem.expectedOutcome}
+              </p>
+            </div>
+          )}
+
+          {/* Constraints & Scope */}
+          {problem.constraints && (
+            <div>
+              <h4 style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', letterSpacing: '0.12em', color: 'var(--color-soft-gray)', marginBottom: '0.4rem', textTransform: 'uppercase' }}>
+                CONSTRAINTS & EVALUATION BOUNDARIES
+              </h4>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.93rem', lineHeight: '1.6' }}>
+                {problem.constraints}
+              </p>
+            </div>
+          )}
+
+          {/* Examples / Synthetic Datasets */}
+          {problem.examples && (
+            <div>
+              <h4 style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', letterSpacing: '0.12em', color: 'var(--color-soft-gray)', marginBottom: '0.4rem', textTransform: 'uppercase' }}>
+                EXEMPLAR SCENARIOS & SAMPLE CONTRACTS
+              </h4>
+              <div style={{ background: '#111827', padding: '0.85rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-medium)', fontFamily: 'var(--font-mono)', fontSize: '0.84rem', color: 'var(--color-warm-off-white)', whiteSpace: 'pre-wrap' }}>
+                {problem.examples}
+              </div>
+            </div>
+          )}
+
+          {/* Input / Output Specifications */}
+          {problem.inputOutputSpecs && (
+            <div>
+              <h4 style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', letterSpacing: '0.12em', color: 'var(--color-soft-gray)', marginBottom: '0.4rem', textTransform: 'uppercase' }}>
+                INPUT / OUTPUT SPECIFICATIONS
+              </h4>
+              <div style={{ background: '#111827', padding: '0.85rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-medium)', fontFamily: 'var(--font-mono)', fontSize: '0.84rem', color: 'var(--color-arc-blue)', whiteSpace: 'pre-wrap' }}>
+                {problem.inputOutputSpecs}
+              </div>
+            </div>
+          )}
 
           {/* Suggested Direction */}
-          <div>
-            <h4 style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', letterSpacing: '0.12em', color: 'var(--color-soft-gray)', marginBottom: '0.4rem', textTransform: 'uppercase' }}>
-              SUGGESTED TECHNICAL DIRECTION
-            </h4>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.93rem', lineHeight: '1.6' }}>
-              {problem.suggestedDirection}
-            </p>
-          </div>
+          {problem.suggestedDirection && (
+            <div>
+              <h4 style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', letterSpacing: '0.12em', color: 'var(--color-soft-gray)', marginBottom: '0.4rem', textTransform: 'uppercase' }}>
+                SUGGESTED TECHNICAL DIRECTION
+              </h4>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.93rem', lineHeight: '1.6' }}>
+                {problem.suggestedDirection}
+              </p>
+            </div>
+          )}
+
+          {/* Reference File / Attachment */}
+          {problem.referenceFileUrl && (
+            <div style={{ background: 'rgba(0, 191, 255, 0.08)', border: '1px solid rgba(0, 191, 255, 0.3)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.6rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--color-arc-blue)', fontSize: '0.88rem' }}>
+                <FileText size={18} />
+                <span>Reference Specification / Dataset Attachment</span>
+              </div>
+              <a
+                href={problem.referenceFileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary"
+                style={{ padding: '0.4rem 0.8rem', fontSize: '0.78rem' }}
+              >
+                OPEN ATTACHMENT
+              </a>
+            </div>
+          )}
 
           {/* Submission Info */}
           <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>

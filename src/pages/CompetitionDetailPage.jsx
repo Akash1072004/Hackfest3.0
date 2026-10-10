@@ -2,12 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowUpRight, ArrowLeft, Clock, Award, Users, ShieldAlert, CheckCircle2, ChevronDown, Calendar, FileText, Scale } from 'lucide-react';
 import { competitions, eventMeta } from '../data/eventData';
+import { eventService } from '../services/eventService';
 
 export default function CompetitionDetailPage({ competitionId }) {
   const params = useParams();
   const targetId = competitionId || params.id;
-  const comp = competitions.find((c) => c.id === targetId) || competitions[0];
+  const [compList, setCompList] = useState(competitions);
+  const [meta, setMeta] = useState(eventMeta);
   const [openFaq, setOpenFaq] = useState(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    eventService.getCompetitions().then((res) => {
+      if (isMounted && res?.length) setCompList(res);
+    });
+    eventService.getSettings().then((res) => {
+      if (isMounted && res) setMeta(res);
+    });
+    return () => { isMounted = false; };
+  }, []);
+
+  const comp = compList.find((c) => c.id === targetId || c.slug === targetId) || compList[0] || competitions[0];
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -38,7 +53,7 @@ export default function CompetitionDetailPage({ competitionId }) {
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-warm-amber)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', marginBottom: '1.25rem' }}
           >
             <ArrowLeft size={16} />
-            BACK TO ALL ARENAS
+            BACK TO ALL COMPETITIONS
           </Link>
 
           <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center', marginBottom: '0.8rem' }}>
@@ -64,7 +79,7 @@ export default function CompetitionDetailPage({ competitionId }) {
               <ArrowUpRight size={18} />
             </Link>
             <a href="#rules" className="btn btn-secondary">
-              REVIEW ARENA RULES
+              REVIEW EVENT RULES
             </a>
           </div>
         </div>
@@ -73,10 +88,10 @@ export default function CompetitionDetailPage({ competitionId }) {
       {/* 2. OVERVIEW & FORMAT */}
       <section className="section" style={{ padding: '4rem 0' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem', alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '3rem', alignItems: 'start' }}>
             <div>
               <span className="chapter-badge">SPECIFICATION</span>
-              <h2 className="heading-section" style={{ fontSize: '2rem' }}>ARENA OVERVIEW</h2>
+              <h2 className="heading-section" style={{ fontSize: '2rem' }}>COMPETITION OVERVIEW</h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: '1.8', marginBottom: '1.5rem' }}>
                 {comp.fullOverview}
               </p>
@@ -84,7 +99,7 @@ export default function CompetitionDetailPage({ competitionId }) {
 
             <div style={{ background: 'rgba(37, 42, 49, 0.7)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '2rem' }}>
               <h3 className="heading-display" style={{ fontSize: '1.3rem', marginBottom: '1.2rem' }}>
-                ARENA FORMAT & LOGISTICS
+                EVENT FORMAT & LOGISTICS
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
                 <div>
@@ -101,7 +116,7 @@ export default function CompetitionDetailPage({ competitionId }) {
                 </div>
                 <div>
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-warm-amber)' }}>VENUE LOCATION</span>
-                  <div style={{ fontWeight: 700, color: 'var(--color-warm-off-white)' }}>{eventMeta.venueShort}</div>
+                  <div style={{ fontWeight: 700, color: 'var(--color-warm-off-white)' }}>{meta.venueShort}</div>
                 </div>
               </div>
             </div>
@@ -203,7 +218,7 @@ export default function CompetitionDetailPage({ competitionId }) {
         <div className="container" style={{ maxWidth: '860px' }}>
           <div className="section-header center">
             <span className="chapter-badge">INQUIRIES</span>
-            <h2 className="heading-section" style={{ fontSize: '2rem' }}>ARENA FAQ</h2>
+            <h2 className="heading-section" style={{ fontSize: '2rem' }}>EVENT FAQ</h2>
           </div>
 
           <div className="accordion-group">

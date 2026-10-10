@@ -1913,7 +1913,7 @@
   position: relative;
   z-index: 10;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(min(100%, 360px), 0.85fr);
   gap: clamp(1.5rem, 3vw, 3.5rem);
   align-items: center;
   width: 100%;
@@ -2534,7 +2534,7 @@
 @media (max-width: 1439px) and (min-width: 1200px) {
   .marvel-hero-grid,
   .marvel-hero-layout {
-    grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+    grid-template-columns: minmax(0, 1.15fr) minmax(min(100%, 360px), 0.85fr);
     gap: 2.8rem;
   }
   .marvel-cinematic-viewport {
@@ -2550,7 +2550,7 @@
 @media (max-width: 1199px) and (min-width: 992px) {
   .marvel-hero-grid,
   .marvel-hero-layout {
-    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    grid-template-columns: minmax(0, 1.1fr) minmax(min(100%, 320px), 0.9fr);
     gap: 2rem;
   }
   .marvel-cinematic-viewport {

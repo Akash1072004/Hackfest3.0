@@ -27,11 +27,11 @@ export default function MentorsJudgesSection() {
         {/* Header */}
         <div className="section-header center">
           <HoloBadge variant="gold" icon={Shield}>
-            HIGH COUNCIL // CHAPTER 08
+            EXPERTS & MENTORS
           </HoloBadge>
-          <h2 className="heading-section marvel-section-title">THE HIGH COUNCIL: JURY & MENTORS</h2>
+          <h2 className="heading-section marvel-section-title">JUDGES & MENTORS</h2>
           <p className="section-lead">
-            Guided and evaluated by distinguished academic leadership, senior systems architects, and veteran tech practitioners.
+            Guided and evaluated by distinguished academic leadership, senior industry architects, and experienced technology practitioners.
           </p>
         </div>
 
@@ -42,7 +42,7 @@ export default function MentorsJudgesSection() {
             onClick={() => setActiveTab('judges')}
           >
             <span className="stark-tab-indicator" />
-            EVALUATION JURY & PATRONS
+            JUDGES & PATRONS
           </button>
           <button
             className={`workflow-tab-btn stark-tab-btn ${activeTab === 'mentors' ? 'active stark-tab-active' : ''}`}
@@ -56,7 +56,7 @@ export default function MentorsJudgesSection() {
             onClick={() => setActiveTab('criteria')}
           >
             <span className="stark-tab-indicator" />
-            COUNCIL EVALUATION MATRIX
+            EVALUATION CRITERIA
           </button>
         </div>
 
@@ -66,8 +66,8 @@ export default function MentorsJudgesSection() {
               <SuperheroPanel
                 key={judge.id || idx}
                 variant="gold"
-                tag={`DOSSIER // JURY TIER 0${idx + 1}`}
-                issueNumber="COUNCIL"
+                tag={`JUDGE // PROFILE 0${idx + 1}`}
+                issueNumber="JUDGE"
                 className="mentor-card"
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1rem' }}>
@@ -102,8 +102,8 @@ export default function MentorsJudgesSection() {
               <SuperheroPanel
                 key={mentor.id || idx}
                 variant="blue"
-                tag={`DOSSIER // CADRE 0${idx + 1}`}
-                issueNumber="ARCHITECT"
+                tag={`MENTOR // PROFILE 0${idx + 1}`}
+                issueNumber="MENTOR"
                 className="mentor-card"
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1rem' }}>
@@ -133,7 +133,7 @@ export default function MentorsJudgesSection() {
         )}
 
         {activeTab === 'criteria' && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}>
             {/* Hackathon Criteria */}
             <SuperheroPanel variant="red" tag="HACKATHON 9-DIMENSION RUBRIC" issueNumber="SCORING">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem' }}>

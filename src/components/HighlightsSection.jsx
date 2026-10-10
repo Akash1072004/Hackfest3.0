@@ -20,21 +20,21 @@ export default function HighlightsSection() {
       <div className="container">
         <div className="section-header center">
           <HoloBadge variant="cyan" icon={Activity}>
-            MULTIVERSE METRICS // CHAPTER 03
+            EVENT HIGHLIGHTS
           </HoloBadge>
-          <h2 className="heading-section marvel-section-title">TACTICAL SCALE & HERO METRICS</h2>
+          <h2 className="heading-section marvel-section-title">EVENT SCALE & KEY NUMBERS</h2>
           <p className="section-lead">
-            Calibrated for deep immersive engineering, rigorous mentorship, and production-grade prototype deployment.
+            Designed for hands-on learning, expert mentorship, and production-ready project development.
           </p>
         </div>
 
-        {/* 4 Core Statistics in Comic Action Panels */}
+        {/* 4 Core Statistics */}
         <div className="stats-grid stark-stats-grid">
           {eventHighlights.map((stat, idx) => (
             <SuperheroPanel
               key={idx}
               variant={variants[idx % variants.length]}
-              tag={`HERO METRIC 0${idx + 1}`}
+              tag={`HIGHLIGHT 0${idx + 1}`}
               issueNumber="STAT"
               className="stark-stat-card"
             >

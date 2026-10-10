@@ -3,7 +3,9 @@ import { useAuth } from '../../context/AuthContext';
 import DashboardNav from '../../components/dashboard/DashboardNav';
 import { submissionService } from '../../services/submissionService';
 import { teamService } from '../../services/teamService';
-import { CheckCircle2, AlertCircle, Loader2, ExternalLink, Video, Lock } from 'lucide-react';
+import { eventService } from '../../services/eventService';
+import { isDeadlineExpired } from '../../utils/eventTime';
+import { CheckCircle2, AlertCircle, Loader2, ExternalLink, Video, Lock, FileText, Info } from 'lucide-react';
 import { problemCategories } from '../../data/eventData';
 
 const GithubIcon = ({ size = 18, color = 'var(--color-soft-gray)' }) => (
@@ -17,6 +19,7 @@ export default function DashboardSubmissionPage() {
   const { user, isConfigured } = useAuth();
   const [submissions, setSubmissions] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [eventSettings, setEventSettings] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Form fields
@@ -38,12 +41,14 @@ export default function DashboardSubmissionPage() {
   const loadData = async () => {
     if (!user) return;
     try {
-      const [subs, tms] = await Promise.all([
+      const [subs, tms, settings] = await Promise.all([
         submissionService.getUserSubmissions(user.id),
         teamService.getUserTeams(user.id),
+        eventService.getSettings(),
       ]);
       setSubmissions(subs);
       setTeams(tms);
+      if (settings) setEventSettings(settings);
 
       if (subs.length > 0) {
         const first = subs[0];
@@ -123,6 +128,12 @@ export default function DashboardSubmissionPage() {
 
   const currentSubmission = submissions.find((s) => s.id === submissionId);
   const isLocked = currentSubmission?.status === 'submitted' || currentSubmission?.status === 'evaluated';
+  const isSubmissionDeadlinePassed = Boolean(
+    eventSettings?.submissionDeadline && isDeadlineExpired(eventSettings.submissionDeadline)
+  );
+  const isSubmissionsClosed = Boolean(
+    eventSettings && (eventSettings.pptSubmissionsOpen === false || isSubmissionDeadlinePassed)
+  );
 
   return (
     <div style={{ paddingTop: 'calc(var(--nav-height) + 1.5rem)', paddingBottom: '6rem' }}>
@@ -138,6 +149,75 @@ export default function DashboardSubmissionPage() {
             Submit your source repository, deployed demo link, and architectural documentation before the deadline timer.
           </p>
         </div>
+
+        {/* Canonical Submission Settings & Directives Card */}
+        {eventSettings && (
+          <div style={{
+            background: 'rgba(28, 33, 40, 0.85)',
+            border: isSubmissionsClosed ? '1px solid var(--border-accent-crimson)' : '1px solid var(--border-accent-steel)',
+            borderRadius: 'var(--radius-md)',
+            padding: '1.25rem 1.5rem',
+            marginBottom: '1.5rem',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.35)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.8rem' }}>
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.78rem',
+                color: isSubmissionsClosed ? '#ffb4b7' : 'var(--color-arc-blue)',
+                letterSpacing: '0.08em',
+                fontWeight: 600,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem'
+              }}>
+                <FileText size={14} />
+                {isSubmissionsClosed ? 'STATUS: SUBMISSIONS CLOSED' : 'STATUS: SUBMISSIONS OPEN & ACTIVE'}
+              </span>
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.78rem',
+                color: 'var(--color-stark-gold)',
+                background: 'rgba(245, 182, 66, 0.1)',
+                padding: '0.25rem 0.6rem',
+                borderRadius: '4px',
+                border: '1px solid rgba(245, 182, 66, 0.25)'
+              }}>
+                DEADLINE: {eventSettings.submissionDeadline || 'OCTOBER 25, 2026, 12:00 PM'}
+              </span>
+            </div>
+
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: '1.55', margin: 0 }}>
+              {eventSettings.submissionInstructions || 'Submit your slide presentation (PDF or PPTX format, under 25MB) and provide your GitHub repository link.'}
+            </p>
+
+            <div style={{ marginTop: '0.75rem', fontSize: '0.76rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+              ACCEPTED FORMATS: {eventSettings.acceptedFileTypes || '.pdf,.pptx,.ppt'} • MAX SIZE: {eventSettings.maxFileSizeMb || 25}MB
+            </div>
+          </div>
+        )}
+
+        {isSubmissionsClosed && (
+          <div style={{
+            background: 'rgba(143, 48, 53, 0.25)',
+            border: '1px solid var(--border-accent-crimson)',
+            borderRadius: 'var(--radius-sm)',
+            padding: '1rem 1.3rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.8rem',
+            color: '#ffb4b7',
+            marginBottom: '1.5rem'
+          }}>
+            <AlertCircle size={22} style={{ flexShrink: 0 }} />
+            <div>
+              <div style={{ fontWeight: 600, letterSpacing: '0.03em' }}>PPT & FINAL SUBMISSIONS CONCLUDED</div>
+              <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
+                New final project submissions and slide deck uploads are locked by event administration. Existing drafts and records are preserved.
+              </div>
+            </div>
+          </div>
+        )}
 
         {statusMsg.text && (
           <div style={{ background: statusMsg.type === 'error' ? 'rgba(143, 48, 53, 0.2)' : 'rgba(185, 133, 69, 0.15)', border: `1px solid ${statusMsg.type === 'error' ? 'var(--border-accent-crimson)' : 'var(--border-accent-amber)'}`, borderRadius: 'var(--radius-sm)', padding: '0.8rem 1rem', display: 'flex', alignItems: 'center', gap: '0.6rem', color: statusMsg.type === 'error' ? '#ffb4b7' : 'var(--color-warm-amber)', fontSize: '0.88rem', marginBottom: '1.5rem' }}>
@@ -177,7 +257,7 @@ export default function DashboardSubmissionPage() {
             {teams.length > 0 && (
               <div>
                 <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.35rem' }}>
-                  SUBMITTING ON BEHALF OF SQUAD
+                  SUBMITTING ON BEHALF OF TEAM
                 </label>
                 <select
                   value={teamId}
@@ -197,7 +277,7 @@ export default function DashboardSubmissionPage() {
             {/* Problem Category */}
             <div>
               <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.35rem' }}>
-                HACKATHON CRISIS TRACK
+                HACKATHON PROBLEM TRACK
               </label>
               <select
                 value={problemCategoryId}
@@ -305,14 +385,24 @@ export default function DashboardSubmissionPage() {
 
               <div>
                 <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.35rem' }}>
-                  SLIDE DECK / DOCUMENT (PDF / DOC)
+                  SLIDE DECK / DOCUMENT ({eventSettings?.acceptedFileTypes || 'PDF / PPTX'})
                 </label>
                 <input
                   type="file"
-                  accept=".pdf,.doc,.docx,.ppt,.pptx"
+                  accept={eventSettings?.acceptedFileTypes || '.pdf,.ppt,.pptx,.doc,.docx'}
                   onChange={(e) => setDocFile(e.target.files?.[0] || null)}
-                  disabled={isLocked}
-                  style={{ width: '100%', padding: '0.65rem 1rem', background: '#111827', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--color-soft-gray)', fontSize: '0.85rem' }}
+                  disabled={isLocked || isSubmissionsClosed}
+                  style={{
+                    width: '100%',
+                    padding: '0.65rem 1rem',
+                    background: '#111827',
+                    border: '1px solid var(--border-medium)',
+                    borderRadius: 'var(--radius-sm)',
+                    color: 'var(--color-soft-gray)',
+                    fontSize: '0.85rem',
+                    opacity: isSubmissionsClosed ? 0.6 : 1,
+                    cursor: isSubmissionsClosed ? 'not-allowed' : 'pointer'
+                  }}
                 />
               </div>
             </div>
@@ -331,10 +421,20 @@ export default function DashboardSubmissionPage() {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  disabled={saving}
+                  disabled={saving || isSubmissionsClosed}
                   onClick={() => handleSave(true)}
+                  style={{
+                    opacity: isSubmissionsClosed ? 0.6 : 1,
+                    cursor: isSubmissionsClosed ? 'not-allowed' : 'pointer'
+                  }}
                 >
-                  {saving ? <Loader2 size={16} className="animate-spin" /> : 'TRANSMIT FINAL SUBMISSION'}
+                  {isSubmissionsClosed ? (
+                    'SUBMISSIONS CONCLUDED'
+                  ) : saving ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    'TRANSMIT FINAL SUBMISSION'
+                  )}
                 </button>
               </div>
             )}

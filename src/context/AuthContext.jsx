@@ -27,6 +27,21 @@ export function AuthProvider({ children }) {
       }
 
       if (data) {
+        // Check if app_admins table has elevated privileges for this user
+        try {
+          const { data: adminRow } = await supabase
+            .from('app_admins')
+            .select('role, is_super_admin')
+            .eq('user_id', userId)
+            .maybeSingle();
+          if (adminRow) {
+            data.is_super_admin = adminRow.is_super_admin || adminRow.role === 'super_admin';
+            if (data.is_super_admin) data.role = 'super_admin';
+            else if (adminRow.role === 'admin' && data.role !== 'super_admin') data.role = 'admin';
+          }
+        } catch {
+          // Ignore if table does not exist yet
+        }
         setProfile(data);
         return data;
       }
@@ -205,8 +220,9 @@ export function AuthProvider({ children }) {
     return Promise.resolve(null);
   };
 
-  const role = profile?.role || 'participant';
-  const isAdmin = role === 'admin' || role === 'organizer';
+  const isSuperAdmin = Boolean(profile?.is_super_admin === true || profile?.role === 'super_admin');
+  const role = isSuperAdmin ? 'super_admin' : (profile?.role || 'participant');
+  const isAdmin = role === 'admin' || role === 'organizer' || isSuperAdmin;
   const isJudge = role === 'judge' || isAdmin;
   const isMentor = role === 'mentor' || isAdmin;
 
@@ -215,6 +231,7 @@ export function AuthProvider({ children }) {
     profile,
     role,
     isAdmin,
+    isSuperAdmin,
     isJudge,
     isMentor,
     loading,

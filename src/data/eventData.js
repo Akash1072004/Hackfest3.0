@@ -38,7 +38,7 @@ export const eventMeta = {
 export const eventHighlights = [
   {
     number: "03",
-    label: "COMPETITIVE ARENAS",
+    label: "COMPETITIONS",
     description: "Codeathon, Ideathon, and the Flagship Hackathon challenging every tier of technical ability."
   },
   {
@@ -81,7 +81,7 @@ export const competitions = [
   {
     id: "codeathon",
     title: "CODEATHON",
-    badge: "ARENA 01",
+    badge: "EVENT 01",
     tagline: "THINK FAST. CODE SMART.",
     duration: "1.5 HOURS",
     format: "COMPETITIVE CODING",
@@ -92,7 +92,7 @@ export const competitions = [
     accentColor: "#3C536B",
     bgImage: "/images/codeathon-matrix.jpg",
     cta: "EXPLORE CODEATHON",
-    shortDescription: "A high-stakes 90-minute algorithmic arena. Test data structures, algorithmic efficiency, and problem-solving velocity against the ticking clock.",
+    shortDescription: "A high-stakes 90-minute algorithmic competition. Test data structures, algorithmic efficiency, and problem-solving velocity against the ticking clock.",
     fullOverview: "The Codeathon is HackFest 3.0's speed and computational trial. Held inside a controlled environment, coders are presented with a calibrated problem set ranging from foundational algorithmic puzzles to complex dynamic programming and graph challenges. Speed, precision, and edge-case handling dictate the leaderboard.",
     rules: [
       "Individual participation only. No team collaboration is permitted.",
@@ -126,7 +126,7 @@ export const competitions = [
   {
     id: "ideathon",
     title: "IDEATHON",
-    badge: "ARENA 02",
+    badge: "EVENT 02",
     tagline: "ONE IDEA. ONE PITCH.",
     duration: "SINGLE PITCHING ROUND",
     format: "PITCH & DEFENSE",
@@ -170,7 +170,7 @@ export const competitions = [
   {
     id: "hackathon",
     title: "HACKATHON",
-    badge: "MAIN EVENT • FLAGSHIP ARENA",
+    badge: "MAIN EVENT • FLAGSHIP HACKATHON",
     tagline: "BUILD WHAT COMES NEXT.",
     duration: "2-DAY IMMERSIVE BUILD",
     format: "6 PROBLEM CATEGORIES • TEAM DEVELOPMENT",
@@ -372,7 +372,7 @@ export const scheduleData = {
         location: "Computing Centers & Designated Labs",
         speaker: "Codeathon Lead Coordinators",
         description: "90 minutes of intensive algorithmic problem solving. Participants race to solve calibrated challenges on the competitive programming portal.",
-        badge: "ARENA 01",
+        badge: "EVENT 01",
         highlight: true
       },
       {
@@ -389,7 +389,7 @@ export const scheduleData = {
         location: "Multipurpose Hall & Seminar Halls",
         speaker: "Ideathon Jury Panel",
         description: "Single high-impact pitching round. Registered idea teams present original problem-solving frameworks followed by direct Q&A defense before the panel.",
-        badge: "ARENA 02",
+        badge: "EVENT 02",
         highlight: true
       },
       {
@@ -410,7 +410,7 @@ export const scheduleData = {
         order: "09",
         time: "[TO BE DECIDED]",
         title: "RESULT PREPARATION",
-        location: "SDC Command Center",
+        location: "SDC Organizing Desk",
         description: "Tabulation, integrity verification, and secure recording of Day 1 Codeathon rankings and Ideathon jury scores."
       }
     ]
@@ -426,8 +426,8 @@ export const scheduleData = {
         time: "[TO BE DECIDED]",
         title: "MAIN HACKATHON COMMENCEMENT",
         location: "Multipurpose Hall",
-        description: "The main arena doors open. Teams assemble with hardware and workstations for the premier multi-hour build sprint.",
-        badge: "ARENA 03",
+        description: "The main hackathon hall opens. Teams assemble with hardware and workstations for the premier multi-hour build sprint.",
+        badge: "EVENT 03",
         highlight: true
       },
       {
@@ -564,7 +564,7 @@ export const howItWorks = {
 export const prizesData = {
   sectionTitle: "THE FINAL VERDICT",
   subtitle: "HONORING ARCHITECTS WHO REBUILD WHAT COMES NEXT",
-  note: "Trophies, medals, certificates of excellence, and specialized developer gift hampers awarded across all three arenas.",
+  note: "Trophies, medals, certificates of excellence, and specialized developer gift hampers awarded across all three competitions.",
   arenas: [
     {
       arenaId: "hackathon",

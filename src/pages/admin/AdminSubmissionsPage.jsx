@@ -44,7 +44,7 @@ export default function AdminSubmissionsPage() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.5rem' }}>
           {submissions.length === 0 ? (
             <div style={{ gridColumn: '1 / -1', background: 'rgba(37, 42, 49, 0.6)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '3rem 1.5rem', textAlign: 'center', color: 'var(--text-muted)' }}>
               No project submissions recorded yet.
@@ -61,7 +61,7 @@ export default function AdminSubmissionsPage() {
                   {sub.title}
                 </h3>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.8rem' }}>
-                  SQUAD: {sub.team?.name || 'Individual'} • TRACK: {sub.problem_category?.theme || 'General'}
+                  TEAM: {sub.team?.name || 'Individual'} • TRACK: {sub.problem_category?.theme || 'General'}
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.8rem' }}>

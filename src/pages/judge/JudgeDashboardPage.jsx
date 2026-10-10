@@ -50,11 +50,11 @@ export default function JudgeDashboardPage() {
               NO SUBMISSIONS QUEUED FOR EVALUATION
             </h3>
             <p style={{ color: 'var(--text-secondary)', maxWidth: '480px', margin: '0 auto', lineHeight: '1.6' }}>
-              Projects transmitted by participant squads on Day 2 will populate this dashboard in real-time.
+              Projects submitted by participant teams on Day 2 will appear here in real-time.
             </p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.5rem' }}>
             {submissions.map((sub) => {
               const isEvaluated = sub.status === 'evaluated';
               return (
@@ -73,7 +73,7 @@ export default function JudgeDashboardPage() {
                       {sub.title}
                     </h3>
                     <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--color-warm-amber)', marginBottom: '0.8rem' }}>
-                      SQUAD: {sub.team?.name || 'Individual'} • TRACK: {sub.problem_category?.theme || 'General Track'}
+                      TEAM: {sub.team?.name || 'Individual'} • TRACK: {sub.problem_category?.theme || 'General Track'}
                     </div>
 
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: '1.5', marginBottom: '1.2rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>

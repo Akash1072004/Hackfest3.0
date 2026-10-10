@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { registrationService } from '../services/registrationService';
 import { teamService } from '../services/teamService';
 import { eventService } from '../services/eventService';
+import { isDeadlineExpired } from '../utils/eventTime';
 import { competitions, problemCategories } from '../data/eventData';
 
 export default function RegisterPage() {
@@ -27,6 +28,7 @@ export default function RegisterPage() {
 
   const [availableCompetitions, setAvailableCompetitions] = useState(competitions);
   const [availableCategories, setAvailableCategories] = useState(problemCategories);
+  const [eventSettings, setEventSettings] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -50,8 +52,11 @@ export default function RegisterPage() {
     }
   }, [user, profile]);
 
-  // Load competitions and categories from DB if available
+  // Load event settings, competitions and categories from DB if available
   useEffect(() => {
+    eventService.getSettings().then((st) => {
+      if (st) setEventSettings(st);
+    });
     eventService.getCompetitions().then((res) => {
       if (res?.length > 0) setAvailableCompetitions(res);
     });
@@ -70,10 +75,21 @@ export default function RegisterPage() {
 
   const selectedComp = availableCompetitions.find((c) => c.id === formData.arena) || availableCompetitions[0];
   const requiresTeam = formData.arena === 'hackathon' || formData.arena === 'ideathon';
+  const isDeadlinePassed = Boolean(
+    eventSettings?.registrationDeadline && isDeadlineExpired(eventSettings.registrationDeadline)
+  );
+  const isRegistrationClosed = Boolean(
+    eventSettings && (eventSettings.registrationOpen === false || eventSettings.registrationStatus === 'CLOSED' || isDeadlinePassed)
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (isRegistrationClosed) {
+      setError('Event registration has closed. New submissions are no longer accepted.');
+      return;
+    }
 
     if (!formData.agreeRules) {
       setError('Please review and agree to the event guidelines.');
@@ -148,16 +164,16 @@ export default function RegisterPage() {
           style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-warm-amber)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', marginBottom: '1.5rem' }}
         >
           <ArrowLeft size={16} />
-          RETURN TO HOME
+          BACK TO HOME
         </Link>
 
-        <span className="chapter-badge">REGISTRATION SECTOR</span>
+        <span className="chapter-badge">EVENT REGISTRATION</span>
         <h1 className="heading-display" style={{ fontSize: 'clamp(2.4rem, 5vw, 3.8rem)', marginBottom: '0.8rem' }}>
           JOIN HACKFEST 3.0
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '2.5rem' }}>
-          Secure your participation at <strong>Rajkiya Engineering College Banda</strong>.
-          There are zero registration fees. All registered participants receive access passes, meals during event hours, and verified participation certificates.
+          Register for the event at <strong>Rajkiya Engineering College Banda</strong>.
+          There are zero registration fees. All registered participants receive event badges, meals during hackathon hours, and verified participation certificates.
         </p>
 
         {submitted ? (
@@ -169,23 +185,46 @@ export default function RegisterPage() {
               REGISTRATION RECEIVED
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '1.02rem', maxWidth: '540px', margin: '0 auto 1.5rem auto', lineHeight: '1.6' }}>
-              Welcome to the ranks, <strong>{formData.fullName || 'Builder'}</strong>. A confirmation beacon and instructions have been verified for <strong>{formData.email}</strong>.
+              Welcome, <strong>{formData.fullName || 'Participant'}</strong>! A confirmation email and event details have been sent to <strong>{formData.email}</strong>.
             </p>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--color-warm-amber)', marginBottom: '2rem' }}>
-              ARENA: {formData.arena.toUpperCase()} • TEAM: {formData.teamName || (formData.teamCode ? `CODE: ${formData.teamCode}` : 'INDIVIDUAL')}
+              EVENT: {formData.arena.toUpperCase()} • TEAM: {formData.teamName || (formData.teamCode ? `CODE: ${formData.teamCode}` : 'INDIVIDUAL')}
             </div>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link to="/dashboard" className="btn btn-primary">
-                VIEW BUILDER DASHBOARD
+                GO TO DASHBOARD
                 <ArrowUpRight size={18} />
               </Link>
               <Link to="/" className="btn btn-secondary">
-                EXPLORE ARENA DETAILS
+                EXPLORE EVENT DETAILS
               </Link>
             </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: 'clamp(1.8rem, 3.5vw, 2.8rem)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {isRegistrationClosed && (
+              <div style={{
+                background: 'rgba(143, 48, 53, 0.25)',
+                border: '1px solid var(--border-accent-crimson)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '1.2rem 1.4rem',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '0.85rem',
+                color: '#ffb4b7'
+              }}>
+                <AlertCircle size={22} style={{ flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', letterSpacing: '0.04em', color: '#ffb4b7', marginBottom: '0.25rem' }}>
+                    REGISTRATION CLOSED // PORTALS SEALED
+                  </div>
+                  <div style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                    Event registration for HackFest 3.0 is currently closed by event administration. New submissions cannot be processed at this time. For queries, contact <strong>{eventSettings?.contactEmail || 'sdc@recbanda.ac.in'}</strong>.
+                  </div>
+                </div>
+              </div>
+            )}
+
             {error && (
               <div style={{ background: 'rgba(143, 48, 53, 0.2)', border: '1px solid var(--border-accent-crimson)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1rem', display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#ffb4b7', fontSize: '0.88rem' }}>
                 <AlertCircle size={18} style={{ flexShrink: 0 }} />
@@ -196,7 +235,7 @@ export default function RegisterPage() {
             {!user && isConfigured && (
               <div style={{ background: 'rgba(60, 83, 107, 0.25)', border: '1px solid var(--border-accent-steel)', borderRadius: 'var(--radius-sm)', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.8rem' }}>
                 <div>
-                  <div style={{ fontWeight: 600, color: 'var(--color-warm-off-white)' }}>Have a Builder Account?</div>
+                  <div style={{ fontWeight: 600, color: 'var(--color-warm-off-white)' }}>Already have an account?</div>
                   <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>Sign in to auto-link your profile and track registrations.</div>
                 </div>
                 <Link to="/login" className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.82rem' }}>
@@ -205,10 +244,10 @@ export default function RegisterPage() {
               </div>
             )}
 
-            {/* Arena Selection */}
+            {/* Competition Selection */}
             <div>
               <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--color-warm-amber)', letterSpacing: '0.1em', marginBottom: '0.5rem', textTransform: 'uppercase' }}>
-                SELECT COMPETITIVE ARENA *
+                SELECT COMPETITION *
               </label>
               <select
                 name="arena"
@@ -334,7 +373,7 @@ export default function RegisterPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="builder@institution.ac.in"
+                  placeholder="student@institution.ac.in"
                   required
                   style={{ width: '100%', padding: '0.8rem 1rem', background: '#111827', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--color-warm-off-white)', fontSize: '0.92rem' }}
                 />
@@ -393,10 +432,21 @@ export default function RegisterPage() {
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={loading}
-              style={{ width: '100%', marginTop: '1rem', justifyContent: 'center' }}
+              disabled={loading || isRegistrationClosed}
+              style={{
+                width: '100%',
+                marginTop: '1rem',
+                justifyContent: 'center',
+                opacity: isRegistrationClosed ? 0.6 : 1,
+                cursor: isRegistrationClosed ? 'not-allowed' : 'pointer'
+              }}
             >
-              {loading ? (
+              {isRegistrationClosed ? (
+                <>
+                  <AlertCircle size={18} />
+                  REGISTRATIONS CLOSED
+                </>
+              ) : loading ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
                   STORING REGISTRATION BEACON...

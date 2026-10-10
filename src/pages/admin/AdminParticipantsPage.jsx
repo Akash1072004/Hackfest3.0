@@ -32,9 +32,9 @@ export default function AdminParticipantsPage() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
           <div>
-            <span className="chapter-badge">ROSTER AUDIT</span>
+            <span className="chapter-badge">PARTICIPANTS</span>
             <h2 className="heading-display" style={{ fontSize: '1.8rem', marginBottom: '0.2rem' }}>
-              ALL REGISTERED BUILDERS ({participants.length})
+              ALL REGISTERED PARTICIPANTS ({participants.length})
             </h2>
           </div>
 
@@ -54,11 +54,11 @@ export default function AdminParticipantsPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
             <thead>
               <tr style={{ background: '#111827', borderBottom: '1px solid var(--border-subtle)', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--color-warm-amber)' }}>
-                <th style={{ padding: '1rem' }}>OPERATOR / NAME</th>
+                <th style={{ padding: '1rem' }}>NAME</th>
                 <th style={{ padding: '1rem' }}>EMAIL</th>
                 <th style={{ padding: '1rem' }}>COLLEGE / INSTITUTION</th>
-                <th style={{ padding: '1rem' }}>CLEARANCE ROLE</th>
-                <th style={{ padding: '1rem' }}>ENLISTMENTS</th>
+                <th style={{ padding: '1rem' }}>ROLE</th>
+                <th style={{ padding: '1rem' }}>REGISTRATIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -86,7 +86,7 @@ export default function AdminParticipantsPage() {
                       </span>
                     </td>
                     <td style={{ padding: '1rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-warm-amber)' }}>
-                      {p.registrations?.length || 0} arena(s)
+                      {p.registrations?.length || 0} event(s)
                     </td>
                   </tr>
                 ))

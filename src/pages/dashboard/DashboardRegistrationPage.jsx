@@ -26,18 +26,18 @@ export default function DashboardRegistrationPage() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
           <div>
-            <span className="chapter-badge">ARENA REGISTRATION</span>
+            <span className="chapter-badge">EVENT REGISTRATION</span>
             <h2 className="heading-display" style={{ fontSize: '1.8rem', marginBottom: '0.2rem' }}>
-              ARENA ENLISTMENTS
+              MY REGISTRATIONS
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
-              Confirmed badges and participation passes for HackFest 3.0.
+              Confirmed participation passes for HackFest 3.0.
             </p>
           </div>
 
           <Link to="/register" className="btn btn-primary" style={{ padding: '0.6rem 1.1rem', fontSize: '0.82rem' }}>
             <Plus size={16} />
-            REGISTER ANOTHER ARENA
+            REGISTER FOR AN EVENT
           </Link>
         </div>
 
@@ -47,13 +47,13 @@ export default function DashboardRegistrationPage() {
             <div style={{ background: 'rgba(37, 42, 49, 0.6)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '3rem 1.5rem', textAlign: 'center' }}>
               <Trophy size={48} color="var(--color-warm-amber)" style={{ margin: '0 auto 1.2rem auto' }} />
               <h3 className="heading-display" style={{ fontSize: '1.4rem', marginBottom: '0.6rem' }}>
-                NO ARENAS REGISTERED YET
+                NO EVENTS REGISTERED YET
               </h3>
               <p style={{ color: 'var(--text-secondary)', maxWidth: '480px', margin: '0 auto 1.5rem auto', lineHeight: '1.6' }}>
-                Join Codeathon (Day 1), Ideathon (Day 1), or the flagship 2-Day Hackathon.
+                Join Codeathon (Day 1), Ideathon (Day 1), or the flagship 48-Hour Hackathon.
               </p>
               <Link to="/register" className="btn btn-primary">
-                ENLIST IN AN ARENA
+                REGISTER FOR AN EVENT
               </Link>
             </div>
           ) : (

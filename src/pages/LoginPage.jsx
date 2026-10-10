@@ -40,25 +40,25 @@ export default function LoginPage() {
           style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-arc-blue)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', letterSpacing: '0.08em', marginBottom: '1.5rem' }}
         >
           <ArrowLeft size={16} />
-          RETURN TO HOME BASE
+          BACK TO HOME
         </Link>
 
-        <HudPanel variant="cyan" tag="ACCESS PORTAL // SEC-LVL 4" scan={true}>
+        <HudPanel variant="cyan" tag="LOGIN // PORTAL" scan={true}>
           <div style={{ marginBottom: '1.8rem' }}>
             <HoloBadge variant="cyan" icon={ShieldCheck} style={{ marginBottom: '0.8rem' }}>
-              ACCESS COMMAND CENTER
+              ACCOUNT LOGIN
             </HoloBadge>
             <h1 className="heading-display" style={{ fontSize: '2.2rem', marginBottom: '0.4rem', color: '#FFFFFF', letterSpacing: '0.04em' }}>
-              AUTHENTICATION REQUIRED
+              WELCOME BACK
             </h1>
             <p style={{ color: '#94A3B8', fontSize: '0.92rem', lineHeight: '1.6' }}>
-              Verify identity to access your tactical dashboard, team assets, and mission submissions for {eventMeta.name}.
+              Sign in to access your dashboard, team details, and competition submissions for {eventMeta.name}.
             </p>
           </div>
 
           {!isConfigured && (
             <div style={{ background: 'rgba(245, 182, 66, 0.1)', border: '1px solid var(--color-stark-gold)', borderRadius: '4px', padding: '0.9rem 1rem', marginBottom: '1.5rem', fontSize: '0.82rem', color: '#F5F7FA', lineHeight: '1.5', fontFamily: 'var(--font-mono)' }}>
-              <strong>Notice:</strong> Supabase environment configuration pending. Public simulation interfaces remain active.
+              <strong>Notice:</strong> Supabase environment configuration pending.
             </div>
           )}
 
@@ -72,7 +72,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
               <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.4rem', letterSpacing: '0.08em' }}>
-                OPERATIVE EMAIL
+                EMAIL ADDRESS
               </label>
               <div style={{ position: 'relative' }}>
                 <Mail size={18} color="var(--color-arc-blue)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
@@ -80,7 +80,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="operative@institution.ac.in"
+                  placeholder="student@institution.ac.in"
                   required
                   style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(0, 191, 255, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.94rem' }}
                 />
@@ -88,12 +88,12 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+              <div style={{ display: 'flex', borderBottom: 'none', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
                 <label style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', letterSpacing: '0.08em' }}>
-                  SECURITY PASSPHRASE
+                  PASSWORD
                 </label>
                 <Link to="/forgot-password" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--color-stark-gold)' }}>
-                  RECOVER KEY?
+                  FORGOT PASSWORD?
                 </Link>
               </div>
               <div style={{ position: 'relative' }}>
@@ -118,12 +118,12 @@ export default function LoginPage() {
               {loading ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
-                  AUTHENTICATING OPERATIVE...
+                  SIGNING IN...
                 </>
               ) : (
                 <>
                   <Zap size={18} />
-                  AUTHORIZE & ENTER
+                  SIGN IN
                   <ArrowUpRight size={18} />
                 </>
               )}
@@ -131,9 +131,9 @@ export default function LoginPage() {
           </form>
 
           <div style={{ marginTop: '1.8rem', textAlign: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1.2rem', fontSize: '0.88rem', color: '#94A3B8' }}>
-            New operative?{' '}
+            Don't have an account?{' '}
             <Link to="/signup" style={{ color: 'var(--color-stark-gold)', fontWeight: 600 }}>
-              Create Operative Profile
+              Create an Account
             </Link>
           </div>
         </HudPanel>

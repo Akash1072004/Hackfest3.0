@@ -20,16 +20,16 @@ export default function AdminTeamsPage() {
         <AdminNav />
 
         <div style={{ marginBottom: '2rem' }}>
-          <span className="chapter-badge">SQUAD INVENTORY</span>
+          <span className="chapter-badge">TEAMS</span>
           <h2 className="heading-display" style={{ fontSize: '1.8rem', marginBottom: '0.2rem' }}>
-            ALL TACTICAL TEAMS ({teams.length})
+            ALL TEAMS ({teams.length})
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
-            Audit team rosters, leaders, invite codes, and arena assignments.
+            View team members, leaders, invite codes, and event assignments.
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.5rem' }}>
           {teams.map((tm) => (
             <div key={tm.id} style={{ background: 'rgba(37, 42, 49, 0.75)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>

@@ -21,16 +21,32 @@ export const eventService = {
         .maybeSingle();
 
       if (error || !data) return fallbackEventMeta;
+
+      const eventDateStr = data.event_date || (data.event_start ? new Date(data.event_start).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : fallbackEventMeta.dates);
+      const isRegOpen = data.registration_open !== undefined ? data.registration_open : (data.registration_status !== 'CLOSED');
+      const isPptOpen = data.ppt_submissions_open !== undefined ? Boolean(data.ppt_submissions_open) : true;
+
       return {
         ...fallbackEventMeta,
         name: data.event_name || fallbackEventMeta.name,
         tagline: data.tagline || fallbackEventMeta.tagline,
         venue: data.venue || fallbackEventMeta.venue,
-        registrationStatus: data.registration_status || fallbackEventMeta.registrationStatus,
+        venueShort: data.venue ? data.venue.split(',')[0].trim() : fallbackEventMeta.venueShort,
+        eventDate: eventDateStr,
+        dates: eventDateStr,
+        datesDisplay: eventDateStr,
+        registrationStatus: data.registration_status || (isRegOpen ? 'OPEN' : 'CLOSED'),
+        registrationOpen: isRegOpen,
+        registrationStartDate: data.registration_start_date || 'OCTOBER 10, 2026',
         registrationDeadline: data.registration_deadline || fallbackEventMeta.registrationDeadline,
         contactEmail: data.contact_email || fallbackEventMeta.contactEmail,
         liveModeStatus: data.live_mode_status || 'REGISTRATION OPEN',
-        leaderboardPublished: data.leaderboard_published || false,
+        leaderboardPublished: Boolean(data.leaderboard_published),
+        pptSubmissionsOpen: isPptOpen,
+        submissionDeadline: data.submission_deadline || 'OCTOBER 25, 2026, 12:00 PM',
+        submissionInstructions: data.submission_instructions || 'Submit your slide presentation (PDF or PPTX format, under 25MB) and provide your GitHub repository link.',
+        acceptedFileTypes: data.accepted_file_types || '.pdf,.pptx,.ppt',
+        maxFileSizeMb: data.max_file_size_mb || 25,
       };
     } catch {
       return fallbackEventMeta;
@@ -77,7 +93,7 @@ export const eventService = {
       const { data, error } = await supabase
         .from('problem_categories')
         .select('*')
-        .eq('is_active', true)
+        .or('is_active.eq.true,is_published.eq.true')
         .order('sort_order', { ascending: true });
 
       if (error || !data || data.length === 0) return fallbackProblemCategories;
@@ -89,15 +105,46 @@ export const eventService = {
         slug: d.slug,
         theme: d.theme,
         placeholderNotice: d.placeholder_notice || 'OFFICIAL PROBLEM STATEMENT TO BE UNVEILED AT BRIEFING',
-        background: d.background,
-        challenge: d.challenge,
+        background: d.background || d.description,
+        challenge: d.challenge || d.description,
         requirements: Array.isArray(d.requirements) ? d.requirements : [],
         expectedOutcome: d.expected_outcome,
         suggestedDirection: d.technical_directions,
         submissionInfo: d.submission_info,
+        isActive: d.is_active ?? d.is_published ?? true,
+        sortOrder: d.sort_order ?? index,
       }));
     } catch {
       return fallbackProblemCategories;
+    }
+  },
+
+  // Get problem statements (published statements linked to categories)
+  async getProblemStatements(categoryId = null) {
+    if (!isSupabaseConfigured) return [];
+    try {
+      let query = supabase
+        .from('problem_statements')
+        .select(`
+          *,
+          category:problem_categories(*)
+        `)
+        .eq('is_published', true)
+        .order('sort_order', { ascending: true });
+
+      if (categoryId) {
+        query = query.eq('category_id', categoryId);
+      }
+
+      const { data, error } = await query;
+      if (error) {
+        console.warn('Failed to fetch problem statements from DB:', error.message);
+        return [];
+      }
+      return data || [];
+    } catch (err) {
+      console.warn('Error fetching problem statements:', err);
+      return [];
     }
   },
 

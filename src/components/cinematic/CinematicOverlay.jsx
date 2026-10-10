@@ -33,7 +33,7 @@ export default function CinematicOverlay({ progress = 0, onSkip = () => {}, isMo
     phaseDetail = 'TACTICAL REPOSITION • STARFIELD PERIMETER';
   } else if (progress >= 0.80 && progress < 0.90) {
     phaseName = 'MULTIVERSE HEROES ASSEMBLED // ALL CHAMPIONS';
-    phaseDetail = 'FULL SQUAD FORMATION • STANDING READY';
+    phaseDetail = 'FULL TEAM FORMATION • STANDING READY';
   } else if (progress >= 0.90) {
     phaseName = 'HACKFEST 3.0 // DIMENSIONAL REVEAL';
     phaseDetail = 'THE NEXT GENERATION HEROES • REC BANDA';

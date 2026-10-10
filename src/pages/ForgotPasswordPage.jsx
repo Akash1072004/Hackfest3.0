@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
       await resetPassword(email);
       setSuccess(true);
     } catch (err) {
-      setError(err.message || 'Failed to dispatch reset beacon.');
+      setError(err.message || 'Failed to send password reset email.');
     } finally {
       setLoading(false);
     }
@@ -40,12 +40,12 @@ export default function ForgotPasswordPage() {
 
         <div style={{ background: 'rgba(37, 42, 49, 0.85)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-lg)', padding: 'clamp(2rem, 5vw, 2.8rem)', boxShadow: 'var(--shadow-card)' }}>
           <div style={{ marginBottom: '1.8rem' }}>
-            <span className="chapter-badge">CREDENTIAL RECOVERY</span>
+            <span className="chapter-badge">PASSWORD RECOVERY</span>
             <h1 className="heading-display" style={{ fontSize: '2rem', marginBottom: '0.4rem' }}>
-              RESET ACCESS
+              FORGOT PASSWORD
             </h1>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
-              Enter your registered email address to receive password reset authorization.
+              Enter your registered email address to receive a password reset link.
             </p>
           </div>
 
@@ -67,12 +67,12 @@ export default function ForgotPasswordPage() {
               <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(185, 133, 69, 0.2)', border: '1px solid var(--color-warm-amber)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.2rem auto', color: 'var(--color-warm-amber)' }}>
                 <CheckCircle2 size={32} />
               </div>
-              <h3 className="heading-display" style={{ fontSize: '1.4rem', marginBottom: '0.6rem' }}>BEACON TRANSMITTED</h3>
+              <h3 className="heading-display" style={{ fontSize: '1.4rem', marginBottom: '0.6rem' }}>RESET EMAIL SENT</h3>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', marginBottom: '1.8rem', lineHeight: '1.6' }}>
-                Password reset instructions have been dispatched to <strong>{email}</strong>.
+                Password reset instructions have been sent to <strong>{email}</strong>.
               </p>
               <Link to="/login" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-                RETURN TO SIGN IN
+                BACK TO SIGN IN
               </Link>
             </div>
           ) : (
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="builder@institution.ac.in"
+                    placeholder="student@institution.ac.in"
                     required
                     style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.7rem', background: '#111827', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--color-warm-off-white)', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
                   />
@@ -107,7 +107,7 @@ export default function ForgotPasswordPage() {
                   </>
                 ) : (
                   <>
-                    SEND RECOVERY BEACON
+                    SEND RESET LINK
                     <ArrowUpRight size={18} />
                   </>
                 )}

@@ -69,25 +69,25 @@ export default function SignupPage() {
           style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-arc-blue)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', letterSpacing: '0.08em', marginBottom: '1.5rem' }}
         >
           <ArrowLeft size={16} />
-          RETURN TO HOME BASE
+          BACK TO HOME
         </Link>
 
-        <HudPanel variant="red" tag="ENLISTMENT // LEVEL 01" scan={true}>
+        <HudPanel variant="red" tag="REGISTRATION // NEW ACCOUNT" scan={true}>
           <div style={{ marginBottom: '1.8rem' }}>
             <HoloBadge variant="red" icon={Shield} style={{ marginBottom: '0.8rem' }}>
-              HERO ENLISTMENT PROTOCOL
+              CREATE ACCOUNT
             </HoloBadge>
             <h1 className="heading-display" style={{ fontSize: '2.2rem', marginBottom: '0.4rem', color: '#FFFFFF', letterSpacing: '0.04em' }}>
-              CREATE YOUR OPERATIVE PROFILE
+              PARTICIPANT REGISTRATION
             </h1>
             <p style={{ color: '#94A3B8', fontSize: '0.92rem', lineHeight: '1.6' }}>
-              Register builder credentials for {eventMeta.name}. Team formation, arena entry, and live rankings initiate here.
+              Register for {eventMeta.name}. Create your profile to join teams, participate in competitions, and track your progress.
             </p>
           </div>
 
           {!isConfigured && (
             <div style={{ background: 'rgba(245, 182, 66, 0.1)', border: '1px solid var(--color-stark-gold)', borderRadius: '4px', padding: '0.9rem 1rem', marginBottom: '1.5rem', fontSize: '0.82rem', color: '#F5F7FA', lineHeight: '1.5', fontFamily: 'var(--font-mono)' }}>
-              <strong>Notice:</strong> Supabase environment configuration pending. Local mock verification activated.
+              <strong>Notice:</strong> Supabase environment configuration pending.
             </div>
           )}
 
@@ -103,9 +103,9 @@ export default function SignupPage() {
               <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(0, 191, 255, 0.15)', border: '1px solid var(--color-arc-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.2rem auto', color: 'var(--color-arc-blue)', boxShadow: '0 0 20px rgba(0, 191, 255, 0.3)' }}>
                 <CheckCircle2 size={32} />
               </div>
-              <h3 className="heading-display" style={{ fontSize: '1.5rem', marginBottom: '0.6rem', color: '#FFFFFF' }}>OPERATIVE PROFILE INITIALIZED</h3>
+              <h3 className="heading-display" style={{ fontSize: '1.5rem', marginBottom: '0.6rem', color: '#FFFFFF' }}>ACCOUNT CREATED SUCCESSFULLY</h3>
               <p style={{ color: '#94A3B8', fontSize: '0.92rem', marginBottom: '1.8rem', lineHeight: '1.6' }}>
-                Your operative profile is registered in the command matrix. Verify your address if required, then access your tactical terminal.
+                Your account is ready. Sign in with your credentials to access your dashboard and register for events.
               </p>
               <button
                 type="button"
@@ -113,7 +113,7 @@ export default function SignupPage() {
                 onClick={() => navigate('/login')}
                 style={{ width: '100%', justifyContent: 'center' }}
               >
-                PROCEED TO COMMAND LOGIN
+                PROCEED TO LOGIN
                 <ArrowUpRight size={18} />
               </button>
             </div>
@@ -121,7 +121,7 @@ export default function SignupPage() {
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>
               <div>
                 <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
-                  FULL NAME / OPERATIVE CODENAME *
+                  FULL NAME *
                 </label>
                 <div style={{ position: 'relative' }}>
                   <User size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
@@ -139,7 +139,7 @@ export default function SignupPage() {
 
               <div>
                 <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
-                  COMMUNICATIONS EMAIL *
+                  EMAIL ADDRESS *
                 </label>
                 <div style={{ position: 'relative' }}>
                   <Mail size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
@@ -148,7 +148,7 @@ export default function SignupPage() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="operative@institution.ac.in"
+                    placeholder="student@institution.ac.in"
                     required
                     style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(230, 36, 41, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
                   />
@@ -158,7 +158,7 @@ export default function SignupPage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
-                    PHONE LINK
+                    PHONE NUMBER
                   </label>
                   <div style={{ position: 'relative' }}>
                     <Phone size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
@@ -175,7 +175,7 @@ export default function SignupPage() {
 
                 <div>
                   <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
-                    INSTITUTION / CAMPUS
+                    COLLEGE / UNIVERSITY
                   </label>
                   <div style={{ position: 'relative' }}>
                     <School size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
@@ -194,7 +194,7 @@ export default function SignupPage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
-                    PASSPHRASE *
+                    PASSWORD *
                   </label>
                   <div style={{ position: 'relative' }}>
                     <Lock size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
@@ -212,7 +212,7 @@ export default function SignupPage() {
 
                 <div>
                   <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: '#94A3B8', marginBottom: '0.35rem', letterSpacing: '0.08em' }}>
-                    CONFIRM PASSPHRASE *
+                    CONFIRM PASSWORD *
                   </label>
                   <div style={{ position: 'relative' }}>
                     <Lock size={18} color="var(--color-energy-red)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
@@ -221,7 +221,7 @@ export default function SignupPage() {
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      placeholder="Re-enter passphrase"
+                      placeholder="Re-enter password"
                       required
                       style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', background: 'rgba(5, 7, 13, 0.85)', border: '1px solid rgba(230, 36, 41, 0.25)', borderRadius: '4px', color: '#F5F7FA', fontFamily: 'var(--font-body)', fontSize: '0.92rem' }}
                     />
@@ -238,12 +238,12 @@ export default function SignupPage() {
                 {loading ? (
                   <>
                     <Loader2 size={18} className="animate-spin" />
-                    ENLISTING OPERATIVE...
+                    CREATING ACCOUNT...
                   </>
                 ) : (
                   <>
                     <Zap size={18} />
-                    INITIALIZE OPERATIVE PROFILE
+                    CREATE ACCOUNT
                     <ArrowUpRight size={18} />
                   </>
                 )}
@@ -252,9 +252,9 @@ export default function SignupPage() {
           )}
 
           <div style={{ marginTop: '1.8rem', textAlign: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1.2rem', fontSize: '0.88rem', color: '#94A3B8' }}>
-            Already enlisted?{' '}
+            Already have an account?{' '}
             <Link to="/login" style={{ color: 'var(--color-arc-blue)', fontWeight: 600 }}>
-              Access Command Deck
+              Sign In
             </Link>
           </div>
         </HudPanel>

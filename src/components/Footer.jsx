@@ -1,11 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, MapPin } from 'lucide-react';
 import { eventMeta } from '../data/eventData';
+import { eventService } from '../services/eventService';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
 export default function Footer() {
+  const [meta, setMeta] = useState(eventMeta);
+
+  useEffect(() => {
+    let isMounted = true;
+    eventService.getSettings().then((res) => {
+      if (isMounted && res) setMeta(res);
+    });
+    return () => { isMounted = false; };
+  }, []);
+
   const scrollTo = (id) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -38,47 +49,47 @@ export default function Footer() {
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748B', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
               <MapPin size={15} color="var(--color-stark-gold)" />
-              <span>{eventMeta.venueShort}</span>
+              <span>{meta.venueShort}</span>
             </div>
           </div>
 
           {/* Col 2: Quick Links */}
           <div>
             <h4 className="footer-col-title" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-arc-blue)', letterSpacing: '0.1em' }}>
-              COMMAND NAV
+              QUICK LINKS
             </h4>
             <ul className="footer-links">
-              <li><Link to="/" onClick={() => scrollTo('hero')}>Home Base</Link></li>
-              <li><Link to="/about" onClick={() => scrollTo('about')}>Mission Briefing</Link></li>
-              <li><Link to="/competitions" onClick={() => scrollTo('competitions')}>Combat Arenas</Link></li>
-              <li><Link to="/missions" onClick={() => scrollTo('problems')}>Mission Database</Link></li>
-              <li><Link to="/schedule" onClick={() => scrollTo('schedule')}>Flight Plan</Link></li>
-              <li><Link to="/prizes" onClick={() => scrollTo('prizes')}>Reward Vault</Link></li>
-              <li><Link to="/faq" onClick={() => scrollTo('faq')}>Directives & FAQ</Link></li>
+              <li><Link to="/" onClick={() => scrollTo('hero')}>Home</Link></li>
+              <li><Link to="/about" onClick={() => scrollTo('about')}>About Event</Link></li>
+              <li><Link to="/competitions" onClick={() => scrollTo('competitions')}>Competitions</Link></li>
+              <li><Link to="/missions" onClick={() => scrollTo('problems')}>Problem Statements</Link></li>
+              <li><Link to="/schedule" onClick={() => scrollTo('schedule')}>Event Schedule</Link></li>
+              <li><Link to="/prizes" onClick={() => scrollTo('prizes')}>Prizes & Awards</Link></li>
+              <li><Link to="/faq" onClick={() => scrollTo('faq')}>Rules & FAQs</Link></li>
             </ul>
           </div>
 
           {/* Col 3: Arenas */}
           <div>
             <h4 className="footer-col-title" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-stark-gold)', letterSpacing: '0.1em' }}>
-              THE THREE ARENAS
+              COMPETITIONS
             </h4>
             <ul className="footer-links">
-              <li><Link to="/codeathon">Codeathon (Speed Arena)</Link></li>
+              <li><Link to="/codeathon">Codeathon (Speed Coding)</Link></li>
               <li><Link to="/ideathon">Ideathon (Innovation Lab)</Link></li>
               <li><Link to="/hackathon">Flagship 48H Hackathon</Link></li>
-              <li><Link to="/register">Hero Enlistment Portal</Link></li>
-              <li><Link to="/sponsors">Alliances & Sponsors</Link></li>
+              <li><Link to="/register">Event Registration</Link></li>
+              <li><Link to="/sponsors">Sponsors & Partners</Link></li>
             </ul>
           </div>
 
           {/* Col 4: Community & Connect */}
           <div>
             <h4 className="footer-col-title" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-energy-red)', letterSpacing: '0.1em' }}>
-              COMMUNICATIONS DECK
+              CONNECT WITH US
             </h4>
             <p style={{ fontSize: '0.88rem', color: '#94A3B8', marginBottom: '1rem', lineHeight: '1.5' }}>
-              Connect with SDC operative channels for realtime announcements, technical briefings, and coordination.
+              Connect with SDC community channels for real-time announcements, updates, and coordination.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem' }}>
               {/* Instagram */}
@@ -153,7 +164,7 @@ export default function Footer() {
 
               {/* Email */}
               <a
-                href={`mailto:${eventMeta.contactEmail}`}
+                href={`mailto:${meta.contactEmail}`}
                 style={{
                   padding: '0.55rem',
                   background: 'rgba(13, 17, 26, 0.8)',
@@ -170,7 +181,7 @@ export default function Footer() {
               </a>
             </div>
             <div style={{ fontSize: '0.82rem', color: '#64748B', fontFamily: 'var(--font-mono)' }}>
-              TRANSMISSION: <a href={`mailto:${eventMeta.contactEmail}`} style={{ color: 'var(--color-arc-blue)' }}>{eventMeta.contactEmail}</a>
+              EMAIL: <a href={`mailto:${meta.contactEmail}`} style={{ color: 'var(--color-arc-blue)' }}>{meta.contactEmail}</a>
             </div>
           </div>
         </div>
@@ -178,7 +189,7 @@ export default function Footer() {
         {/* Bottom Bar with Stark Status */}
         <div className="footer-bottom" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1.5rem', marginTop: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#64748B' }}>
-            © {CURRENT_YEAR} {eventMeta.name} • STUDENT DEVELOPER CLUB (REC BANDA). ALL PROTOCOLS RESERVED.
+            © {CURRENT_YEAR} {eventMeta.name} • STUDENT DEVELOPER CLUB (REC BANDA). ALL RIGHTS RESERVED.
           </div>
           <div style={{ display: 'flex', gap: '1.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.76rem' }}>
             <span style={{ color: 'var(--color-arc-blue)' }}>GRID: ONLINE // VER 3.0</span>

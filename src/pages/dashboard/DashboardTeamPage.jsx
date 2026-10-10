@@ -106,7 +106,7 @@ export default function DashboardTeamPage() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
           <div>
-            <span className="chapter-badge">TACTICAL SQUAD</span>
+            <span className="chapter-badge">TEAM MANAGEMENT</span>
             <h2 className="heading-display" style={{ fontSize: '1.8rem', marginBottom: '0.2rem' }}>
               TEAM FORMATION & ROSTER
             </h2>
@@ -122,7 +122,7 @@ export default function DashboardTeamPage() {
               style={{ padding: '0.6rem 1.1rem', fontSize: '0.82rem' }}
             >
               <Plus size={16} />
-              CREATE SQUAD
+              CREATE TEAM
             </button>
             <button
               onClick={() => { setShowJoin(true); setShowCreate(false); setError(''); }}
@@ -153,18 +153,18 @@ export default function DashboardTeamPage() {
         {showCreate && (
           <div style={{ background: 'rgba(37, 42, 49, 0.95)', border: '1px solid var(--border-accent-amber)', borderRadius: 'var(--radius-md)', padding: '1.8rem', marginBottom: '2rem' }}>
             <h3 className="heading-display" style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>
-              REGISTER NEW SQUAD
+              CREATE NEW TEAM
             </h3>
             <form onSubmit={handleCreateTeam} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
                 <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.35rem' }}>
-                  SQUAD / TEAM NAME *
+                  TEAM NAME *
                 </label>
                 <input
                   type="text"
                   value={newTeamName}
                   onChange={(e) => setNewTeamName(e.target.value)}
-                  placeholder="e.g. Apex Rebuilders"
+                  placeholder="e.g. Code Warriors"
                   required
                   style={{ width: '100%', padding: '0.75rem 1rem', background: '#111827', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--color-warm-off-white)', fontSize: '0.92rem' }}
                 />
@@ -172,7 +172,7 @@ export default function DashboardTeamPage() {
 
               <div>
                 <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.35rem' }}>
-                  ARENA SECTOR *
+                  COMPETITION *
                 </label>
                 <select
                   value={newCompId}
@@ -186,7 +186,7 @@ export default function DashboardTeamPage() {
 
               <div style={{ display: 'flex', gap: '0.8rem', marginTop: '0.5rem' }}>
                 <button type="submit" className="btn btn-primary" disabled={actionLoading}>
-                  {actionLoading ? <Loader2 size={16} className="animate-spin" /> : 'GENERATE SQUAD'}
+                  {actionLoading ? <Loader2 size={16} className="animate-spin" /> : 'CREATE TEAM'}
                 </button>
                 <button type="button" className="btn btn-secondary" onClick={() => setShowCreate(false)}>
                   CANCEL
@@ -200,7 +200,7 @@ export default function DashboardTeamPage() {
         {showJoin && (
           <div style={{ background: 'rgba(37, 42, 49, 0.95)', border: '1px solid var(--border-accent-steel)', borderRadius: 'var(--radius-md)', padding: '1.8rem', marginBottom: '2rem' }}>
             <h3 className="heading-display" style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>
-              JOIN EXISTING SQUAD
+              JOIN EXISTING TEAM
             </h3>
             <form onSubmit={handleJoinTeam} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
@@ -234,10 +234,10 @@ export default function DashboardTeamPage() {
           <div style={{ background: 'rgba(37, 42, 49, 0.6)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '3rem 1.5rem', textAlign: 'center' }}>
             <Users size={48} color="var(--color-steel-blue)" style={{ margin: '0 auto 1.2rem auto' }} />
             <h3 className="heading-display" style={{ fontSize: '1.4rem', marginBottom: '0.6rem' }}>
-              NO TEAMS AFFILIATED YET
+              NO TEAMS JOINED YET
             </h3>
             <p style={{ color: 'var(--text-secondary)', maxWidth: '480px', margin: '0 auto 1.5rem auto', lineHeight: '1.6' }}>
-              You are currently operating solo. Form a squad or request a team code from your teammates to collaborate.
+              You are not currently in a team. Create a new team or enter an invite code from your teammates to collaborate.
             </p>
           </div>
         ) : (
@@ -262,7 +262,7 @@ export default function DashboardTeamPage() {
                     <button
                       onClick={() => handleCopyCode(tm.code)}
                       style={{ background: 'none', border: 'none', color: 'var(--color-soft-gray)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                      title="Copy squad code"
+                      title="Copy team code"
                     >
                       {copiedCode === tm.code ? <Check size={16} color="var(--color-warm-amber)" /> : <Copy size={16} />}
                     </button>
@@ -271,7 +271,7 @@ export default function DashboardTeamPage() {
 
                 {/* Team Members List */}
                 <h4 style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-soft-gray)', marginBottom: '0.8rem', letterSpacing: '0.08em' }}>
-                  ROSTER MEMBERS ({tm.members?.length || 1} / {tm.competition?.max_team_size || 4})
+                  TEAM MEMBERS ({tm.members?.length || 1} / {tm.competition?.max_team_size || 4})
                 </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.8rem', marginBottom: '1.4rem' }}>
                   {(tm.members || []).map((m) => (
@@ -297,7 +297,7 @@ export default function DashboardTeamPage() {
                     style={{ background: 'none', border: 'none', color: '#ff8b90', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}
                   >
                     <UserMinus size={14} />
-                    WITHDRAW FROM SQUAD
+                    LEAVE TEAM
                   </button>
                 )}
               </div>
